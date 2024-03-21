@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
+import 'package:random_quote_app/data/remote_data_sources/image_remote_data_source.dart';
+import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,7 +12,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeCubit(),
+      create: (context) => HomeCubit(ImageRepository(ImageRemoteDataSource()))..start(),
       child: BlocListener<HomeCubit, HomeState>(
         listener: (context, state) {
           if (state.status == Status.error) {
@@ -25,24 +27,56 @@ class HomePage extends StatelessWidget {
         },
         child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
+            final imageModel = state.imageModel;
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 title: Text(title),
               ),
-              body: const Center(
+              body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[],
+                  children: [
+                    if (imageModel != null)
+                      _ImageDisplay(
+                        NetworkImage(
+                          imageModel.imageUrl,
+                        ),
+                      )
+                    else
+                      const CircularProgressIndicator()
+                  ],
                 ),
               ),
               floatingActionButton: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<HomeCubit>().getImageModel();
+                },
                 tooltip: 'Reroll',
                 child: const Icon(Icons.refresh),
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _ImageDisplay extends StatelessWidget {
+  const _ImageDisplay(
+    this.image,
+  );
+
+  final ImageProvider<Object> image;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 600,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: image,
         ),
       ),
     );
