@@ -1,18 +1,18 @@
+import 'dart:math';
+
 import 'package:random_quote_app/data/remote_data_sources/image_remote_data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 
 class ImageRepository {
-  ImageRepository(this._imageRemoteDataSource);
+  ImageRepository();
 
-  final ImageRemoteDataSource _imageRemoteDataSource;
+  final List<ImageDataSource> dataSources = [
+    FirstRemoteDataSource(),
+  ];
 
   Future<ImageModel?> getImageModel() async {
-    final json = await _imageRemoteDataSource.getImageData();
+    final randomDataSource = dataSources[Random().nextInt(dataSources.length)];
 
-    if (json == null) {
-      return null;
-    }
-
-    return ImageModel.fromJson(json);
+    return await randomDataSource.getImageData();
   }
 }
