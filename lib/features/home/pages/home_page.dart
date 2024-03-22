@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
-import 'package:random_quote_app/data/remote_data_sources/image_remote_data_source.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 
@@ -12,7 +11,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeCubit(ImageRepository(ImageRemoteDataSource()))..start(),
+      create: (context) => HomeCubit(ImageRepository())..start(),
       child: BlocListener<HomeCubit, HomeState>(
         listener: (context, state) {
           if (state.status == Status.error) {

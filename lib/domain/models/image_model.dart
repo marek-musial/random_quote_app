@@ -1,9 +1,9 @@
 class ImageModel {
   ImageModel({
     required this.imageUrl,
+    required this.author,
   });
 
   final String imageUrl;
-
-  ImageModel.fromJson(List<dynamic> json) : imageUrl = json[0];
+  final String? author;
 }
