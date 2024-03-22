@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
+import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 
@@ -72,10 +73,13 @@ class _ImageDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 600,
+      height: ((screenWidth * 7 / 8).roundToDouble()),
+      width: ((screenWidth * 7 / 8).roundToDouble()),
       decoration: BoxDecoration(
         image: DecorationImage(
           image: image,
+          alignment: Alignment.center,
+          fit: BoxFit.cover,
         ),
       ),
     );
