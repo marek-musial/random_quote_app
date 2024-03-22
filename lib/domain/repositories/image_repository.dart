@@ -8,6 +8,7 @@ class ImageRepository {
 
   final List<ImageDataSource> dataSources = [
     FirstRemoteDataSource(),
+    SecondRemoteDataSource(),
   ];
 
   Future<ImageModel?> getImageModel() async {
