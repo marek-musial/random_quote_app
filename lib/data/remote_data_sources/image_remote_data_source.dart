@@ -10,20 +10,25 @@ abstract class ImageDataSource {
 class FirstRemoteDataSource implements ImageDataSource {
   @override
   Future<ImageModel?> getImageData() async {
-    final response = await Dio().get<List<dynamic>>(
-      'http://shibe.online/api/shibes?',
-    );
-    final json = response.data;
+    try {
+      final response = await Dio().get<List<dynamic>>(
+        'http://shibe.online/api/shibes?',
+      );
 
-    if (json == null) {
-      return null;
+      final json = response.data;
+
+      if (json == null) {
+        return null;
+      }
+
+      final imageModel = ImageModel(
+        imageUrl: json[0],
+        author: null,
+      );
+      return imageModel;
+    } on DioException catch (error) {
+      throw Exception(error.response?.data ?? 'Unknown error');
     }
-
-    final imageModel = ImageModel(
-      imageUrl: json[0],
-      author: null,
-    );
-    return imageModel;
   }
 }
 
@@ -31,7 +36,7 @@ class SecondRemoteDataSource implements ImageDataSource {
   @override
   Future<ImageModel?> getImageData() async {
     final randomID = Random().nextInt(1084 + 1);
-
+    try {
     final response = await Dio().get<Map<String, dynamic>?>(
       'https://picsum.photos/id/$randomID/info',
     );
@@ -46,5 +51,8 @@ class SecondRemoteDataSource implements ImageDataSource {
       author: json['author'],
     );
     return imageModel;
+    } on DioException catch (error) {
+      throw Exception(error.response?.data ?? 'Unknown error');
+    }
   }
 }
