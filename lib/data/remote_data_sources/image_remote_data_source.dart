@@ -35,22 +35,27 @@ class FirstRemoteDataSource implements ImageDataSource {
 class SecondRemoteDataSource implements ImageDataSource {
   @override
   Future<ImageModel?> getImageData() async {
-    final randomID = Random().nextInt(1084 + 1);
+    final randomPage = Random().nextInt(10 + 1);
     try {
-    final response = await Dio().get<Map<String, dynamic>?>(
-      'https://picsum.photos/id/$randomID/info',
-    );
-    final json = response.data;
+      final response = await Dio().get<List<dynamic>?>(
+        'https://picsum.photos/v2/list?page=$randomPage&limit=100',
+      );
+      final jsons = response.data;
 
-    if (json == null) {
-      return null;
-    }
+      if (jsons == null || jsons.isEmpty) {
+        return null;
+      }
 
-    final imageModel = ImageModel(
-      imageUrl: 'https://picsum.photos/id/$randomID/1080',
-      author: json['author'],
-    );
-    return imageModel;
+      final Map<String, dynamic> json = jsons[Random().nextInt(
+        response.data!.length,
+      )];
+      final id = json['id'];
+
+      final imageModel = ImageModel(
+        imageUrl: 'https://picsum.photos/id/$id/1080',
+        author: json['author'],
+      );
+      return imageModel;
     } on DioException catch (error) {
       throw Exception(error.response?.data ?? 'Unknown error');
     }
