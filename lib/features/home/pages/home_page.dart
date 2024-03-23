@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => HomeCubit(ImageRepository())..start(),
-      child: BlocListener<HomeCubit, HomeState>(
+      child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
           if (state.status == Status.error) {
             final errorMessage = state.errorMessage ?? 'Unknown error';
@@ -25,39 +25,37 @@ class HomePage extends StatelessWidget {
             );
           }
         },
-        child: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
-            final imageModel = state.imageModel;
-            return Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                title: Text(title),
+        builder: (context, state) {
+          final imageModel = state.imageModel;
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              title: Text(title),
+            ),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (imageModel != null)
+                    _ImageDisplay(
+                      NetworkImage(
+                        imageModel.imageUrl,
+                      ),
+                    )
+                  else
+                    const CircularProgressIndicator()
+                ],
               ),
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (imageModel != null)
-                      _ImageDisplay(
-                        NetworkImage(
-                          imageModel.imageUrl,
-                        ),
-                      )
-                    else
-                      const CircularProgressIndicator()
-                  ],
-                ),
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  context.read<HomeCubit>().getImageModel();
-                },
-                tooltip: 'Reroll',
-                child: const Icon(Icons.refresh),
-              ),
-            );
-          },
-        ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                context.read<HomeCubit>().getImageModel();
+              },
+              tooltip: 'Reroll',
+              child: const Icon(Icons.refresh),
+            ),
+          );
+        },
       ),
     );
   }
