@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
+import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
@@ -38,39 +39,41 @@ class HomePage extends StatelessWidget {
               title: Text(title),
             ),
             body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (imageModel != null && quoteModel != null)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        _ImageDisplay(
-                          NetworkImage(
-                            imageModel.imageUrl,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: (screenWidth * 1 / 16).roundToDouble()),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (imageModel != null && quoteModel != null)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Stack(
+                            children: [
+                              _ImageDisplay(
+                                NetworkImage(imageModel.imageUrl),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all((screenWidth * 1 / 16).roundToDouble()),
+                                child: _QuoteDisplay(quoteModel: quoteModel),
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(
-                          height: screenHeight / 128,
-                        ),
-                        Text(
-                          imageModel.author != null ? 'Author: ${imageModel.author}' : '',
-                          style: TextStyle(fontSize: screenHeight / 80),
-                        ),
-                        Text(
-                          quoteModel.quote,
-                          textAlign: TextAlign.end,
-                        ),
-                        Text(
-                          quoteModel.author != null ? '~${quoteModel.author}' : '',
-                          style: TextStyle(fontSize: screenHeight / 80),
-                          textAlign: TextAlign.end,
-                        ),
-                      ],
-                    )
-                  else
-                    const CircularProgressIndicator()
-                ],
+                          SizedBox(
+                            height: screenHeight / 128,
+                          ),
+                          Text(
+                            imageModel.author != null ? 'Author: ${imageModel.author}' : '',
+                            style: TextStyle(
+                              fontSize: screenHeight / 80,
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      const CircularProgressIndicator()
+                  ],
+                ),
               ),
             ),
             floatingActionButton: FloatingActionButton(
@@ -83,6 +86,39 @@ class HomePage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _QuoteDisplay extends StatelessWidget {
+  const _QuoteDisplay({
+    required this.quoteModel,
+  });
+
+  final QuoteModel? quoteModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          quoteModel!.quote,
+          style: TextStyle(
+            fontSize: screenHeight / 32,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.end,
+        ),
+        Text(
+          quoteModel!.author != null ? '~${quoteModel!.author}' : '',
+          style: TextStyle(
+            fontSize: screenHeight / 80,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.end,
+        ),
+      ],
     );
   }
 }
