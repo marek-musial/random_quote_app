@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
+import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,7 +13,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeCubit(ImageRepository())..start(),
+      create: (context) => HomeCubit(
+        ImageRepository(),
+        QuoteRepository(),
+      )..start(),
       child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
           if (state.status == Status.error) {
@@ -27,6 +31,7 @@ class HomePage extends StatelessWidget {
         },
         builder: (context, state) {
           final imageModel = state.imageModel;
+          final quoteModel = state.quoteModel;
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -36,7 +41,7 @@ class HomePage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (imageModel != null)
+                  if (imageModel != null && quoteModel != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -50,6 +55,16 @@ class HomePage extends StatelessWidget {
                         ),
                         Text(
                           imageModel.author != null ? 'Author: ${imageModel.author}' : '',
+                          style: TextStyle(fontSize: screenHeight / 80),
+                        ),
+                        Text(
+                          quoteModel.quote,
+                          textAlign: TextAlign.end,
+                        ),
+                        Text(
+                          quoteModel.author != null ? '~${quoteModel.author}' : '',
+                          style: TextStyle(fontSize: screenHeight / 80),
+                          textAlign: TextAlign.end,
                         ),
                       ],
                     )
@@ -60,7 +75,7 @@ class HomePage extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                context.read<HomeCubit>().getImageModel();
+                context.read<HomeCubit>().getItemModels();
               },
               tooltip: 'Reroll',
               child: const Icon(Icons.refresh),
