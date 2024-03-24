@@ -37,10 +37,21 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (imageModel != null)
-                    _ImageDisplay(
-                      NetworkImage(
-                        imageModel.imageUrl,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _ImageDisplay(
+                          NetworkImage(
+                            imageModel.imageUrl,
+                          ),
+                        ),
+                        SizedBox(
+                          height: screenHeight / 128,
+                        ),
+                        Text(
+                          imageModel.author != null ? 'Author: ${imageModel.author}' : '',
+                        ),
+                      ],
                     )
                   else
                     const CircularProgressIndicator()
