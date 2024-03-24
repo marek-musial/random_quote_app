@@ -30,3 +30,27 @@ class FirstRemoteDataSource implements QuoteDataSource {
   }
 }
 
+class SecondRemoteDataSource implements QuoteDataSource {
+  @override
+  Future<QuoteModel?> getQuoteData() async {
+    try {
+      final response = await Dio().get<Map<String, dynamic>>(
+        'https://www.affirmations.dev/',
+      );
+
+      final json = response.data;
+
+      if (json == null) {
+        return null;
+      }
+
+      final quoteModel = QuoteModel(
+        quote: json['affirmation'],
+        author: null,
+      );
+      return quoteModel;
+    } on DioException catch (error) {
+      throw Exception(error.response?.data ?? 'Unknown error');
+    }
+  }
+}
