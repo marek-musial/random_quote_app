@@ -54,3 +54,28 @@ class SecondRemoteDataSource implements QuoteDataSource {
     }
   }
 }
+
+class ThirdRemoteDataSource implements QuoteDataSource {
+  @override
+  Future<QuoteModel?> getQuoteData() async {
+    try {
+      final response = await Dio().get<Map<String, dynamic>>(
+        'https://www.boredapi.com/api/activity/',
+      );
+
+      final json = response.data;
+
+      if (json == null) {
+        return null;
+      }
+
+      final quoteModel = QuoteModel(
+        quote: json['activity'],
+        author: null,
+      );
+      return quoteModel;
+    } on DioException catch (error) {
+      throw Exception(error.response?.data ?? 'Unknown error');
+    }
+  }
+}
