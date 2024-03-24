@@ -69,6 +69,10 @@ class ThirdRemoteDataSource implements QuoteDataSource {
         return null;
       }
 
+      if (json['error'] != null) {
+        throw Exception(json['error']);
+      }
+
       final quoteModel = QuoteModel(
         quote: json['activity'],
         author: null,
