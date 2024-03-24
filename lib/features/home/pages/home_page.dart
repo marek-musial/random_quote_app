@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
+import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
@@ -50,9 +51,7 @@ class HomePage extends StatelessWidget {
                         children: [
                           Stack(
                             children: [
-                              _ImageDisplay(
-                                NetworkImage(imageModel.imageUrl),
-                              ),
+                              _ImageDisplay(imageModel: imageModel),
                               Padding(
                                 padding: EdgeInsets.all((screenWidth * 1 / 16).roundToDouble()),
                                 child: _QuoteDisplay(quoteModel: quoteModel),
@@ -124,11 +123,11 @@ class _QuoteDisplay extends StatelessWidget {
 }
 
 class _ImageDisplay extends StatelessWidget {
-  const _ImageDisplay(
-    this.image,
-  );
+  const _ImageDisplay({
+    required this.imageModel,
+  });
 
-  final ImageProvider<Object> image;
+  final ImageModel imageModel;
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +136,7 @@ class _ImageDisplay extends StatelessWidget {
       width: ((screenWidth * 7 / 8).roundToDouble()),
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: image,
+          image: NetworkImage(imageModel.imageUrl),
           alignment: Alignment.center,
           fit: BoxFit.cover,
         ),
