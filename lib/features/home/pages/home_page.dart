@@ -41,7 +41,9 @@ class HomePage extends StatelessWidget {
             ),
             body: Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: (screenWidth * 1 / 16).roundToDouble()),
+                padding: EdgeInsets.symmetric(
+                  horizontal: (screenWidth * 1 / 16).roundToDouble(),
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -89,6 +91,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
+final _imageKey = GlobalKey();
+
 class _QuoteDisplay extends StatelessWidget {
   const _QuoteDisplay({
     required this.quoteModel,
@@ -131,16 +135,32 @@ class _ImageDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: ((screenWidth * 7 / 8).roundToDouble()),
-      width: ((screenWidth * 7 / 8).roundToDouble()),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(imageModel.imageUrl),
-          alignment: Alignment.center,
-          fit: BoxFit.cover,
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        constraints = BoxConstraints(
+          maxHeight: (screenWidth * 7 / 8).roundToDouble(),
+          maxWidth: (screenWidth * 7 / 8).roundToDouble(),
+        );
+        return BlocConsumer<HomeCubit, HomeState>(
+          listenWhen: (previous, current) {
+            return previous.rawImage == null && current.rawImage != null;
+          },
+          listener: (context, state) {
+            context.read<HomeCubit>().emitSuccess();
+          },
+          builder: (context, state) {
+            return SizedBox(
+              width: constraints.maxWidth,
+              height: constraints.maxHeight,
+              child: Image.network(
+                imageModel.imageUrl,
+                key: _imageKey,
+                fit: state.rawImage != null && state.rawImage!.height < state.rawImage!.width ? BoxFit.fitHeight : BoxFit.fitWidth,
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
