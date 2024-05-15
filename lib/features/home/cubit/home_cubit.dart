@@ -116,6 +116,9 @@ class HomeCubit extends Cubit<HomeState> {
     );
     print('scaleFactor: ${state.scaleFactor}');
   }
+  void emitSuccess() {
+    emit(state.copyWith(status: Status.success));
+  }
 
   void start() {
     emit(const HomeState(status: Status.loading));
