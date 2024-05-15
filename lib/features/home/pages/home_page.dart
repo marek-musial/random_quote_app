@@ -146,6 +146,7 @@ class _ImageDisplay extends StatelessWidget {
             return previous.rawImage == null && current.rawImage != null;
           },
           listener: (context, state) {
+            context.read<HomeCubit>().calculateScaleFactor(context);
             context.read<HomeCubit>().emitSuccess();
           },
           builder: (context, state) {

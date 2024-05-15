@@ -7,12 +7,18 @@ class HomeState {
     this.imageModel,
     this.quoteModel,
     this.rawImage,
+    this.textPosition,
+    this.textSize,
+    this.scaleFactor,
   });
   final Status status;
   final String? errorMessage;
   final ImageModel? imageModel;
   final QuoteModel? quoteModel;
   final ui.Image? rawImage;
+  final Offset? textPosition;
+  final Size? textSize;
+  final double? scaleFactor;
 
   HomeState copyWith({
     Status? status,
@@ -20,6 +26,9 @@ class HomeState {
     ImageModel? imageModel,
     QuoteModel? quoteModel,
     ui.Image? rawImage,
+    Offset? textPosition,
+    Size? textSize,
+    double? scaleFactor,
   }) {
     return HomeState(
       status: status ?? this.status,
@@ -27,6 +36,9 @@ class HomeState {
       imageModel: imageModel ?? this.imageModel,
       quoteModel: quoteModel ?? this.quoteModel,
       rawImage: rawImage ?? this.rawImage,
+      textPosition: textPosition ?? this.textPosition,
+      textSize: textSize ?? this.textSize,
+      scaleFactor: scaleFactor ?? this.scaleFactor,
     );
   }
 }
