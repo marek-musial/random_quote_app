@@ -75,6 +75,48 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  calculatePosition({BuildContext? imageContext, BuildContext? textContext}) {
+    if (imageContext != null && textContext != null) {
+      final RenderBox imageRenderBox = imageContext.findRenderObject() as RenderBox;
+      final RenderBox textRenderBox = textContext.findRenderObject() as RenderBox;
+      final textPosition = imageRenderBox.globalToLocal(
+        Offset(
+          textRenderBox.localToGlobal(Offset.zero).dx,
+          textRenderBox.localToGlobal(Offset.zero).dy,
+        ),
+      );
+      emit(
+        state.copyWith(
+          textPosition: textPosition,
+          textSize: textRenderBox.size,
+        ),
+      );
+      print('textPosition ${state.textPosition}, textSize ${state.textSize}, imageSize ${imageRenderBox.size}');
+    }
+  }
+
+  void calculateScaleFactor(BuildContext context) {
+    final ui.Image? image = rawImage;
+
+    if (image == null) return;
+
+    double rawImageWidth = image.width.toDouble();
+    double rawImageHeight = image.height.toDouble();
+
+    double widgetImageWidth = MediaQuery.of(context).size.width;
+    double widgetImageHeight = MediaQuery.of(context).size.height;
+
+    double widthScaleFactor = widgetImageWidth / rawImageWidth;
+    double heightScaleFactor = widgetImageHeight / rawImageHeight;
+
+    emit(
+      state.copyWith(
+        scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
+      ),
+    );
+    print('scaleFactor: ${state.scaleFactor}');
+  }
+
   void start() {
     emit(const HomeState(status: Status.loading));
     getItemModels();
