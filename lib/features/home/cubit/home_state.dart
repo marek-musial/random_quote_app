@@ -7,6 +7,7 @@ class HomeState {
     this.imageModel,
     this.quoteModel,
     this.rawImage,
+    this.textColor,
     this.textPosition,
     this.textSize,
     this.scaleFactor,
@@ -16,6 +17,7 @@ class HomeState {
   final ImageModel? imageModel;
   final QuoteModel? quoteModel;
   final ui.Image? rawImage;
+  final Color? textColor;
   final Offset? textPosition;
   final Size? textSize;
   final double? scaleFactor;
@@ -26,6 +28,7 @@ class HomeState {
     ImageModel? imageModel,
     QuoteModel? quoteModel,
     ui.Image? rawImage,
+    Color? textColor,
     Offset? textPosition,
     Size? textSize,
     double? scaleFactor,
@@ -36,6 +39,7 @@ class HomeState {
       imageModel: imageModel ?? this.imageModel,
       quoteModel: quoteModel ?? this.quoteModel,
       rawImage: rawImage ?? this.rawImage,
+      textColor: textColor ?? this.textColor,
       textPosition: textPosition ?? this.textPosition,
       textSize: textSize ?? this.textSize,
       scaleFactor: scaleFactor ?? this.scaleFactor,

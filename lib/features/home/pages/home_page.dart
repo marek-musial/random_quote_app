@@ -105,27 +105,29 @@ class _QuoteDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-    return Column(
+        return Column(
           key: _textKey,
           crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          quoteModel!.quote,
-          style: TextStyle(
-            fontSize: screenHeight / 32,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.end,
-        ),
-        Text(
-          quoteModel!.author != null ? '~${quoteModel!.author}' : '',
-          style: TextStyle(
-            fontSize: screenHeight / 80,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.end,
-        ),
-      ],
+          children: [
+            Text(
+              quoteModel!.quote,
+              style: TextStyle(
+                fontSize: screenHeight / 32,
+                fontWeight: FontWeight.bold,
+                color: state.textColor,
+              ),
+              textAlign: TextAlign.end,
+            ),
+            Text(
+              quoteModel!.author != null ? '~${quoteModel!.author}' : '',
+              style: TextStyle(
+                fontSize: screenHeight / 80,
+                fontWeight: FontWeight.bold,
+                color: state.textColor,
+              ),
+              textAlign: TextAlign.end,
+            ),
+          ],
         );
       },
     );
@@ -157,6 +159,7 @@ class _ImageDisplay extends StatelessWidget {
                   imageContext: _imageKey.currentContext,
                   textContext: _textKey.currentContext,
                 );
+            context.read<HomeCubit>().generateColors();
             context.read<HomeCubit>().emitSuccess();
           },
           builder: (context, state) {
