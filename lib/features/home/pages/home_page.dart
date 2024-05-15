@@ -92,6 +92,7 @@ class HomePage extends StatelessWidget {
 }
 
 final _imageKey = GlobalKey();
+final _textKey = GlobalKey();
 
 class _QuoteDisplay extends StatelessWidget {
   const _QuoteDisplay({
@@ -102,8 +103,11 @@ class _QuoteDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+          key: _textKey,
+          crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
           quoteModel!.quote,
@@ -122,6 +126,8 @@ class _QuoteDisplay extends StatelessWidget {
           textAlign: TextAlign.end,
         ),
       ],
+        );
+      },
     );
   }
 }
@@ -147,6 +153,10 @@ class _ImageDisplay extends StatelessWidget {
           },
           listener: (context, state) {
             context.read<HomeCubit>().calculateScaleFactor(context);
+            context.read<HomeCubit>().calculatePosition(
+                  imageContext: _imageKey.currentContext,
+                  textContext: _textKey.currentContext,
+                );
             context.read<HomeCubit>().emitSuccess();
           },
           builder: (context, state) {
