@@ -7,6 +7,8 @@ import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
+
+import 'package:palette_generator/palette_generator.dart';
 import 'dart:ui' as ui;
 
 part 'home_state.dart';
@@ -58,13 +60,13 @@ class HomeCubit extends Cubit<HomeState> {
       final frame = await codec.getNextFrame();
       rawImage = frame.image;
 
-      print('Width: ${rawImage!.width}, height: ${rawImage!.height}');
 
       emit(
         state.copyWith(
           rawImage: rawImage,
         ),
       );
+      print('Width: ${rawImage!.width}, height: ${rawImage!.height}');
     } else {
       emit(
         const HomeState(
@@ -116,6 +118,50 @@ class HomeCubit extends Cubit<HomeState> {
     );
     print('scaleFactor: ${state.scaleFactor}');
   }
+
+  PaletteGenerator? paletteGenerator;
+  final _placeholderColor = Colors.white;
+
+  Future<void> generateColors() async {
+    final double? scaleFactor = state.scaleFactor;
+
+    if (scaleFactor != null && _imageProvider != null && state.rawImage != null && state.textPosition != null && state.textSize != null) {
+      paletteGenerator = await PaletteGenerator.fromImageProvider(
+        _imageProvider!,
+        size: Size(state.rawImage!.width * scaleFactor, state.rawImage!.height * scaleFactor),
+        region: Rect.fromPoints(
+          state.textPosition!,
+          state.textPosition! + Offset(state.textSize!.width, state.textSize!.height),
+        ),
+      );
+    } else {}
+
+    final paletteColor = paletteGenerator != null
+        ? paletteGenerator!.vibrantColor != null
+            ? paletteGenerator!.vibrantColor!.bodyTextColor
+            : paletteGenerator!.dominantColor != null
+                ? paletteGenerator!.dominantColor!.bodyTextColor
+                : _placeholderColor
+        : _placeholderColor;
+
+    emit(
+      state.copyWith(
+        textColor: paletteColor,
+      ),
+    );
+    print('textColor = ${state.textColor}');
+  }
+
+  Color _getInverseColor(Color color) {
+    final inverseColor = Color.fromRGBO(
+      255 - color.red,
+      255 - color.green,
+      255 - color.blue,
+      1,
+    );
+    return inverseColor;
+  }
+
   void emitSuccess() {
     emit(state.copyWith(status: Status.success));
   }
