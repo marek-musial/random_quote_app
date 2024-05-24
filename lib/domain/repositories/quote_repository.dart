@@ -9,7 +9,7 @@ class QuoteRepository {
   final List<QuoteDataSource> dataSources = [
     FirstRemoteDataSource(),
     SecondRemoteDataSource(),
-    ThirdRemoteDataSource(),
+    // ThirdRemoteDataSource(),
   ];
 
   Future<QuoteModel?> getQuoteModel() async {
