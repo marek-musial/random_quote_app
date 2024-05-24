@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,7 +68,6 @@ class HomeCubit extends Cubit<HomeState> {
       final frame = await codec.getNextFrame();
       rawImage = frame.image;
 
-
       emit(
         state.copyWith(
           rawImage: rawImage,
@@ -84,9 +84,22 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  void randomizeTextLayout() {
+    int fontWeightIndex = Random().nextInt(7) + 2;
+    int textAlignmentIndex = Random().nextInt(3);
+    int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
+    int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 1);
+    emit(state.copyWith(
+      fontWeightIndex: fontWeightIndex,
+      textAlignmentIndex: textAlignmentIndex,
+      mainAxisAlignmentIndex: mainAxisAlignmentIndex,
+      crossAxisAlignmentIndex: crossAxisAlignmentIndex,
+    ));
+    print('layout randomized');
+  }
+
   void calculatePosition({BuildContext? imageContext, BuildContext? textContext}) {
-  calculatePosition({BuildContext? imageContext, BuildContext? textContext}) {
-    if (imageContext != null && textContext != null) {
+    randomizeTextLayout();
     if (imageContext != null && textContext != null && imageContext.mounted && textContext.mounted) {
       final RenderBox imageRenderBox = imageContext.findRenderObject() as RenderBox;
       final RenderBox textRenderBox = textContext.findRenderObject() as RenderBox;
