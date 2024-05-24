@@ -35,7 +35,7 @@ class HomeCubit extends Cubit<HomeState> {
             quoteModel: quoteModel,
           ),
         );
-      loadImage();
+        await loadImage();
       } catch (error) {
         emit(HomeState(
           status: Status.error,
