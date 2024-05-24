@@ -161,7 +161,7 @@ class _ImageDisplay extends StatelessWidget {
         );
         return BlocConsumer<HomeCubit, HomeState>(
           listenWhen: (previous, current) {
-            return previous.rawImage == null && current.rawImage != null;
+            return previous.rawImage == null && current.rawImage != null || previous.status == Status.error;
           },
           listener: (context, state) {
             context.read<HomeCubit>().calculateScaleFactor(context);
