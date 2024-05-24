@@ -223,8 +223,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(status: Status.success));
   }
 
-  void start() {
-    emit(const HomeState(status: Status.loading));
-    getItemModels();
+  void start() async {
+    await getItemModels();
   }
 }
