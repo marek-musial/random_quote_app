@@ -165,8 +165,8 @@ class HomeCubit extends Cubit<HomeState> {
         final region = Rect.fromPoints(state.textPosition!, state.textPosition! + Offset(state.textSize!.width, state.textSize!.height));
         final scaledImageSize = Size(state.rawImage!.width * scaleFactor, state.rawImage!.height * scaleFactor);
 
-      paletteGenerator = await PaletteGenerator.fromImageProvider(
-        _imageProvider!,
+        paletteGenerator = await PaletteGenerator.fromImageProvider(
+          _imageProvider!,
           size: scaledImageSize,
           region: region,
         );
@@ -209,13 +209,13 @@ class HomeCubit extends Cubit<HomeState> {
     if (color.red < 60 && color.green < 60 && color.blue < 60) {
       return Colors.white;
     } else {
-    final inverseColor = Color.fromRGBO(
-      255 - color.red,
-      255 - color.green,
-      255 - color.blue,
-      1,
-    );
-    return inverseColor;
+      final inverseColor = Color.fromRGBO(
+        255 - color.red,
+        255 - color.green,
+        255 - color.blue,
+        1,
+      );
+      return inverseColor;
     }
   }
 
