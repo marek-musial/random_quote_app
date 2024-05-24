@@ -162,15 +162,14 @@ class HomeCubit extends Cubit<HomeState> {
 
     if (scaleFactor != null && _imageProvider != null && state.rawImage != null && state.textPosition != null && state.textSize != null) {
       try {
+        final region = Rect.fromPoints(state.textPosition!, state.textPosition! + Offset(state.textSize!.width, state.textSize!.height));
+        final scaledImageSize = Size(state.rawImage!.width * scaleFactor, state.rawImage!.height * scaleFactor);
+
       paletteGenerator = await PaletteGenerator.fromImageProvider(
         _imageProvider!,
-        size: Size(state.rawImage!.width * scaleFactor, state.rawImage!.height * scaleFactor),
-        region: Rect.fromPoints(
-          state.textPosition!,
-          state.textPosition! + Offset(state.textSize!.width, state.textSize!.height),
-        ),
-      );
-    } else {}
+          size: scaledImageSize,
+          region: region,
+        );
         print('palette generated!');
       } catch (error) {
         emit(
