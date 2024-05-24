@@ -187,22 +187,28 @@ class HomeCubit extends Cubit<HomeState> {
     }
 
     final paletteColor = paletteGenerator != null
-        ? paletteGenerator!.vibrantColor != null
-            ? paletteGenerator!.vibrantColor!.bodyTextColor
-            : paletteGenerator!.dominantColor != null
-                ? paletteGenerator!.dominantColor!.bodyTextColor
+        ? paletteGenerator!.dominantColor != null
+            ? paletteGenerator!.dominantColor!.color
+            : paletteGenerator!.vibrantColor != null
+                ? paletteGenerator!.vibrantColor!.color
                 : _placeholderColor
         : _placeholderColor;
 
     emit(
       state.copyWith(
-        textColor: paletteColor,
+        textColor: _getInverseColor(paletteColor.withOpacity(1)),
       ),
     );
     print('textColor = ${state.textColor}');
   }
 
   Color _getInverseColor(Color color) {
+    if (color.red > 225 && color.green > 225 && color.blue > 225) {
+      return Colors.black;
+    }
+    if (color.red < 60 && color.green < 60 && color.blue < 60) {
+      return Colors.white;
+    } else {
     final inverseColor = Color.fromRGBO(
       255 - color.red,
       255 - color.green,
@@ -210,6 +216,7 @@ class HomeCubit extends Cubit<HomeState> {
       1,
     );
     return inverseColor;
+    }
   }
 
   void emitSuccess() {
