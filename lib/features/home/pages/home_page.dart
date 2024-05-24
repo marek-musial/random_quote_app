@@ -115,24 +115,24 @@ class _QuoteDisplay extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.values[state.mainAxisAlignmentIndex ?? 2],
               crossAxisAlignment: CrossAxisAlignment.values[state.crossAxisAlignmentIndex ?? 2],
               mainAxisSize: MainAxisSize.max,
-          children: [
-            Text(
+              children: [
+                Text(
                   key: _textKey,
-              quoteModel!.quote,
-              style: TextStyle(
+                  quoteModel!.quote,
+                  style: TextStyle(
                     fontSize: quoteModel!.quote.length < 170 ? screenHeight / 32 : screenHeight / 48,
                     fontWeight: fontWeight,
-                color: state.textColor,
-              ),
+                    color: state.textColor,
+                  ),
                   textAlign: textAlign,
-            ),
-            Text(
-              quoteModel!.author != null ? '~${quoteModel!.author}' : '',
-              style: TextStyle(
-                fontSize: screenHeight / 80,
+                ),
+                Text(
+                  quoteModel!.author != null ? '~${quoteModel!.author}' : '',
+                  style: TextStyle(
+                    fontSize: screenHeight / 80,
                     fontWeight: fontWeight,
-                color: state.textColor,
-              ),
+                    color: state.textColor,
+                  ),
                   textAlign: textAlign,
                 ),
               ],
