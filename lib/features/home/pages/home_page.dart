@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                context.read<HomeCubit>().getItemModels();
+                context.read<HomeCubit>().start();
               },
               tooltip: 'Reroll',
               child: const Icon(Icons.refresh),
