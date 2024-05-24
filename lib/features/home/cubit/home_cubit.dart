@@ -23,21 +23,28 @@ class HomeCubit extends Cubit<HomeState> {
   ImageProvider? _imageProvider;
 
   Future<void> getItemModels() async {
-    emit(const HomeState(status: Status.loading));
-    try {
-      final imageModel = await _imageRepository.getImageModel();
-      final quoteModel = await _quoteRepository.getQuoteModel();
-      emit(
-        HomeState(
-          imageModel: imageModel,
-          quoteModel: quoteModel,
-        ),
-      );
+    if (state.status == Status.initial || state.status == Status.success) {
+      emit(const HomeState(status: Status.loading));
+      try {
+        final imageModel = await _imageRepository.getImageModel();
+        final quoteModel = await _quoteRepository.getQuoteModel();
+        emit(
+          HomeState(
+            imageModel: imageModel,
+            quoteModel: quoteModel,
+          ),
+        );
       loadImage();
-    } catch (error) {
-      emit(HomeState(
+      } catch (error) {
+        emit(HomeState(
+          status: Status.error,
+          errorMessage: error.toString(),
+        ));
+      }
+    } else {
+      emit(const HomeState(
         status: Status.error,
-        errorMessage: error.toString(),
+        errorMessage: 'Another process in progress, please wait.',
       ));
     }
   }
@@ -77,8 +84,10 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  void calculatePosition({BuildContext? imageContext, BuildContext? textContext}) {
   calculatePosition({BuildContext? imageContext, BuildContext? textContext}) {
     if (imageContext != null && textContext != null) {
+    if (imageContext != null && textContext != null && imageContext.mounted && textContext.mounted) {
       final RenderBox imageRenderBox = imageContext.findRenderObject() as RenderBox;
       final RenderBox textRenderBox = textContext.findRenderObject() as RenderBox;
       final textPosition = imageRenderBox.globalToLocal(
@@ -94,29 +103,42 @@ class HomeCubit extends Cubit<HomeState> {
         ),
       );
       print('textPosition ${state.textPosition}, textSize ${state.textSize}, imageSize ${imageRenderBox.size}');
+    } else {
+      emit(
+        const HomeState(
+          status: Status.error,
+          errorMessage: 'image context or text context missing!',
+        ),
+      );
     }
   }
 
-  void calculateScaleFactor(BuildContext context) {
-    final ui.Image? image = rawImage;
+  void calculateScaleFactor(BuildContext? context) {
+    if (context != null && context.mounted) {
+      final ui.Image? image = rawImage;
+      if (image == null) return;
 
-    if (image == null) return;
+      double rawImageWidth = image.width.toDouble();
+      double rawImageHeight = image.height.toDouble();
 
-    double rawImageWidth = image.width.toDouble();
-    double rawImageHeight = image.height.toDouble();
+      double widgetImageWidth = MediaQuery.of(context).size.width;
+      double widgetImageHeight = MediaQuery.of(context).size.height;
 
-    double widgetImageWidth = MediaQuery.of(context).size.width;
-    double widgetImageHeight = MediaQuery.of(context).size.height;
+      double widthScaleFactor = widgetImageWidth / rawImageWidth;
+      double heightScaleFactor = widgetImageHeight / rawImageHeight;
 
-    double widthScaleFactor = widgetImageWidth / rawImageWidth;
-    double heightScaleFactor = widgetImageHeight / rawImageHeight;
-
-    emit(
-      state.copyWith(
-        scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
-      ),
-    );
-    print('scaleFactor: ${state.scaleFactor}');
+      emit(
+        state.copyWith(
+          scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
+        ),
+      );
+      print('scaleFactor: ${state.scaleFactor}');
+    } else {
+      emit(const HomeState(
+        status: Status.error,
+        errorMessage: 'scale factor calculation context error!',
+      ));
+    }
   }
 
   PaletteGenerator? paletteGenerator;
@@ -126,6 +148,7 @@ class HomeCubit extends Cubit<HomeState> {
     final double? scaleFactor = state.scaleFactor;
 
     if (scaleFactor != null && _imageProvider != null && state.rawImage != null && state.textPosition != null && state.textSize != null) {
+      try {
       paletteGenerator = await PaletteGenerator.fromImageProvider(
         _imageProvider!,
         size: Size(state.rawImage!.width * scaleFactor, state.rawImage!.height * scaleFactor),
@@ -135,6 +158,21 @@ class HomeCubit extends Cubit<HomeState> {
         ),
       );
     } else {}
+        print('palette generated!');
+      } catch (error) {
+        emit(
+          HomeState(
+            status: Status.error,
+            errorMessage: error.toString(),
+          ),
+        );
+      }
+    } else {
+      emit(const HomeState(
+        status: Status.error,
+        errorMessage: 'Error while generating color',
+      ));
+    }
 
     final paletteColor = paletteGenerator != null
         ? paletteGenerator!.vibrantColor != null
