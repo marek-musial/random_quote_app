@@ -7,6 +7,10 @@ class HomeState {
     this.imageModel,
     this.quoteModel,
     this.rawImage,
+    this.fontWeightIndex,
+    this.textAlignmentIndex,
+    this.mainAxisAlignmentIndex,
+    this.crossAxisAlignmentIndex,
     this.textColor,
     this.textPosition,
     this.textSize,
@@ -17,6 +21,10 @@ class HomeState {
   final ImageModel? imageModel;
   final QuoteModel? quoteModel;
   final ui.Image? rawImage;
+  final int? fontWeightIndex;
+  final int? textAlignmentIndex;
+  final int? mainAxisAlignmentIndex;
+  final int? crossAxisAlignmentIndex;
   final Color? textColor;
   final Offset? textPosition;
   final Size? textSize;
@@ -28,6 +36,10 @@ class HomeState {
     ImageModel? imageModel,
     QuoteModel? quoteModel,
     ui.Image? rawImage,
+    int? fontWeightIndex,
+    int? textAlignmentIndex,
+    int? mainAxisAlignmentIndex,
+    int? crossAxisAlignmentIndex,
     Color? textColor,
     Offset? textPosition,
     Size? textSize,
@@ -39,6 +51,10 @@ class HomeState {
       imageModel: imageModel ?? this.imageModel,
       quoteModel: quoteModel ?? this.quoteModel,
       rawImage: rawImage ?? this.rawImage,
+      fontWeightIndex: fontWeightIndex ?? this.fontWeightIndex,
+      textAlignmentIndex: textAlignmentIndex ?? this.textAlignmentIndex,
+      mainAxisAlignmentIndex: mainAxisAlignmentIndex ?? this.mainAxisAlignmentIndex,
+      crossAxisAlignmentIndex: crossAxisAlignmentIndex ?? this.crossAxisAlignmentIndex,
       textColor: textColor ?? this.textColor,
       textPosition: textPosition ?? this.textPosition,
       textSize: textSize ?? this.textSize,

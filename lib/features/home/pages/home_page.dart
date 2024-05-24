@@ -54,10 +54,7 @@ class HomePage extends StatelessWidget {
                           Stack(
                             children: [
                               _ImageDisplay(imageModel: imageModel),
-                              Padding(
-                                padding: EdgeInsets.all((screenWidth * 1 / 16).roundToDouble()),
-                                child: _QuoteDisplay(quoteModel: quoteModel),
-                              ),
+                              _QuoteDisplay(quoteModel: quoteModel),
                             ],
                           ),
                           SizedBox(
@@ -105,29 +102,42 @@ class _QuoteDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        return Column(
-          key: _textKey,
-          crossAxisAlignment: CrossAxisAlignment.end,
+        final FontWeight fontWeight = FontWeight.values[state.fontWeightIndex ?? 1];
+        final TextAlign textAlign = TextAlign.values[state.textAlignmentIndex ?? 2];
+        return Center(
+          child: Container(
+            margin: EdgeInsets.all((screenWidth * 1 / 16).roundToDouble()),
+            constraints: BoxConstraints(
+              maxHeight: (screenWidth * 6 / 8).roundToDouble(),
+              maxWidth: (screenWidth * 6 / 8).roundToDouble(),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.values[state.mainAxisAlignmentIndex ?? 2],
+              crossAxisAlignment: CrossAxisAlignment.values[state.crossAxisAlignmentIndex ?? 2],
+              mainAxisSize: MainAxisSize.max,
           children: [
             Text(
+                  key: _textKey,
               quoteModel!.quote,
               style: TextStyle(
-                fontSize: screenHeight / 32,
-                fontWeight: FontWeight.bold,
+                    fontSize: quoteModel!.quote.length < 170 ? screenHeight / 32 : screenHeight / 48,
+                    fontWeight: fontWeight,
                 color: state.textColor,
               ),
-              textAlign: TextAlign.end,
+                  textAlign: textAlign,
             ),
             Text(
               quoteModel!.author != null ? '~${quoteModel!.author}' : '',
               style: TextStyle(
                 fontSize: screenHeight / 80,
-                fontWeight: FontWeight.bold,
+                    fontWeight: fontWeight,
                 color: state.textColor,
               ),
-              textAlign: TextAlign.end,
+                  textAlign: textAlign,
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
