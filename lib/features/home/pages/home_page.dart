@@ -60,10 +60,14 @@ class HomePage extends StatelessWidget {
                           SizedBox(
                             height: screenHeight / 128,
                           ),
-                          Text(
-                            imageModel.author != null ? 'Author: ${imageModel.author}' : '',
-                            style: TextStyle(
-                              fontSize: screenHeight / 80,
+                          AnimatedOpacity(
+                            opacity: state.status == Status.success ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 500),
+                            child: Text(
+                              imageModel.author != null ? 'Author: ${imageModel.author}' : '',
+                              style: TextStyle(
+                                fontSize: screenHeight / 80,
+                              ),
                             ),
                           ),
                         ],
@@ -116,24 +120,32 @@ class _QuoteDisplay extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.values[state.crossAxisAlignmentIndex ?? 2],
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text(
-                  key: _textKey,
-                  quoteModel!.quote,
-                  style: TextStyle(
-                    fontSize: quoteModel!.quote.length < 170 ? screenHeight / 32 : screenHeight / 48,
-                    fontWeight: fontWeight,
-                    color: state.textColor,
+                AnimatedOpacity(
+                  opacity: state.status == Status.success ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 500),
+                  child: Text(
+                    key: _textKey,
+                    quoteModel!.quote,
+                    style: TextStyle(
+                      fontSize: quoteModel!.quote.length < 170 ? screenHeight / 32 : screenHeight / 48,
+                      fontWeight: fontWeight,
+                      color: state.textColor,
+                    ),
+                    textAlign: textAlign,
                   ),
-                  textAlign: textAlign,
                 ),
-                Text(
-                  quoteModel!.author != null ? '~${quoteModel!.author}' : '',
-                  style: TextStyle(
-                    fontSize: screenHeight / 80,
-                    fontWeight: fontWeight,
-                    color: state.textColor,
+                AnimatedOpacity(
+                  opacity: state.status == Status.success ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 500),
+                  child: Text(
+                    quoteModel!.author != null ? '~${quoteModel!.author}' : '',
+                    style: TextStyle(
+                      fontSize: screenHeight / 80,
+                      fontWeight: fontWeight,
+                      color: state.textColor,
+                    ),
+                    textAlign: textAlign,
                   ),
-                  textAlign: textAlign,
                 ),
               ],
             ),
@@ -176,10 +188,14 @@ class _ImageDisplay extends StatelessWidget {
             return SizedBox(
               width: constraints.maxWidth,
               height: constraints.maxHeight,
-              child: Image.network(
-                imageModel.imageUrl,
-                key: _imageKey,
-                fit: state.rawImage != null && state.rawImage!.height < state.rawImage!.width ? BoxFit.fitHeight : BoxFit.fitWidth,
+              child: AnimatedOpacity(
+                opacity: state.status == Status.success ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 500),
+                child: Image.network(
+                  imageModel.imageUrl,
+                  key: _imageKey,
+                  fit: state.rawImage != null && state.rawImage!.height < state.rawImage!.width ? BoxFit.fitHeight : BoxFit.fitWidth,
+                ),
               ),
             );
           },
