@@ -24,7 +24,7 @@ class HomeCubit extends Cubit<HomeState> {
   ImageProvider? _imageProvider;
 
   Future<void> getItemModels() async {
-    if (state.status == Status.initial || state.status == Status.success) {
+    if (state.status == Status.initial || state.status == Status.success || state.status == Status.error) {
       emit(const HomeState(status: Status.loading));
       try {
         final imageModel = await _imageRepository.getImageModel();
