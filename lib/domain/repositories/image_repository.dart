@@ -7,7 +7,7 @@ class ImageRepository {
   ImageRepository();
 
   final List<ImageDataSource> dataSources = [
-    FirstRemoteDataSource(),
+    // FirstRemoteDataSource(),
     SecondRemoteDataSource(),
   ];
 
