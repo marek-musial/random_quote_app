@@ -61,3 +61,29 @@ class PicsumImageRemoteDataSource implements ImageDataSource {
     }
   }
 }
+
+class CataasImageRemoteDataSource implements ImageDataSource {
+  @override
+  Future<ImageModel?> getImageData() async {
+    try {
+      final response = await Dio().get<Map<String, dynamic>>(
+        'https://cataas.com/cat?json=true',
+      );
+      final json = response.data;
+
+      if (json == null) {
+        return null;
+      }
+
+      final id = json['_id'];
+
+      final imageModel = ImageModel(
+        imageUrl: 'https://cataas.com/cat/$id',
+        author: null,
+      );
+      return imageModel;
+    } on DioException catch (error) {
+      throw Exception(error.response?.data ?? 'Unknown error');
+    }
+  }
+}

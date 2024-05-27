@@ -9,6 +9,7 @@ class ImageRepository {
   final List<ImageDataSource> dataSources = [
     // ShibeImageRemoteDataSource(),
     PicsumImageRemoteDataSource(),
+    CataasImageRemoteDataSource(),
   ];
 
   Future<ImageModel?> getImageModel() async {
