@@ -111,3 +111,28 @@ class AdviceQuoteRemoteDataSource implements QuoteDataSource {
     }
   }
 }
+
+class QuotableQuoteRemoteDataSource implements QuoteDataSource {
+  @override
+  Future<QuoteModel?> getQuoteData() async {
+    try {
+      final response = await Dio().get<List<dynamic>>(
+        'https://api.quotable.io/quotes/random',
+      );
+
+      final jsons = response.data;
+      if (jsons == null || jsons.isEmpty) {
+        return null;
+      }
+      final Map<String, dynamic> json = jsons[0];
+
+      final quoteModel = QuoteModel(
+        quote: json['content'],
+        author: json['author'],
+      );
+      return quoteModel;
+    } on DioException catch (error) {
+      throw Exception(error.response?.data ?? 'Unknown error');
+    }
+  }
+}
