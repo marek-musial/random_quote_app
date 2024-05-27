@@ -7,7 +7,7 @@ abstract class ImageDataSource {
   Future<ImageModel?> getImageData();
 }
 
-class FirstRemoteDataSource implements ImageDataSource {
+class ShibeImageRemoteDataSource implements ImageDataSource {
   @override
   Future<ImageModel?> getImageData() async {
     try {
@@ -32,7 +32,7 @@ class FirstRemoteDataSource implements ImageDataSource {
   }
 }
 
-class SecondRemoteDataSource implements ImageDataSource {
+class PicsumImageRemoteDataSource implements ImageDataSource {
   @override
   Future<ImageModel?> getImageData() async {
     final randomPage = Random().nextInt(10 + 1);

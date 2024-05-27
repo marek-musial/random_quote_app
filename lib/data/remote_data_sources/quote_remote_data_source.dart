@@ -5,7 +5,7 @@ abstract class QuoteDataSource {
   Future<QuoteModel?> getQuoteData();
 }
 
-class FirstRemoteDataSource implements QuoteDataSource {
+class KanyeQuoteRemoteDataSource implements QuoteDataSource {
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
@@ -30,7 +30,7 @@ class FirstRemoteDataSource implements QuoteDataSource {
   }
 }
 
-class SecondRemoteDataSource implements QuoteDataSource {
+class AffirmationsQuoteRemoteDataSource implements QuoteDataSource {
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
@@ -55,7 +55,7 @@ class SecondRemoteDataSource implements QuoteDataSource {
   }
 }
 
-class ThirdRemoteDataSource implements QuoteDataSource {
+class BoredApiQuoteRemoteDataSource implements QuoteDataSource {
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
