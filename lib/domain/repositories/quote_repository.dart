@@ -11,6 +11,7 @@ class QuoteRepository {
     AffirmationsQuoteRemoteDataSource(),
     // BoredApiQuoteRemoteDataSource(),
     AdviceQuoteRemoteDataSource(),
+    QuotableQuoteRemoteDataSource(),
   ];
 
   Future<QuoteModel?> getQuoteModel() async {
