@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
+import 'package:random_quote_app/core/extensions.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
+import 'package:random_quote_app/core/theme/shadows.dart' as shadows;
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
@@ -130,6 +132,11 @@ class _QuoteDisplay extends StatelessWidget {
                       fontSize: quoteModel!.quote.length < 170 ? screenHeight / 32 : screenHeight / 48,
                       fontWeight: fontWeight,
                       color: state.textColor,
+                      shadows: state.textColor != null
+                          ? state.textColor!.isBright()
+                              ? [shadows.black]
+                              : [shadows.white]
+                          : [shadows.white],
                     ),
                     textAlign: textAlign,
                   ),
@@ -143,6 +150,11 @@ class _QuoteDisplay extends StatelessWidget {
                       fontSize: screenHeight / 80,
                       fontWeight: fontWeight,
                       color: state.textColor,
+                      shadows: state.textColor != null
+                          ? state.textColor!.isBright()
+                              ? [shadows.black]
+                              : [shadows.white]
+                          : [shadows.white],
                     ),
                     textAlign: textAlign,
                   ),
