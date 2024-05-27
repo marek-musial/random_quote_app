@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 
@@ -75,6 +77,32 @@ class BoredApiQuoteRemoteDataSource implements QuoteDataSource {
 
       final quoteModel = QuoteModel(
         quote: json['activity'],
+        author: null,
+      );
+      return quoteModel;
+    } on DioException catch (error) {
+      throw Exception(error.response?.data ?? 'Unknown error');
+    }
+  }
+}
+
+class AdviceQuoteRemoteDataSource implements QuoteDataSource {
+  @override
+  Future<QuoteModel?> getQuoteData() async {
+    try {
+      final response = await Dio().get<String>(
+        'https://api.adviceslip.com/advice',
+      );
+
+      final json = response.data;
+
+      if (json == null) {
+        return null;
+      }
+      final map = jsonDecode(json);
+
+      final quoteModel = QuoteModel(
+        quote: map['slip']['advice'],
         author: null,
       );
       return quoteModel;
