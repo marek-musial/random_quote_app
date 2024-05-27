@@ -7,9 +7,9 @@ class QuoteRepository {
   QuoteRepository();
 
   final List<QuoteDataSource> dataSources = [
-    FirstRemoteDataSource(),
-    SecondRemoteDataSource(),
-    // ThirdRemoteDataSource(),
+    KanyeQuoteRemoteDataSource(),
+    AffirmationsQuoteRemoteDataSource(),
+    // BoredApiQuoteRemoteDataSource(),
   ];
 
   Future<QuoteModel?> getQuoteModel() async {
