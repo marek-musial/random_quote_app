@@ -10,6 +10,7 @@ class ImageRepository {
     // ShibeImageRemoteDataSource(),
     PicsumImageRemoteDataSource(),
     CataasImageRemoteDataSource(),
+    PexelsImageRemoteDataSource(),
   ];
 
   Future<ImageModel?> getImageModel() async {

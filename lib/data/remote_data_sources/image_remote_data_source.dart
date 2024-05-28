@@ -87,3 +87,38 @@ class CataasImageRemoteDataSource implements ImageDataSource {
     }
   }
 }
+
+class PexelsImageRemoteDataSource implements ImageDataSource {
+  @override
+  Future<ImageModel?> getImageData() async {
+    try {
+      const int perPage = 1;
+      final randomPage = Random().nextInt(8000);
+      final response = await Dio().get<Map<String, dynamic>>(
+        'https://api.pexels.com/v1/curated/?page=$randomPage&per_page=$perPage',
+        options: Options(
+          headers: {'Authorization': 'qQNv5hJlBHeKv7n5NWRMTQSRq8hp74ocky4bby42cXGl3HJTSh8yYopt'},
+        ),
+      );
+      final json = response.data;
+
+      if (json == null) {
+        return null;
+      }
+
+      final List<dynamic> photos = json['photos'];
+      if (photos.isEmpty) {
+        return null;
+      }
+      final Map<String, dynamic> photo = photos[Random().nextInt(perPage)];
+
+      final imageModel = ImageModel(
+        imageUrl: photo['src']['large'],
+        author: '${photo['photographer']}, image provided by Pexels',
+      );
+      return imageModel;
+    } on DioException catch (error) {
+      throw Exception(error.response?.data ?? 'Unknown error');
+    }
+  }
+}
