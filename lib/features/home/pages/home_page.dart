@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
                             opacity: state.status == Status.success ? 1.0 : 0.0,
                             duration: const Duration(milliseconds: 500),
                             child: Text(
-                              imageModel.author != null ? 'Author: ${imageModel.author}' : '',
+                              imageModel.author != null ? 'Image author: ${imageModel.author}' : '',
                               style: TextStyle(
                                 fontSize: screenHeight / 80,
                               ),
