@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 
+import 'package:random_quote_app/env/env.dart';
+
 abstract class ImageDataSource {
   Future<ImageModel?> getImageData();
 }
@@ -97,7 +99,7 @@ class PexelsImageRemoteDataSource implements ImageDataSource {
       final response = await Dio().get<Map<String, dynamic>>(
         'https://api.pexels.com/v1/curated/?page=$randomPage&per_page=$perPage',
         options: Options(
-          headers: {'Authorization': 'qQNv5hJlBHeKv7n5NWRMTQSRq8hp74ocky4bby42cXGl3HJTSh8yYopt'},
+          headers: {'Authorization': Env.pexelsApiKey},
         ),
       );
       final json = response.data;
