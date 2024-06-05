@@ -22,16 +22,17 @@ class HomePage extends StatelessWidget {
         QuoteRepository(),
       )..start(),
       child: BlocConsumer<HomeCubit, HomeState>(
+        listenWhen: (previous, current) {
+          return current.status == Status.error;
+        },
         listener: (context, state) {
-          if (state.status == Status.error) {
-            final errorMessage = state.errorMessage ?? 'Unknown error';
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(errorMessage),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
-          }
+          final errorMessage = state.errorMessage ?? 'Unknown error';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
         },
         builder: (context, state) {
           final imageModel = state.imageModel;
@@ -185,7 +186,7 @@ class _ImageDisplay extends StatelessWidget {
         );
         return BlocConsumer<HomeCubit, HomeState>(
           listenWhen: (previous, current) {
-            return previous.rawImage == null && current.rawImage != null || previous.status == Status.error;
+            return previous.rawImage == null && current.rawImage != null || previous.status == Status.error && current.status != Status.error;
           },
           listener: (context, state) {
             context.read<HomeCubit>().calculateScaleFactor(context);
@@ -194,7 +195,9 @@ class _ImageDisplay extends StatelessWidget {
                   textContext: _textKey.currentContext,
                 );
             context.read<HomeCubit>().generateColors();
-            context.read<HomeCubit>().emitSuccess();
+            if (state.status != Status.error) {
+              context.read<HomeCubit>().emitSuccess();
+            }
           },
           builder: (context, state) {
             return SizedBox(
