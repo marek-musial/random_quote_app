@@ -9,6 +9,7 @@ import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
+import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.title});
@@ -38,10 +39,7 @@ class HomePage extends StatelessWidget {
           final imageModel = state.imageModel;
           final quoteModel = state.quoteModel;
           return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: Text(title),
-            ),
+            drawer: const AppBarDrawer(),
             body: Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(
