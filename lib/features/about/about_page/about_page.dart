@@ -107,6 +107,18 @@ class SourceListTile extends StatelessWidget {
   final String? subtitle;
   final String? link;
 
+  Future<void> _launchUrl() async {
+    if (link != null) {
+      final Uri uri = Uri.parse(link!);
+      if (!await launchUrl(
+        uri,
+        mode: LaunchMode.platformDefault,
+      )) {
+        throw Exception('Could not launch $link');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Tooltip(
@@ -127,6 +139,7 @@ class SourceListTile extends StatelessWidget {
           ),
         ),
         onTap: () {
+          _launchUrl();
         },
       ),
     );
