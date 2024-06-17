@@ -39,6 +39,7 @@ dependencies:
   dio: ^5.4.1
   palette_generator: ^0.3.3+3
   envied: ^0.5.4+1
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
