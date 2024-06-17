@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
+import 'package:random_quote_app/data/remote_data_sources/image_remote_data_source.dart';
+import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_source.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,8 +21,8 @@ class AboutPage extends StatelessWidget {
       drawer: const AppBarDrawer(),
       body: ListView(
         padding: const EdgeInsets.all(16),
-        children: const [
-          ListTile(
+        children: [
+          const ListTile(
             title: Text(
               'What is this app about?',
               textAlign: TextAlign.center,
@@ -30,65 +32,51 @@ class AboutPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          AboutListDivider(),
-          ListTile(
+          const AboutListDivider(),
+          const ListTile(
             title: Text(
               'Image sources:',
               textAlign: TextAlign.center,
             ),
             subtitle: Text('All images are a subject of their respective apis licenses.'),
           ),
-          AboutListDivider(),
+          const AboutListDivider(),
           SourceListTile(
-            title: 'Picsum',
-            subtitle: 'Lorem Picsum is a service providing easy to use, stylish placeholders.\nCreated by David Marby & Nijiko Yonskai.',
-            link: 'https://picsum.photos/',
+            imageDataSource: PicsumImageRemoteDataSource(),
           ),
-          AboutListDivider(),
+          const AboutListDivider(),
           SourceListTile(
-            title: 'Cataas',
-            subtitle: 'Cat as a service (CATAAS) is a REST API to spread peace and love (or not) thanks to cats.\nCreated by Kevin Balicot.',
-            link: 'https://cataas.com/',
+            imageDataSource: CataasImageRemoteDataSource(),
           ),
-          AboutListDivider(),
+          const AboutListDivider(),
           SourceListTile(
-            title: 'Pexels',
-            subtitle: 'The best free stock photos, royalty free images & videos shared by creators.',
-            link: 'https://www.pexels.com/api/',
+            imageDataSource: PexelsImageRemoteDataSource(),
           ),
-          AboutListDivider(),
-          ListTile(
+          const AboutListDivider(),
+          const ListTile(
             title: Text(
               'Quote sources:',
               textAlign: TextAlign.center,
             ),
             subtitle: Text('All quotes are a subject of their recpective apis licenses.'),
           ),
-          AboutListDivider(),
+          const AboutListDivider(),
           SourceListTile(
-            title: 'kanye.rest',
-            subtitle: 'A free REST API for random Kanye West quotes (Kanye as a Service).\nCreated by Andrew Jazbec.',
-            link: 'https://kanye.rest/',
+            quoteDataSource: KanyeQuoteRemoteDataSource(),
           ),
-          AboutListDivider(),
+          const AboutListDivider(),
           SourceListTile(
-            title: 'Affirmations',
-            subtitle: 'A tiny api for fighting impostor syndrome and building example apps.\nCreated by Tilde Thurium.',
-            link: 'https://www.affirmations.dev/',
+            quoteDataSource: AffirmationsQuoteRemoteDataSource(),
           ),
-          AboutListDivider(),
+          const AboutListDivider(),
           SourceListTile(
-            title: 'Advice Slip JSON API',
-            subtitle: 'Generate random advice slips.\nCreated by Tom Kiss.',
-            link: 'https://api.adviceslip.com/',
+            quoteDataSource: AdviceQuoteRemoteDataSource(),
           ),
-          AboutListDivider(),
+          const AboutListDivider(),
           SourceListTile(
-            title: 'Quotable',
-            subtitle: 'Quotable is a free, open source quotations API. It was originally built as part of a FreeCodeCamp project.\nCreated by Luke Peavey.',
-            link: 'https://api.quotable.io',
+            quoteDataSource: QuotableQuoteRemoteDataSource(),
           ),
-          AboutListDivider(),
+          const AboutListDivider(),
         ],
       ),
     );
@@ -98,23 +86,30 @@ class AboutPage extends StatelessWidget {
 class SourceListTile extends StatelessWidget {
   const SourceListTile({
     super.key,
-    required this.title,
-    required this.subtitle,
-    required this.link,
+    this.imageDataSource,
+    this.quoteDataSource,
   });
 
-  final String? title;
-  final String? subtitle;
-  final String? link;
+  final ImageDataSource? imageDataSource;
+  final QuoteDataSource? quoteDataSource;
 
   Future<void> _launchUrl() async {
-    if (link != null) {
-      final Uri uri = Uri.parse(link!);
+    if (imageDataSource?.link != null) {
+      final Uri uri = Uri.parse(imageDataSource!.link!);
       if (!await launchUrl(
         uri,
         mode: LaunchMode.platformDefault,
       )) {
-        throw Exception('Could not launch $link');
+        throw Exception('Could not launch ${imageDataSource?.link}');
+      }
+    }
+    if (quoteDataSource?.link != null) {
+      final Uri uri = Uri.parse(quoteDataSource!.link!);
+      if (!await launchUrl(
+        uri,
+        mode: LaunchMode.platformDefault,
+      )) {
+        throw Exception('Could not launch ${quoteDataSource?.link}');
       }
     }
   }
@@ -122,7 +117,7 @@ class SourceListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: link,
+      message: imageDataSource?.link ?? quoteDataSource?.link,
       triggerMode: TooltipTriggerMode.longPress,
       child: InkWell(
         borderRadius: BorderRadius.all(
@@ -130,11 +125,11 @@ class SourceListTile extends StatelessWidget {
         ),
         child: ListTile(
           title: Text(
-            title ?? '',
+            imageDataSource?.title ?? quoteDataSource?.title ?? '',
             textAlign: TextAlign.start,
           ),
           subtitle: Text(
-            subtitle ?? '',
+            imageDataSource?.blurb ?? quoteDataSource?.blurb ?? '',
             textAlign: TextAlign.start,
           ),
         ),
