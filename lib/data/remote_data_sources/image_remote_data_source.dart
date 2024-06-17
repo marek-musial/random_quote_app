@@ -6,10 +6,25 @@ import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/env/env.dart';
 
 abstract class ImageDataSource {
+  ImageDataSource({
+    this.title,
+    this.blurb,
+    this.link,
+  });
+  final String? title;
+  final String? blurb;
+  final String? link;
   Future<ImageModel?> getImageData();
 }
 
 class ShibeImageRemoteDataSource implements ImageDataSource {
+  @override
+  final title = 'Shibe.online';
+  @override
+  final blurb = 'The shiba inu api';
+  @override
+  final link = 'https://shibe.online/';
+
   @override
   Future<ImageModel?> getImageData() async {
     try {
@@ -35,6 +50,13 @@ class ShibeImageRemoteDataSource implements ImageDataSource {
 }
 
 class PicsumImageRemoteDataSource implements ImageDataSource {
+  @override
+  final title = 'Picsum';
+  @override
+  final blurb = 'Lorem Picsum is a service providing easy to use, stylish placeholders.\nCreated by David Marby & Nijiko Yonskai.';
+  @override
+  final link = 'https://picsum.photos/';
+
   @override
   Future<ImageModel?> getImageData() async {
     final randomPage = Random().nextInt(10 + 1);
@@ -66,6 +88,13 @@ class PicsumImageRemoteDataSource implements ImageDataSource {
 
 class CataasImageRemoteDataSource implements ImageDataSource {
   @override
+  final title = 'Cataas';
+  @override
+  final blurb = 'Cat as a service (CATAAS) is a REST API to spread peace and love (or not) thanks to cats.\nCreated by Kevin Balicot.';
+  @override
+  final link = 'https://cataas.com/';
+
+  @override
   Future<ImageModel?> getImageData() async {
     try {
       final response = await Dio().get<Map<String, dynamic>>(
@@ -91,6 +120,13 @@ class CataasImageRemoteDataSource implements ImageDataSource {
 }
 
 class PexelsImageRemoteDataSource implements ImageDataSource {
+  @override
+  final title = 'Pexels';
+  @override
+  final blurb = 'The best free stock photos, royalty free images & videos shared by creators.';
+  @override
+  final link = 'https://www.pexels.com/api/';
+
   @override
   Future<ImageModel?> getImageData() async {
     try {

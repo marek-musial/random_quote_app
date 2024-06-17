@@ -4,10 +4,25 @@ import 'package:dio/dio.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 
 abstract class QuoteDataSource {
+  QuoteDataSource({
+    this.title,
+    this.blurb,
+    this.link,
+  });
+  final String? title;
+  final String? blurb;
+  final String? link;
   Future<QuoteModel?> getQuoteData();
 }
 
 class KanyeQuoteRemoteDataSource implements QuoteDataSource {
+  @override
+  final title = 'kanye.rest';
+  @override
+  final blurb = 'A free REST API for random Kanye West quotes (Kanye as a Service).\nCreated by Andrew Jazbec.';
+  @override
+  final link = 'https://kanye.rest/';
+
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
@@ -34,6 +49,13 @@ class KanyeQuoteRemoteDataSource implements QuoteDataSource {
 
 class AffirmationsQuoteRemoteDataSource implements QuoteDataSource {
   @override
+  final title = 'Affirmations';
+  @override
+  final blurb = 'A tiny api for fighting impostor syndrome and building example apps.\nCreated by Tilde Thurium.';
+  @override
+  final link = 'https://www.affirmations.dev/';
+
+  @override
   Future<QuoteModel?> getQuoteData() async {
     try {
       final response = await Dio().get<Map<String, dynamic>>(
@@ -58,6 +80,13 @@ class AffirmationsQuoteRemoteDataSource implements QuoteDataSource {
 }
 
 class BoredApiQuoteRemoteDataSource implements QuoteDataSource {
+  @override
+  final title = 'Bored api';
+  @override
+  final blurb = '';
+  @override
+  final link = 'https://www.boredapi.com/';
+
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
@@ -88,6 +117,13 @@ class BoredApiQuoteRemoteDataSource implements QuoteDataSource {
 
 class AdviceQuoteRemoteDataSource implements QuoteDataSource {
   @override
+  final title = 'Advice Slip JSON API';
+  @override
+  final blurb = 'Generate random advice slips.\nCreated by Tom Kiss.';
+  @override
+  final link = 'https://api.adviceslip.com/';
+
+  @override
   Future<QuoteModel?> getQuoteData() async {
     try {
       final response = await Dio().get<String>(
@@ -113,6 +149,13 @@ class AdviceQuoteRemoteDataSource implements QuoteDataSource {
 }
 
 class QuotableQuoteRemoteDataSource implements QuoteDataSource {
+  @override
+  final title = 'Quotable';
+  @override
+  final blurb = 'Quotable is a free, open source quotations API. It was originally built as part of a FreeCodeCamp project.\nCreated by Luke Peavey.';
+  @override
+  final link = 'https://api.quotable.io';
+
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
