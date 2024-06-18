@@ -18,7 +18,7 @@ class AboutPage extends StatelessWidget {
               title: Text(title),
             )
           : null,
-      drawer: const AppBarDrawer(),
+      drawer: const AppBarDrawer(index: 1),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
