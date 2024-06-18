@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
           final imageModel = state.imageModel;
           final quoteModel = state.quoteModel;
           return Scaffold(
-            drawer: const AppBarDrawer(),
+            drawer: const AppBarDrawer(index: 0),
             body: Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(
