@@ -6,8 +6,6 @@ import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/shadows.dart' as shadows;
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
-import 'package:random_quote_app/domain/repositories/image_repository.dart';
-import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
 
@@ -17,28 +15,36 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeCubit(
-        ImageRepository(),
-        QuoteRepository(),
-      )..start(),
-      child: BlocConsumer<HomeCubit, HomeState>(
-        listenWhen: (previous, current) {
-          return current.status == Status.error;
-        },
-        listener: (context, state) {
-          final errorMessage = state.errorMessage ?? 'Unknown error';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(errorMessage),
-              backgroundColor: Theme.of(context).colorScheme.error,
+    return BlocConsumer<HomeCubit, HomeState>(
+      listenWhen: (previous, current) {
+        return current.status == Status.error;
+      },
+      listener: (context, state) {
+        final errorMessage = state.errorMessage ?? 'Unknown error';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      },
+      builder: (context, state) {
+        final imageModel = state.imageModel;
+        final quoteModel = state.quoteModel;
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Theme.of(context).colorScheme.inversePrimary,
+                Theme.of(context).colorScheme.primary,
+              ],
+              stops: const [.75, 1],
             ),
-          );
-        },
-        builder: (context, state) {
-          final imageModel = state.imageModel;
-          final quoteModel = state.quoteModel;
-          return Scaffold(
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
             drawer: const AppBarDrawer(index: 0),
             body: Center(
               child: Padding(
@@ -86,9 +92,9 @@ class HomePage extends StatelessWidget {
               tooltip: 'Reroll',
               child: const Icon(Icons.refresh),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
