@@ -9,5 +9,5 @@ final BoxShadow black = BoxShadow(
 final BoxShadow white = BoxShadow(
   color: Colors.white,
   offset: Offset.zero,
-  blurRadius: screenHeight / 80,
+  blurRadius: screenHeight / 140,
 );
