@@ -152,7 +152,7 @@ class _QuoteDisplay extends StatelessWidget {
                   child: Text(
                     quoteModel!.author != null ? '~${quoteModel!.author}' : '',
                     style: TextStyle(
-                      fontSize: screenHeight / 80,
+                      fontSize: screenHeight / 60,
                       fontWeight: fontWeight,
                       color: state.textColor,
                       shadows: state.textColor != null
