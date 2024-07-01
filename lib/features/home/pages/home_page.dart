@@ -55,28 +55,13 @@ class HomePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (imageModel != null && quoteModel != null)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      Stack(
+                        alignment: Alignment.center,
                         children: [
-                          Stack(
-                            children: [
-                              _ImageDisplay(imageModel: imageModel),
-                              _QuoteDisplay(quoteModel: quoteModel),
-                            ],
+                          Center(
+                            child: _ImageDisplay(imageModel: imageModel),
                           ),
-                          SizedBox(
-                            height: screenHeight / 128,
-                          ),
-                          AnimatedOpacity(
-                            opacity: state.status == Status.success ? 1.0 : 0.0,
-                            duration: const Duration(milliseconds: 500),
-                            child: Text(
-                              imageModel.author != null ? 'Image author: ${imageModel.author}' : '',
-                              style: TextStyle(
-                                fontSize: screenHeight / 80,
-                              ),
-                            ),
-                          ),
+                          _QuoteDisplay(quoteModel: quoteModel),
                         ],
                       )
                     else
@@ -94,6 +79,41 @@ class HomePage extends StatelessWidget {
             ),
           ),
         );
+      },
+    );
+  }
+}
+
+class _ImageAuthorDisplay extends StatelessWidget {
+  const _ImageAuthorDisplay({
+    required this.imageModel,
+  });
+
+  final ImageModel? imageModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+        final imageModel = state.imageModel;
+        if (imageModel != null) {
+          return Padding(
+            padding: EdgeInsets.all(screenHeight / 128),
+            child: AnimatedOpacity(
+              opacity: state.status == Status.success ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 500),
+              child: Text(
+                imageModel.author != null ? 'Image author: ${imageModel.author}' : '',
+                style: TextStyle(
+                  fontSize: screenHeight / 80,
+                  color: state.textColor,
+                ),
+              ),
+            ),
+          );
+        } else {
+          return const Text('');
+        }
       },
     );
   }
@@ -204,18 +224,24 @@ class _ImageDisplay extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            return SizedBox(
-              width: constraints.maxWidth,
-              height: constraints.maxHeight,
-              child: AnimatedOpacity(
-                opacity: state.status == Status.success ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 500),
-                child: Image.network(
-                  imageModel.imageUrl,
-                  key: _imageKey,
-                  fit: state.rawImage != null && state.rawImage!.height < state.rawImage!.width ? BoxFit.fitHeight : BoxFit.fitWidth,
+            return Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                SizedBox(
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  child: AnimatedOpacity(
+                    opacity: state.status == Status.success ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 500),
+                    child: Image.network(
+                      imageModel.imageUrl,
+                      key: _imageKey,
+                      fit: state.rawImage != null && state.rawImage!.height < state.rawImage!.width ? BoxFit.fitHeight : BoxFit.fitWidth,
+                    ),
+                  ),
                 ),
-              ),
+                _ImageAuthorDisplay(imageModel: imageModel),
+              ],
             );
           },
         );
