@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
-import 'package:random_quote_app/data/remote_data_sources/image_remote_data_source.dart';
-import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_source.dart';
+import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
+import 'package:random_quote_app/domain/repositories/image_repository.dart';
+import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+final List<DataSource> dataSources = [...imageDataSources, ...quoteDataSources];
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key, required this.title});
@@ -19,65 +22,48 @@ class AboutPage extends StatelessWidget {
             )
           : null,
       drawer: const AppBarDrawer(index: 1),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const ListTile(
-            title: Text(
-              'What is this app about?',
-              textAlign: TextAlign.center,
-            ),
-            subtitle: Text(
-              'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const AboutListDivider(),
-          const ListTile(
-            title: Text(
-              'Image sources:',
-              textAlign: TextAlign.center,
-            ),
-            subtitle: Text('All images are a subject of their respective apis licenses.'),
-          ),
-          const AboutListDivider(),
-          SourceListTile(
-            imageDataSource: PicsumImageRemoteDataSource(),
-          ),
-          const AboutListDivider(),
-          SourceListTile(
-            imageDataSource: CataasImageRemoteDataSource(),
-          ),
-          const AboutListDivider(),
-          SourceListTile(
-            imageDataSource: PexelsImageRemoteDataSource(),
-          ),
-          const AboutListDivider(),
-          const ListTile(
-            title: Text(
-              'Quote sources:',
-              textAlign: TextAlign.center,
-            ),
-            subtitle: Text('All quotes are a subject of their recpective apis licenses.'),
-          ),
-          const AboutListDivider(),
-          SourceListTile(
-            quoteDataSource: KanyeQuoteRemoteDataSource(),
-          ),
-          const AboutListDivider(),
-          SourceListTile(
-            quoteDataSource: AffirmationsQuoteRemoteDataSource(),
-          ),
-          const AboutListDivider(),
-          SourceListTile(
-            quoteDataSource: AdviceQuoteRemoteDataSource(),
-          ),
-          const AboutListDivider(),
-          SourceListTile(
-            quoteDataSource: QuotableQuoteRemoteDataSource(),
-          ),
-          const AboutListDivider(),
-        ],
+      body: ListView.separated(
+        itemCount: dataSources.length + 3,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        itemBuilder: (BuildContext context, int index) {
+          if (index == 0) {
+            return const ListTile(
+              title: Text(
+                'What is this app about?',
+                textAlign: TextAlign.center,
+              ),
+              subtitle: Text(
+                'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+          if (index == 1) {
+            return const ListTile(
+              title: Text(
+                'Image sources:',
+                textAlign: TextAlign.center,
+              ),
+              subtitle: Text('All images are a subject of their respective apis licenses.'),
+            );
+          }
+          if (index == imageDataSources.length + 2) {
+            return const ListTile(
+              title: Text(
+                'Quote sources:',
+                textAlign: TextAlign.center,
+              ),
+              subtitle: Text('All quotes are a subject of their recpective apis licenses.'),
+            );
+          }
+          index -= 1;
+          if (index >= imageDataSources.length + 1) {
+            return SourceListTile(dataSource: dataSources[index - 2]);
+          }
+          index -= 1;
+          return SourceListTile(dataSource: dataSources[index]);
+        },
+        separatorBuilder: (BuildContext context, int index) => const AboutListDivider(),
       ),
     );
   }
@@ -86,30 +72,19 @@ class AboutPage extends StatelessWidget {
 class SourceListTile extends StatelessWidget {
   const SourceListTile({
     super.key,
-    this.imageDataSource,
-    this.quoteDataSource,
+    this.dataSource,
   });
 
-  final ImageDataSource? imageDataSource;
-  final QuoteDataSource? quoteDataSource;
+  final DataSource? dataSource;
 
   Future<void> _launchUrl() async {
-    if (imageDataSource?.link != null) {
-      final Uri uri = Uri.parse(imageDataSource!.link!);
+    if (dataSource?.link != null) {
+      final Uri uri = Uri.parse(dataSource!.link!);
       if (!await launchUrl(
         uri,
         mode: LaunchMode.platformDefault,
       )) {
-        throw Exception('Could not launch ${imageDataSource?.link}');
-      }
-    }
-    if (quoteDataSource?.link != null) {
-      final Uri uri = Uri.parse(quoteDataSource!.link!);
-      if (!await launchUrl(
-        uri,
-        mode: LaunchMode.platformDefault,
-      )) {
-        throw Exception('Could not launch ${quoteDataSource?.link}');
+        throw Exception('Could not launch ${dataSource?.link}');
       }
     }
   }
@@ -117,7 +92,7 @@ class SourceListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: imageDataSource?.link ?? quoteDataSource?.link,
+      message: dataSource?.link,
       triggerMode: TooltipTriggerMode.longPress,
       child: InkWell(
         borderRadius: BorderRadius.all(
@@ -125,11 +100,11 @@ class SourceListTile extends StatelessWidget {
         ),
         child: ListTile(
           title: Text(
-            imageDataSource?.title ?? quoteDataSource?.title ?? '',
+            dataSource?.title ?? '',
             textAlign: TextAlign.start,
           ),
           subtitle: Text(
-            imageDataSource?.blurb ?? quoteDataSource?.blurb ?? '',
+            dataSource?.blurb ?? '',
             textAlign: TextAlign.start,
           ),
         ),

@@ -3,18 +3,18 @@ import 'dart:math';
 import 'package:random_quote_app/data/remote_data_sources/image_remote_data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 
+final List<ImageDataSource> imageDataSources = [
+  // ShibeImageRemoteDataSource(),
+  PicsumImageRemoteDataSource(),
+  CataasImageRemoteDataSource(),
+  PexelsImageRemoteDataSource(),
+];
+
 class ImageRepository {
   ImageRepository();
 
-  final List<ImageDataSource> dataSources = [
-    // ShibeImageRemoteDataSource(),
-    PicsumImageRemoteDataSource(),
-    CataasImageRemoteDataSource(),
-    PexelsImageRemoteDataSource(),
-  ];
-
   Future<ImageModel?> getImageModel() async {
-    final randomDataSource = dataSources[Random().nextInt(dataSources.length)];
+    final randomDataSource = imageDataSources[Random().nextInt(imageDataSources.length)];
 
     return await randomDataSource.getImageData();
   }
