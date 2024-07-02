@@ -44,10 +44,12 @@ class AboutPage extends StatelessWidget {
                 title: Text(
                   'What is this app about?',
                   textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
                 ),
                 subtitle: Text(
                   'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
                   textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
                 ),
               );
             }
@@ -56,8 +58,12 @@ class AboutPage extends StatelessWidget {
                 title: Text(
                   'Image sources:',
                   textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
                 ),
-                subtitle: Text('All images are a subject of their respective apis licenses.'),
+                subtitle: Text(
+                  'All images are a subject of their respective apis licenses.',
+                  style: TextStyle(color: Colors.black),
+                ),
               );
             }
             if (index == imageDataSources.length + 2) {
@@ -65,8 +71,12 @@ class AboutPage extends StatelessWidget {
                 title: Text(
                   'Quote sources:',
                   textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
                 ),
-                subtitle: Text('All quotes are a subject of their recpective apis licenses.'),
+                subtitle: Text(
+                  'All quotes are a subject of their recpective apis licenses.',
+                  style: TextStyle(color: Colors.black),
+                ),
               );
             }
             index -= 1;
@@ -116,10 +126,12 @@ class SourceListTile extends StatelessWidget {
           title: Text(
             dataSource?.title ?? '',
             textAlign: TextAlign.start,
+            style: const TextStyle(color: Colors.black),
           ),
           subtitle: Text(
             dataSource?.blurb ?? '',
             textAlign: TextAlign.start,
+            style: const TextStyle(color: Colors.black),
           ),
         ),
         onTap: () {
@@ -138,6 +150,7 @@ class AboutListDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Divider(
+      color: Colors.black45,
       indent: 20,
       endIndent: 20,
     );
