@@ -45,6 +45,12 @@ class HomePage extends StatelessWidget {
           ),
           child: Scaffold(
             backgroundColor: Colors.transparent,
+            appBar: MediaQuery.of(context).orientation == Orientation.portrait
+                ? AppBar(
+                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                    title: Text(title),
+                  )
+                : null,
             drawer: const AppBarDrawer(index: 0),
             body: Center(
               child: Padding(
