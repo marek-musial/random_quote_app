@@ -98,15 +98,16 @@ class _ImageAuthorDisplay extends StatelessWidget {
         final imageModel = state.imageModel;
         if (imageModel != null) {
           return Padding(
-            padding: EdgeInsets.all(textConstraints.maxHeight / 48),
+            padding: EdgeInsets.symmetric(
+              vertical: imageConstraints.maxHeight / 80,
+            ),
             child: AnimatedOpacity(
               opacity: state.status == Status.success ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 500),
               child: Text(
                 imageModel.author != null ? 'Image author: ${imageModel.author}' : '',
                 style: TextStyle(
-                  fontSize: textConstraints.maxHeight / 30,
-                  color: state.textColor,
+                  fontSize: imageConstraints.maxHeight / 45,
                 ),
               ),
             ),
@@ -121,11 +122,6 @@ class _ImageAuthorDisplay extends StatelessWidget {
 
 final _imageKey = GlobalKey();
 final _textKey = GlobalKey();
-
-final textConstraints = BoxConstraints(
-  maxHeight: (screenWidth * 6 / 8).roundToDouble(),
-  maxWidth: (screenWidth * 6 / 8).roundToDouble(),
-);
 
 class _QuoteDisplay extends StatelessWidget {
   const _QuoteDisplay({
@@ -142,7 +138,10 @@ class _QuoteDisplay extends StatelessWidget {
         final TextAlign textAlign = TextAlign.values[state.textAlignmentIndex ?? 2];
         return Center(
           child: Container(
-            constraints: textConstraints,
+            constraints: BoxConstraints(
+              maxHeight: (screenWidth * 6 / 8).roundToDouble(),
+              maxWidth: (screenWidth * 6 / 8).roundToDouble(),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.values[state.mainAxisAlignmentIndex ?? 2],
               crossAxisAlignment: CrossAxisAlignment.values[state.crossAxisAlignmentIndex ?? 2],
@@ -155,7 +154,7 @@ class _QuoteDisplay extends StatelessWidget {
                     key: _textKey,
                     quoteModel!.quote,
                     style: TextStyle(
-                      fontSize: quoteModel!.quote.length < 160 ? textConstraints.maxHeight / 12 : textConstraints.maxHeight / 18,
+                      fontSize: quoteModel!.quote.length < 160 ? imageConstraints.maxHeight / 14 : imageConstraints.maxHeight / 20,
                       fontWeight: fontWeight,
                       color: state.textColor,
                       shadows: state.textColor != null
@@ -173,7 +172,7 @@ class _QuoteDisplay extends StatelessWidget {
                   child: Text(
                     quoteModel!.author != null ? '~${quoteModel!.author}' : '',
                     style: TextStyle(
-                      fontSize: textConstraints.maxHeight / 22,
+                      fontSize: imageConstraints.maxHeight / 24,
                       fontWeight: fontWeight,
                       color: state.textColor,
                       shadows: state.textColor != null
@@ -194,6 +193,11 @@ class _QuoteDisplay extends StatelessWidget {
   }
 }
 
+final imageConstraints = BoxConstraints(
+  maxHeight: (screenWidth * 7 / 8).roundToDouble(),
+  maxWidth: (screenWidth * 7 / 8).roundToDouble(),
+);
+
 class _ImageDisplay extends StatelessWidget {
   const _ImageDisplay({
     required this.imageModel,
@@ -204,11 +208,8 @@ class _ImageDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, imageConstraints) {
-        imageConstraints = BoxConstraints(
-          maxHeight: (screenWidth * 7 / 8).roundToDouble(),
-          maxWidth: (screenWidth * 7 / 8).roundToDouble(),
-        );
+      builder: (context, constraints) {
+        constraints = imageConstraints;
         return BlocConsumer<HomeCubit, HomeState>(
           listenWhen: (previous, current) {
             return previous.rawImage == null && current.rawImage != null || previous.status == Status.error && current.status != Status.error;
