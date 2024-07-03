@@ -108,6 +108,11 @@ class _ImageAuthorDisplay extends StatelessWidget {
                 imageModel.author != null ? 'Image author: ${imageModel.author}' : '',
                 style: TextStyle(
                   fontSize: imageConstraints.maxHeight / 45,
+                  color: state.textColor != null
+                      ? state.textColor!.isBright()
+                          ? Colors.white
+                          : Colors.black
+                      : Colors.black,
                 ),
               ),
             ),
