@@ -227,7 +227,7 @@ class _ImageDisplay extends StatelessWidget {
           },
           builder: (context, state) {
             return Stack(
-              alignment: Alignment.bottomRight,
+              alignment: Alignment.bottomCenter,
               children: [
                 SizedBox(
                   width: imageConstraints.maxWidth,
