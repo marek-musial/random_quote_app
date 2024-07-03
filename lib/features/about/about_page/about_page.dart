@@ -35,58 +35,66 @@ class AboutPage extends StatelessWidget {
               )
             : null,
         drawer: const AppBarDrawer(index: 1),
-        body: ListView.separated(
-          itemCount: dataSources.length + 3,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return const ListTile(
-                title: Text(
-                  'What is this app about?',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black),
-                ),
-                subtitle: Text(
-                  'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }
-            if (index == 1) {
-              return const ListTile(
-                title: Text(
-                  'Image sources:',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black),
-                ),
-                subtitle: Text(
-                  'All images are a subject of their respective apis licenses.',
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }
-            if (index == imageDataSources.length + 2) {
-              return const ListTile(
-                title: Text(
-                  'Quote sources:',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black),
-                ),
-                subtitle: Text(
-                  'All quotes are a subject of their recpective apis licenses.',
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }
-            index -= 1;
-            if (index >= imageDataSources.length + 1) {
-              return SourceListTile(dataSource: dataSources[index - 2]);
-            }
-            index -= 1;
-            return SourceListTile(dataSource: dataSources[index]);
-          },
-          separatorBuilder: (BuildContext context, int index) => const AboutListDivider(),
+        body: Row(
+          children: [
+            MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 0) : const SizedBox.shrink(),
+            Flexible(
+              flex: 1,
+              child: ListView.separated(
+                itemCount: dataSources.length + 3,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                itemBuilder: (BuildContext context, int index) {
+                  if (index == 0) {
+                    return const ListTile(
+                      title: Text(
+                        'What is this app about?',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    );
+                  }
+                  if (index == 1) {
+                    return const ListTile(
+                      title: Text(
+                        'Image sources:',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        'All images are a subject of their respective apis licenses.',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    );
+                  }
+                  if (index == imageDataSources.length + 2) {
+                    return const ListTile(
+                      title: Text(
+                        'Quote sources:',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        'All quotes are a subject of their recpective apis licenses.',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    );
+                  }
+                  index -= 1;
+                  if (index >= imageDataSources.length + 1) {
+                    return SourceListTile(dataSource: dataSources[index - 2]);
+                  }
+                  index -= 1;
+                  return SourceListTile(dataSource: dataSources[index]);
+                },
+                separatorBuilder: (BuildContext context, int index) => const AboutListDivider(),
+              ),
+            ),
+          ],
         ),
       ),
     );

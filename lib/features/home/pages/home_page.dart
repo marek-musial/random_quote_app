@@ -52,29 +52,32 @@ class HomePage extends StatelessWidget {
                   )
                 : null,
             drawer: const AppBarDrawer(index: 0),
-            body: Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: (screenWidth * 1 / 16).roundToDouble(),
+            body: Row(
+              children: [
+                MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 0) : const SizedBox.shrink(),
+                Flexible(
+                  flex: 1,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (imageModel != null && quoteModel != null)
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Center(
+                              child: _ImageDisplay(imageModel: imageModel),
+                            ),
+                            _QuoteDisplay(quoteModel: quoteModel),
+                          ],
+                        )
+                      else
+                        const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                    ],
+                  ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (imageModel != null && quoteModel != null)
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Center(
-                            child: _ImageDisplay(imageModel: imageModel),
-                          ),
-                          _QuoteDisplay(quoteModel: quoteModel),
-                        ],
-                      )
-                    else
-                      const CircularProgressIndicator()
-                  ],
-                ),
-              ),
+              ],
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
