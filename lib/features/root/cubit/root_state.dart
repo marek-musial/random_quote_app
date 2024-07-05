@@ -3,7 +3,15 @@ part of 'root_cubit.dart';
 @immutable
 class RootState {
   const RootState({
-    this.destinationIndex = 0,
+    this.isThemeBright = true,
   });
-  final int? destinationIndex;
+  final bool isThemeBright;
+
+  RootState copyWith({
+    final bool? isThemeBright,
+  }) {
+    return RootState(
+      isThemeBright: isThemeBright ?? this.isThemeBright,
+    );
+  }
 }
