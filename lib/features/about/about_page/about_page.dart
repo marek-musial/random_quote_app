@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
+import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
@@ -14,6 +15,8 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
+    final Color tileColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -45,42 +48,46 @@ class AboutPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 itemBuilder: (BuildContext context, int index) {
                   if (index == 0) {
-                    return const ListTile(
-                      title: Text(
+                    return ListTile(
+                      textColor: textColor,
+                      contentPadding: tile.padding,
+                      title: const Text(
                         'What is this app about?',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black),
                       ),
-                      subtitle: Text(
+                      subtitle: const Text(
                         'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black),
                       ),
                     );
                   }
                   if (index == 1) {
-                    return const ListTile(
-                      title: Text(
+                    return ListTile(
+                      textColor: textColor,
+                      tileColor: tileColor,
+                      shape: tile.border,
+                      contentPadding: tile.padding,
+                      title: const Text(
                         'Image sources:',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black),
                       ),
-                      subtitle: Text(
+                      subtitle: const Text(
                         'All images are a subject of their respective apis licenses.',
-                        style: TextStyle(color: Colors.black),
                       ),
                     );
                   }
                   if (index == imageDataSources.length + 2) {
-                    return const ListTile(
-                      title: Text(
+                    return ListTile(
+                      textColor: textColor,
+                      tileColor: tileColor,
+                      shape: tile.border,
+                      contentPadding: tile.padding,
+                      title: const Text(
                         'Quote sources:',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black),
                       ),
-                      subtitle: Text(
+                      subtitle: const Text(
                         'All quotes are a subject of their recpective apis licenses.',
-                        style: TextStyle(color: Colors.black),
                       ),
                     );
                   }
@@ -91,7 +98,9 @@ class AboutPage extends StatelessWidget {
                   index -= 1;
                   return SourceListTile(dataSource: dataSources[index]);
                 },
-                separatorBuilder: (BuildContext context, int index) => const AboutListDivider(),
+                separatorBuilder: (BuildContext context, int index) => SizedBox(
+                  height: screenHeight / 96,
+                ),
               ),
             ),
           ],
@@ -123,44 +132,33 @@ class SourceListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
+    final Color containerColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
     return Tooltip(
       message: dataSource?.link,
       triggerMode: TooltipTriggerMode.longPress,
       child: InkWell(
         borderRadius: BorderRadius.all(
-          Radius.circular(screenWidth / 32),
+          Radius.circular(screenWidth / 24),
         ),
         child: ListTile(
+          textColor: textColor,
+          tileColor: containerColor,
+          shape: tile.border,
+          contentPadding: tile.padding,
           title: Text(
             dataSource?.title ?? '',
             textAlign: TextAlign.start,
-            style: const TextStyle(color: Colors.black),
           ),
           subtitle: Text(
             dataSource?.blurb ?? '',
             textAlign: TextAlign.start,
-            style: const TextStyle(color: Colors.black),
           ),
         ),
         onTap: () {
           _launchUrl();
         },
       ),
-    );
-  }
-}
-
-class AboutListDivider extends StatelessWidget {
-  const AboutListDivider({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const Divider(
-      color: Colors.black45,
-      indent: 20,
-      endIndent: 20,
     );
   }
 }

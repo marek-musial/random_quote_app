@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
+import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key, required this.title});
@@ -10,6 +12,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
+    final Color tileColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -42,17 +45,22 @@ class SettingsPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     children: [
                       InkWell(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(screenWidth / 24),
+                        ),
                         onTap: BlocProvider.of<RootCubit>(context).toggleThemeBrightness,
                         child: ListTile(
-                          title: Text(
+                          textColor: textColor,
+                          tileColor: tileColor,
+                          shape: tile.border,
+                          contentPadding: tile.padding,
+                          title: const Text(
                             'Theme',
                             textAlign: TextAlign.start,
-                            style: TextStyle(color: textColor),
                           ),
                           subtitle: Text(
                             state.isThemeBright ? 'Bright' : 'Dark',
                             textAlign: TextAlign.start,
-                            style: TextStyle(color: textColor),
                           ),
                         ),
                       ),
