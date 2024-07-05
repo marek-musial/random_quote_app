@@ -37,7 +37,7 @@ class AboutPage extends StatelessWidget {
         drawer: const AppBarDrawer(index: 1),
         body: Row(
           children: [
-            MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 0) : const SizedBox.shrink(),
+            MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 1) : const SizedBox.shrink(),
             Flexible(
               flex: 1,
               child: ListView.separated(
