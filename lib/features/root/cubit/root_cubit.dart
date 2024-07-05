@@ -6,10 +6,10 @@ part 'root_state.dart';
 class RootCubit extends Cubit<RootState> {
   RootCubit() : super(const RootState());
 
-  void setDestination(int index) {
+  void toggleThemeBrightness() {
     emit(
-      RootState(
-        destinationIndex: index,
+      state.copyWith(
+        isThemeBright: !state.isThemeBright,
       ),
     );
   }
