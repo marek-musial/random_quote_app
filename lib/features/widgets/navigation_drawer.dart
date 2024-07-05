@@ -34,6 +34,7 @@ class AppBarDrawer extends StatelessWidget {
               switch (index) {
                 0 => '/',
                 1 => '/about',
+                2 => '/settings',
                 int() => '/',
               },
             );
