@@ -13,4 +13,14 @@ class RootCubit extends Cubit<RootState> {
       ),
     );
   }
+
+  void setThemeColor(Color? color) {
+    emit(
+      RootState(
+        themeColor: color,
+      ).copyWith(
+        isThemeBright: state.isThemeBright,
+      ),
+    );
+  }
 }

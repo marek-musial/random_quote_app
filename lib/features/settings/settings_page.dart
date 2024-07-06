@@ -64,6 +64,89 @@ class SettingsPage extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(
+                        height: screenHeight / 96,
+                      ),
+                      Container(
+                        padding: tile.padding,
+                        decoration: BoxDecoration(
+                          color: tileColor,
+                          borderRadius: tile.border.borderRadius,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Theme color',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                              ),
+                            ),
+                            SizedBox(
+                              height: screenHeight / 96,
+                            ),
+                            GridView.count(
+                              crossAxisCount: 4,
+                              mainAxisSpacing: screenHeight / 96,
+                              crossAxisSpacing: screenHeight / 96,
+                              shrinkWrap: true,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    BlocProvider.of<RootCubit>(context).setThemeColor(null);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white.withOpacity(.3),
+                                    ),
+                                    child: Icon(
+                                      Icons.colorize,
+                                      color: Theme.of(context).colorScheme.primary,
+                                      size: screenWidth / 8,
+                                    ),
+                                  ),
+                                ),
+                                const ColorButton(
+                                  color: Colors.amber,
+                                ),
+                                const ColorButton(
+                                  color: Colors.red,
+                                ),
+                                const ColorButton(
+                                  color: Colors.blue,
+                                ),
+                                const ColorButton(
+                                  color: Colors.green,
+                                ),
+                                const ColorButton(
+                                  color: Colors.deepPurple,
+                                ),
+                                const ColorButton(
+                                  color: Colors.deepOrange,
+                                ),
+                                const ColorButton(
+                                  color: Colors.indigo,
+                                ),
+                                const ColorButton(
+                                  color: Colors.lime,
+                                ),
+                                const ColorButton(
+                                  color: Colors.yellow,
+                                ),
+                                const ColorButton(
+                                  color: Colors.teal,
+                                ),
+                                const ColorButton(
+                                  color: Colors.pink,
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   );
                 },
@@ -71,6 +154,31 @@ class SettingsPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ColorButton extends StatelessWidget {
+  const ColorButton({super.key, required this.color});
+  final Color color;
+
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
+    return BlocProvider(
+      create: (context) => RootCubit(),
+      child: InkWell(
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+          ),
+        ),
+        onTap: () {
+          BlocProvider.of<RootCubit>(context).setThemeColor(color);
+        },
       ),
     );
   }
