@@ -97,6 +97,7 @@ class SettingsPage extends StatelessWidget {
                                   onTap: () {
                                     BlocProvider.of<RootCubit>(context).setThemeColor(null);
                                   },
+                                  borderRadius: BorderRadius.circular(screenWidth / 10),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
@@ -170,6 +171,7 @@ class ColorButton extends StatelessWidget {
     return BlocProvider(
       create: (context) => RootCubit(),
       child: InkWell(
+        borderRadius: BorderRadius.circular(screenWidth / 10),
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
