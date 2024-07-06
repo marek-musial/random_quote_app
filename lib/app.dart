@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
             builder: (context, rootState) {
               return MaterialApp(
                 theme: ThemeData(
-                  colorSchemeSeed: homeState.textColor ?? Colors.deepPurple,
+                  colorSchemeSeed: rootState.themeColor ?? homeState.textColor ?? Colors.deepPurple,
                   brightness: rootState.isThemeBright ? Brightness.light : Brightness.dark,
                   useMaterial3: true,
                 ),
