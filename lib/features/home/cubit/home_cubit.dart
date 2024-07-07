@@ -25,7 +25,9 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> getItemModels() async {
     if (state.status == Status.initial || state.status == Status.success || state.status == Status.error) {
-      emit(const HomeState(status: Status.loading));
+      emit(
+        const HomeState(status: Status.loading),
+      );
       try {
         final imageModel = await _imageRepository.getImageModel();
         final quoteModel = await _quoteRepository.getQuoteModel();
@@ -37,16 +39,20 @@ class HomeCubit extends Cubit<HomeState> {
         );
         await loadImage();
       } catch (error) {
-        emit(HomeState(
-          status: Status.error,
-          errorMessage: error.toString(),
-        ));
+        emit(
+          HomeState(
+            status: Status.error,
+            errorMessage: error.toString(),
+          ),
+        );
       }
     } else {
-      emit(const HomeState(
-        status: Status.error,
-        errorMessage: 'Another process in progress, please wait.',
-      ));
+      emit(
+        const HomeState(
+          status: Status.error,
+          errorMessage: 'Another process in progress, please wait.',
+        ),
+      );
     }
   }
 
@@ -89,12 +95,14 @@ class HomeCubit extends Cubit<HomeState> {
     int textAlignmentIndex = Random().nextInt(3);
     int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
     int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 1);
-    emit(state.copyWith(
-      fontWeightIndex: fontWeightIndex,
-      textAlignmentIndex: textAlignmentIndex,
-      mainAxisAlignmentIndex: mainAxisAlignmentIndex,
-      crossAxisAlignmentIndex: crossAxisAlignmentIndex,
-    ));
+    emit(
+      state.copyWith(
+        fontWeightIndex: fontWeightIndex,
+        textAlignmentIndex: textAlignmentIndex,
+        mainAxisAlignmentIndex: mainAxisAlignmentIndex,
+        crossAxisAlignmentIndex: crossAxisAlignmentIndex,
+      ),
+    );
     print('layout randomized');
   }
 
@@ -147,10 +155,12 @@ class HomeCubit extends Cubit<HomeState> {
       );
       print('scaleFactor: ${state.scaleFactor}');
     } else {
-      emit(const HomeState(
-        status: Status.error,
-        errorMessage: 'scale factor calculation context error!',
-      ));
+      emit(
+        const HomeState(
+          status: Status.error,
+          errorMessage: 'scale factor calculation context error!',
+        ),
+      );
     }
   }
 
@@ -187,10 +197,12 @@ class HomeCubit extends Cubit<HomeState> {
         );
       }
     } else {
-      emit(const HomeState(
-        status: Status.error,
-        errorMessage: 'Error while generating color',
-      ));
+      emit(
+        const HomeState(
+          status: Status.error,
+          errorMessage: 'Error while generating color',
+        ),
+      );
     }
 
     final paletteColor = paletteGenerator != null
@@ -203,7 +215,9 @@ class HomeCubit extends Cubit<HomeState> {
 
     emit(
       state.copyWith(
-        textColor: _getInverseColor(paletteColor.withOpacity(1)),
+        textColor: _getInverseColor(
+          paletteColor.withOpacity(1),
+        ),
       ),
     );
     print('textColor = ${state.textColor}');
@@ -227,7 +241,9 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void emitSuccess() {
-    emit(state.copyWith(status: Status.success));
+    emit(
+      state.copyWith(status: Status.success),
+    );
   }
 
   void start() async {
