@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:dio/dio.dart';
-import 'package:random_quote_app/data/remote_data_sources/image_remote_data_source.dart';
+import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 
 class PicsumImageRemoteDataSource implements ImageDataSource {

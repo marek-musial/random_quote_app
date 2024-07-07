@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_source.dart';
+import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 
 class AdviceQuoteRemoteDataSource implements QuoteDataSource {
