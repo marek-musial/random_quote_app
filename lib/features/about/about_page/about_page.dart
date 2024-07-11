@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
-import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
-import 'package:random_quote_app/domain/repositories/image_repository.dart';
-import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-final List<DataSource> dataSources = [...imageDataSources, ...quoteDataSources];
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key, required this.title});
@@ -17,6 +11,8 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
     final Color tileColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
+    final double? headlineSize = Theme.of(context).textTheme.titleLarge!.fontSize;
+    final double? bodySize = Theme.of(context).textTheme.bodyLarge!.fontSize;
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -43,121 +39,152 @@ class AboutPage extends StatelessWidget {
             MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 1) : const SizedBox.shrink(),
             Flexible(
               flex: 1,
-              child: ListView.separated(
-                itemCount: dataSources.length + 3,
+              child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == 0) {
-                    return ListTile(
-                      textColor: textColor,
-                      contentPadding: tile.padding,
-                      title: const Text(
-                        'What is this app about?',
-                        textAlign: TextAlign.center,
+                children: [
+                  Text(
+                    'Quoter',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: headlineSize,
+                    ),
+                  ),
+                  Text(
+                    'Version 1.0.0',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: textColor),
+                  ),
+                  Text(
+                    'Developed by: Marek Musiał',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: textColor),
+                  ),
+                  SizedBox(
+                    height: screenHeight / 96 * 2,
+                  ),
+                  ListTile(
+                    textColor: textColor,
+                    tileColor: tileColor,
+                    shape: tile.border,
+                    contentPadding: tile.padding,
+                    title: Text(
+                      'What is this app about?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: headlineSize,
                       ),
-                      subtitle: const Text(
-                        'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  }
-                  if (index == 1) {
-                    return ListTile(
+                    ),
+                    subtitle: Text(
+                      'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: bodySize),
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight / 96,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: tileColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: tile.border.borderRadius,
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: screenHeight.toDouble(),
+                      maxWidth: screenWidth.toDouble(),
+                    ),
+                    padding: tile.padding,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Our social media:',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: headlineSize,
+                            color: textColor,
+                          ),
+                        ),
+                        SizedBox(
+                          height: screenHeight / 96,
+                        ),
+                        GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 5,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                //implement social media url
+                              },
+                              icon: const Icon(Icons.facebook),
+                              padding: EdgeInsets.zero,
+                              iconSize: screenWidth / 7,
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.facebook),
+                              padding: EdgeInsets.zero,
+                              iconSize: screenWidth / 7,
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.facebook),
+                              padding: EdgeInsets.zero,
+                              iconSize: screenWidth / 7,
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.facebook),
+                              padding: EdgeInsets.zero,
+                              iconSize: screenWidth / 7,
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.facebook),
+                              padding: EdgeInsets.zero,
+                              iconSize: screenWidth / 7,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight / 96,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      //implement rating
+                    },
+                    child: ListTile(
                       textColor: textColor,
                       tileColor: tileColor,
                       shape: tile.border,
-                      contentPadding: tile.padding,
-                      title: const Text(
-                        'Image sources:',
+                      contentPadding: tile.padding / 4,
+                      title: Text(
+                        'Rate the app',
                         textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: headlineSize,
+                        ),
                       ),
-                      subtitle: const Text(
-                        'All images are a subject of their respective apis licenses.',
-                      ),
-                    );
-                  }
-                  if (index == imageDataSources.length + 2) {
-                    return ListTile(
-                      textColor: textColor,
-                      tileColor: tileColor,
-                      shape: tile.border,
-                      contentPadding: tile.padding,
-                      title: const Text(
-                        'Quote sources:',
+                      subtitle: Text(
+                        'It really helps!',
                         textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: bodySize,
+                        ),
                       ),
-                      subtitle: const Text(
-                        'All quotes are a subject of their recpective apis licenses.',
-                      ),
-                    );
-                  }
-                  index -= 1;
-                  if (index >= imageDataSources.length + 1) {
-                    return SourceListTile(dataSource: dataSources[index - 2]);
-                  }
-                  index -= 1;
-                  return SourceListTile(dataSource: dataSources[index]);
-                },
-                separatorBuilder: (BuildContext context, int index) => SizedBox(
-                  height: screenHeight / 96,
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class SourceListTile extends StatelessWidget {
-  const SourceListTile({
-    super.key,
-    this.dataSource,
-  });
-
-  final DataSource? dataSource;
-
-  Future<void> _launchUrl() async {
-    if (dataSource?.link != null) {
-      final Uri uri = Uri.parse(dataSource!.link!);
-      if (!await launchUrl(
-        uri,
-        mode: LaunchMode.platformDefault,
-      )) {
-        throw Exception('Could not launch ${dataSource?.link}');
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
-    final Color containerColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
-    return Tooltip(
-      message: dataSource?.link,
-      triggerMode: TooltipTriggerMode.longPress,
-      child: InkWell(
-        borderRadius: BorderRadius.all(
-          Radius.circular(screenWidth / 24),
-        ),
-        child: ListTile(
-          textColor: textColor,
-          tileColor: containerColor,
-          shape: tile.border,
-          contentPadding: tile.padding,
-          title: Text(
-            dataSource?.title ?? '',
-            textAlign: TextAlign.start,
-          ),
-          subtitle: Text(
-            dataSource?.blurb ?? '',
-            textAlign: TextAlign.start,
-          ),
-        ),
-        onTap: () {
-          _launchUrl();
-        },
       ),
     );
   }
