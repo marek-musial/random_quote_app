@@ -33,7 +33,7 @@ class SettingsPage extends StatelessWidget {
                 title: Text(title),
               )
             : null,
-        drawer: const AppBarDrawer(index: 2),
+        drawer: const AppBarDrawer(index: 3),
         body: Row(
           children: [
             MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 2) : const SizedBox.shrink(),

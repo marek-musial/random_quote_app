@@ -34,7 +34,8 @@ class AppBarDrawer extends StatelessWidget {
               switch (index) {
                 0 => '/',
                 1 => '/about',
-                2 => '/settings',
+                2 => '/sources',
+                3 => '/settings',
                 int() => '/',
               },
             );
@@ -62,9 +63,14 @@ class AppBarDrawer extends StatelessWidget {
               disabled: index == 1,
             ),
             NavigationRailDestination(
+              icon: const Icon(Icons.source),
+              label: const Text('Sources'),
+              disabled: index == 2,
+            ),
+            NavigationRailDestination(
               icon: const Icon(Icons.settings),
               label: const Text('Settings'),
-              disabled: index == 2,
+              disabled: index == 3,
             ),
           ],
         ),
