@@ -168,7 +168,13 @@ class _QuoteDisplay extends StatelessWidget {
                     key: _textKey,
                     quoteModel!.quote,
                     style: TextStyle(
-                      fontSize: quoteModel!.quote.length < 160 ? imageConstraints.maxHeight / 14 : imageConstraints.maxHeight / 20,
+                      fontSize: quoteModel!.quote.length < 300
+                          ? quoteModel!.quote.length < 160
+                              ? quoteModel!.quote.length <= 20
+                                  ? imageConstraints.maxHeight / 10
+                                  : imageConstraints.maxHeight / 14
+                              : imageConstraints.maxHeight / 20
+                          : imageConstraints.maxHeight / 24,
                       fontWeight: fontWeight,
                       color: state.textColor,
                       shadows: state.textColor != null
