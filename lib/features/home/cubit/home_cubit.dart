@@ -58,33 +58,46 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> loadImage() async {
     if (state.imageModel != null) {
-      _imageProvider = NetworkImage(state.imageModel!.imageUrl);
-      final completer = Completer<ImageInfo>();
-      final stream = _imageProvider!.resolve(ImageConfiguration.empty);
-      stream.addListener(
-        ImageStreamListener(
+      try {
+        _imageProvider = NetworkImage(state.imageModel!.imageUrl);
+        final completer = Completer<ImageInfo>();
+        final stream = _imageProvider!.resolve(ImageConfiguration.empty);
+        final listener = ImageStreamListener(
           (info, _) {
             completer.complete(info);
           },
-        ),
-      );
-      final info = await completer.future;
-      final image = await info.image.toByteData(format: ui.ImageByteFormat.png);
-      final codec = await ui.instantiateImageCodec(image!.buffer.asUint8List());
-      final frame = await codec.getNextFrame();
-      rawImage = frame.image;
+          onError: (dynamic error, StackTrace? stackTrace) {
+            completer.completeError(error, stackTrace);
+          },
+        );
 
-      emit(
-        state.copyWith(
-          rawImage: rawImage,
-        ),
-      );
-      print('Width: ${rawImage!.width}, height: ${rawImage!.height}');
+        stream.addListener(listener);
+        final info = await completer.future;
+        stream.removeListener(listener);
+        final image = await info.image.toByteData(format: ui.ImageByteFormat.png);
+        final codec = await ui.instantiateImageCodec(image!.buffer.asUint8List());
+        final frame = await codec.getNextFrame();
+        rawImage = frame.image;
+
+        emit(
+          state.copyWith(
+            rawImage: rawImage,
+          ),
+        );
+        print('Width: ${rawImage!.width}, height: ${rawImage!.height}');
+      } catch (error) {
+        emit(
+          state.copyWith(
+            status: Status.error,
+            errorMessage: 'Failed to load image: $error',
+          ),
+        );
+      }
     } else {
       emit(
         const HomeState(
           status: Status.error,
-          errorMessage: 'imageModel == null!',
+          errorMessage: 'An error occured while getting the image',
         ),
       );
     }
