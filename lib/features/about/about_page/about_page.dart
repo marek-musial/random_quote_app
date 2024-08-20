@@ -109,45 +109,44 @@ class AboutPage extends StatelessWidget {
                         SizedBox(
                           height: screenHeight / 96,
                         ),
-                        GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 5,
-                          mainAxisSpacing: 8,
-                          crossAxisSpacing: 8,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                //implement social media url
-                              },
-                              icon: const Icon(Icons.facebook),
-                              padding: EdgeInsets.zero,
-                              iconSize: screenWidth / 7,
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.facebook),
-                              padding: EdgeInsets.zero,
-                              iconSize: screenWidth / 7,
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.facebook),
-                              padding: EdgeInsets.zero,
-                              iconSize: screenWidth / 7,
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.facebook),
-                              padding: EdgeInsets.zero,
-                              iconSize: screenWidth / 7,
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.facebook),
-                              padding: EdgeInsets.zero,
-                              iconSize: screenWidth / 7,
-                            ),
-                          ],
+                        ConstrainedBox(
+                          constraints: BoxConstraints.expand(
+                            height: screenHeight / 10,
+                            width: screenWidth * 9 / 10,
+                          ),
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              SocialMediaButton(
+                                textColor: textColor,
+                                bodySize: bodySize,
+                                iconData: Icons.facebook,
+                                text: 'App page',
+                                url: '',
+                              ),
+                              SocialMediaButton(
+                                textColor: textColor,
+                                bodySize: bodySize,
+                                iconData: Icons.person,
+                                text: 'Dev page',
+                                url: '',
+                              ),
+                              SocialMediaButton(
+                                textColor: textColor,
+                                bodySize: bodySize,
+                                iconData: Icons.one_x_mobiledata,
+                                text: 'App page',
+                                url: '',
+                              ),
+                              SocialMediaButton(
+                                textColor: textColor,
+                                bodySize: bodySize,
+                                iconData: Icons.play_arrow,
+                                text: 'App store',
+                                url: '',
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -181,6 +180,63 @@ class AboutPage extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SocialMediaButton extends StatelessWidget {
+  const SocialMediaButton({
+    super.key,
+    required this.textColor,
+    required this.bodySize,
+    required this.text,
+    required this.iconData,
+    required this.url,
+  });
+
+  final Color textColor;
+  final double? bodySize;
+  final String? text;
+  final IconData iconData;
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 1,
+      child: ConstrainedBox(
+        constraints: BoxConstraints.expand(width: screenWidth / 7),
+        child: Flex(
+          direction: Axis.vertical,
+          children: [
+            Expanded(
+              flex: 2,
+              child: IconButton(
+                onPressed: () {
+                  //implement social media url launched from url String
+                },
+                icon: Icon(
+                  iconData,
+                  color: textColor,
+                ),
+                padding: EdgeInsets.zero,
+                iconSize: screenWidth / 7,
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Text(
+                text ?? '',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: bodySize! * 4 / 5,
+                ),
               ),
             ),
           ],
