@@ -234,15 +234,16 @@ class _ImageDisplay extends StatelessWidget {
           listenWhen: (previous, current) {
             return previous.rawImage == null && current.rawImage != null || previous.status == Status.error && current.status != Status.error;
           },
-          listener: (context, state) {
+          listener: (context, state) async {
             context.read<HomeCubit>().calculateScaleFactor(context);
             context.read<HomeCubit>().calculatePosition(
                   imageContext: _imageKey.currentContext,
                   textContext: _textKey.currentContext,
                 );
-            context.read<HomeCubit>().generateColors();
-            if (state.status != Status.error) {
+            await context.read<HomeCubit>().generateColors();
+            if (state.status != Status.error && context.mounted) {
               context.read<HomeCubit>().emitSuccess();
+              print('success');
             }
           },
           builder: (context, state) {
