@@ -10,6 +10,7 @@ class AppBarDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -44,32 +45,70 @@ class AppBarDrawer extends StatelessWidget {
           labelType: NavigationRailLabelType.all,
           leading: MediaQuery.of(context).orientation == Orientation.portrait
               ? IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: Icon(
+                    Icons.close,
+                    color: textColor,
+                  ),
                   onPressed: Navigator.canPop(context) ? Navigator.of(context).pop : null,
                 )
               : SizedBox.square(
                   dimension: screenWidth / 12,
-                  child: const Icon(Icons.menu),
+                  child: Icon(
+                    Icons.menu,
+                    color: textColor,
+                  ),
                 ),
           destinations: <NavigationRailDestination>[
             NavigationRailDestination(
-              icon: const Icon(Icons.home),
-              label: const Text('Home'),
+              icon: Icon(
+                Icons.home,
+                color: textColor,
+              ),
+              label: Text(
+                'Home',
+                style: TextStyle(
+                  color: textColor,
+                ),
+              ),
               disabled: index == 0,
             ),
             NavigationRailDestination(
-              icon: const Icon(Icons.info),
-              label: const Text('About'),
+              icon: Icon(
+                Icons.info,
+                color: textColor,
+              ),
+              label: Text(
+                'About',
+                style: TextStyle(
+                  color: textColor,
+                ),
+              ),
               disabled: index == 1,
             ),
             NavigationRailDestination(
-              icon: const Icon(Icons.source),
-              label: const Text('Sources'),
+              icon: Icon(
+                Icons.source,
+                color: textColor,
+              ),
+              label: Text(
+                'Sources',
+                style: TextStyle(
+                  color: textColor,
+                ),
+              ),
               disabled: index == 2,
             ),
             NavigationRailDestination(
-              icon: const Icon(Icons.settings),
-              label: const Text('Settings'),
+              icon: Icon(
+                Icons.settings,
+                color: textColor,
+              ),
+              label: Text(
+                'Settings',
+                style: TextStyle(
+                  color: textColor,
+                ),
+              ),
               disabled: index == 3,
             ),
           ],
