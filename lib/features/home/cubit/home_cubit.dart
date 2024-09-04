@@ -24,7 +24,7 @@ class HomeCubit extends Cubit<HomeState> {
   ImageProvider? _imageProvider;
 
   Future<void> getItemModels() async {
-    if (state.status == Status.initial || state.status == Status.success || state.status == Status.error) {
+    if (state.status != Status.loading) {
       emit(
         const HomeState(status: Status.loading),
       );
