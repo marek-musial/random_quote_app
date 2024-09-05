@@ -1,6 +1,6 @@
 part of 'home_cubit.dart';
 
-class HomeState {
+class HomeState extends Equatable {
   const HomeState({
     this.status = Status.initial,
     this.errorMessage,
@@ -60,5 +60,24 @@ class HomeState {
       textSize: textSize ?? this.textSize,
       scaleFactor: scaleFactor ?? this.scaleFactor,
     );
+  }
+
+  @override
+  List<Object?> get props {
+    return [
+      status,
+      errorMessage,
+      imageModel,
+      quoteModel,
+      rawImage,
+      fontWeightIndex,
+      textAlignmentIndex,
+      mainAxisAlignmentIndex,
+      crossAxisAlignmentIndex,
+      textColor,
+      textPosition,
+      textSize,
+      scaleFactor,
+    ];
   }
 }
