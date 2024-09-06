@@ -251,8 +251,7 @@ class _ImageDisplay extends StatelessWidget {
                   textRenderBox.size,
                 );
             await context.read<HomeCubit>().generateColors();
-            if ((state.status == Status.loading 
-            ) && context.mounted) {
+            if ((state.status == Status.loading || state.status == Status.decoding) && context.mounted) {
               context.read<HomeCubit>().emitSuccess();
               print('success');
             }

@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
@@ -17,7 +17,7 @@ part 'home_state.dart';
 
 ui.Image? rawImage;
 
-class HomeCubit extends Cubit<HomeState> {
+class HomeCubit extends HydratedCubit<HomeState> {
   HomeCubit(this._imageRepository, this._quoteRepository) : super(const HomeState());
 
   final ImageRepository _imageRepository;
@@ -114,8 +114,8 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void randomizeTextLayout() {
-    int fontWeightIndex = Random().nextInt(7) + 2;
-    int textAlignmentIndex = Random().nextInt(3);
+    if (state.status != Status.decoding) {
+      int fontWeightIndex = Random().nextInt(7) + 2;
       int textAlignmentIndex = Random().nextInt(3);
       int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
       int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 1);
@@ -126,7 +126,9 @@ class HomeCubit extends Cubit<HomeState> {
         crossAxisAlignmentIndex: crossAxisAlignmentIndex,
       );
       print('layout randomized');
-    
+    } else {
+      print('layout not randomized');
+    }
   }
 
   void getTextPositionAndSize(
@@ -260,6 +262,11 @@ class HomeCubit extends Cubit<HomeState> {
         resetPendingState();
         await getItemModels();
         break;
+      case Status.decoding:
+        resetPendingState();
+        pendingState = state;
+        await loadImage();
+        break;
       case Status.loading:
         emit(
           const HomeState(
@@ -276,6 +283,52 @@ class HomeCubit extends Cubit<HomeState> {
           ),
         );
         break;
-    await getItemModels();
+    }
+  }
+
+  @override
+  Map<String, dynamic>? toJson(HomeState state) {
+    if (state.status == Status.success && state.imageModel != _fromJsonState.imageModel && state.quoteModel != _fromJsonState.quoteModel) {
+      final Map<String, dynamic> map = {
+        'imageModelUrl': state.imageModel?.imageUrl,
+        'imageModelAuthor': state.imageModel?.author,
+        'quoteModelQuote': state.quoteModel?.quote,
+        'quoteModelAuthor': state.quoteModel?.author,
+        'fontWeightIndex': state.fontWeightIndex,
+        'textAlignmentIndex': state.textAlignmentIndex,
+        'mainAxisAlignmentIndex': state.mainAxisAlignmentIndex,
+        'crossAxisAlignmentIndex': state.crossAxisAlignmentIndex,
+      };
+      return map;
+    } else {
+      return null;
+    }
+  }
+
+  HomeState _fromJsonState = const HomeState();
+
+  @override
+  HomeState? fromJson(Map<String, dynamic> json) {
+    try {
+      final jsonState = HomeState(
+        status: Status.decoding,
+        imageModel: ImageModel(
+          imageUrl: json['imageModelUrl'],
+          author: json['imageModelAuthor'],
+        ),
+        quoteModel: QuoteModel(
+          quote: json['quoteModelQuote'],
+          author: json['quoteModelAuthor'],
+        ),
+        fontWeightIndex: json['fontWeightIndex'] as int?,
+        textAlignmentIndex: json['textAlignmentIndex'] as int?,
+        mainAxisAlignmentIndex: json['mainAxisAlignmentIndex'] as int?,
+        crossAxisAlignmentIndex: json['crossAxisAlignmentIndex'] as int?,
+      );
+      _fromJsonState = jsonState;
+      return jsonState;
+    } catch (e) {
+      return null;
+    }
   }
 }
