@@ -24,43 +24,47 @@ class HomeCubit extends Cubit<HomeState> {
   final QuoteRepository _quoteRepository;
   ImageProvider? _imageProvider;
 
+  HomeState pendingState = const HomeState(status: Status.initial);
+
+  void resetPendingState() {
+    pendingState = const HomeState(status: Status.initial);
+    print('pendingState reset');
+  }
+
   Future<void> getItemModels() async {
-    if (state.status != Status.loading) {
-      emit(
-        const HomeState(status: Status.loading),
+    pendingState = pendingState.copyWith(status: Status.loading);
+    emit(
+      const HomeState(status: Status.loading),
+    );
+    try {
+      final imageModel = await _imageRepository.getImageModel();
+      final quoteModel = await _quoteRepository.getQuoteModel();
+      pendingState = pendingState.copyWith(
+        imageModel: imageModel,
+        quoteModel: quoteModel,
       );
-      try {
-        final imageModel = await _imageRepository.getImageModel();
-        final quoteModel = await _quoteRepository.getQuoteModel();
-        emit(
-          HomeState(
-            imageModel: imageModel,
-            quoteModel: quoteModel,
-          ),
-        );
-        await loadImage();
-      } catch (error) {
-        emit(
-          HomeState(
-            status: Status.error,
-            errorMessage: error.toString(),
-          ),
-        );
-      }
-    } else {
       emit(
-        const HomeState(
-          status: Status.error,
-          errorMessage: 'Another process in progress, please wait.',
+        state.copyWith(
+          imageModel: imageModel,
+          quoteModel: quoteModel,
         ),
       );
+      await loadImage();
+    } catch (error) {
+      emit(
+        HomeState(
+          status: Status.error,
+          errorMessage: error.toString(),
+        ),
+      );
+      resetPendingState();
     }
   }
 
   Future<void> loadImage() async {
-    if (state.imageModel != null) {
+    if (pendingState.imageModel != null) {
       try {
-        _imageProvider = NetworkImage(state.imageModel!.imageUrl);
+        _imageProvider = NetworkImage(pendingState.imageModel!.imageUrl);
         final completer = Completer<ImageInfo>();
         final stream = _imageProvider!.resolve(ImageConfiguration.empty);
         final listener = ImageStreamListener(
@@ -80,6 +84,9 @@ class HomeCubit extends Cubit<HomeState> {
         final frame = await codec.getNextFrame();
         rawImage = frame.image;
 
+        pendingState = pendingState.copyWith(
+          rawImage: rawImage,
+        );
         emit(
           state.copyWith(
             rawImage: rawImage,
@@ -93,6 +100,7 @@ class HomeCubit extends Cubit<HomeState> {
             errorMessage: 'Failed to load image: $error',
           ),
         );
+        resetPendingState();
       }
     } else {
       emit(
@@ -101,80 +109,62 @@ class HomeCubit extends Cubit<HomeState> {
           errorMessage: 'An error occured while getting the image',
         ),
       );
+      resetPendingState();
     }
   }
 
   void randomizeTextLayout() {
     int fontWeightIndex = Random().nextInt(7) + 2;
     int textAlignmentIndex = Random().nextInt(3);
-    int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
-    int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 1);
-    emit(
-      state.copyWith(
+      int textAlignmentIndex = Random().nextInt(3);
+      int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
+      int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 1);
+      pendingState = pendingState.copyWith(
         fontWeightIndex: fontWeightIndex,
         textAlignmentIndex: textAlignmentIndex,
         mainAxisAlignmentIndex: mainAxisAlignmentIndex,
         crossAxisAlignmentIndex: crossAxisAlignmentIndex,
-      ),
+      );
+      print('layout randomized');
+    
+  }
+
+  void getTextPositionAndSize(
+    Offset textPosition,
+    Size textSize,
+  ) {
+    pendingState = pendingState.copyWith(
+      textPosition: textPosition,
+      textSize: textSize,
     );
-    print('layout randomized');
   }
 
-  void calculatePosition({BuildContext? imageContext, BuildContext? textContext}) {
-    randomizeTextLayout();
-    if (imageContext != null && textContext != null && imageContext.mounted && textContext.mounted) {
-      final RenderBox imageRenderBox = imageContext.findRenderObject() as RenderBox;
-      final RenderBox textRenderBox = textContext.findRenderObject() as RenderBox;
-      final textPosition = imageRenderBox.globalToLocal(
-        Offset(
-          textRenderBox.localToGlobal(Offset.zero).dx,
-          textRenderBox.localToGlobal(Offset.zero).dy,
-        ),
-      );
-      emit(
-        state.copyWith(
-          textPosition: textPosition,
-          textSize: textRenderBox.size,
-        ),
-      );
-      print('textPosition ${state.textPosition}, textSize ${state.textSize}, imageSize ${imageRenderBox.size}');
-    } else {
-      emit(
-        const HomeState(
-          status: Status.error,
-          errorMessage: 'image context or text context missing!',
-        ),
-      );
-    }
-  }
-
-  void calculateScaleFactor(BuildContext? context) {
-    if (context != null && context.mounted) {
+  void calculateScaleFactor(Size? imageWidgetSize) {
+    if (imageWidgetSize != null) {
       final ui.Image? image = rawImage;
       if (image == null) return;
 
       double rawImageWidth = image.width.toDouble();
       double rawImageHeight = image.height.toDouble();
 
-      double widgetImageWidth = MediaQuery.of(context).size.width;
-      double widgetImageHeight = MediaQuery.of(context).size.height;
+      double widgetImageWidth = imageWidgetSize.width;
+      double widgetImageHeight = imageWidgetSize.height;
 
       double widthScaleFactor = widgetImageWidth / rawImageWidth;
       double heightScaleFactor = widgetImageHeight / rawImageHeight;
 
-      emit(
-        state.copyWith(
-          scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
-        ),
+      pendingState = pendingState.copyWith(
+        scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
       );
-      print('scaleFactor: ${state.scaleFactor}');
+      print('scaleFactor: ${pendingState.scaleFactor}');
     } else {
       emit(
         const HomeState(
           status: Status.error,
-          errorMessage: 'scale factor calculation context error!',
+          errorMessage: 'scale factor calculation error! Widget size is null!',
         ),
       );
+      resetPendingState();
     }
   }
 
@@ -182,17 +172,21 @@ class HomeCubit extends Cubit<HomeState> {
   final _placeholderColor = Colors.white;
 
   Future<void> generateColors() async {
-    final double? scaleFactor = state.scaleFactor;
+    final double? scaleFactor = pendingState.scaleFactor;
 
-    if (scaleFactor != null && _imageProvider != null && state.rawImage != null && state.textPosition != null && state.textSize != null) {
+      if (scaleFactor != null && _imageProvider != null && pendingState.rawImage != null && pendingState.textPosition != null && pendingState.textSize != null) {
       try {
-        final scaledImageSize = Size(state.rawImage!.width * scaleFactor, state.rawImage!.height * scaleFactor);
-        final bottomRight = state.textPosition! + Offset(state.textSize!.width, state.textSize!.height);
+        final scaledImageSize = Size(pendingState.rawImage!.width * scaleFactor, pendingState.rawImage!.height * scaleFactor);
+        final bottomRight = pendingState.textPosition! +
+            Offset(
+              pendingState.textSize!.width,
+              pendingState.textSize!.height,
+            );
         final region = Rect.fromPoints(
-          state.textPosition!,
+          pendingState.textPosition!,
           Offset(
-            bottomRight.dx.clamp(1, scaledImageSize.width - state.textPosition!.dx),
-            bottomRight.dy.clamp(1, scaledImageSize.height - state.textPosition!.dy),
+            bottomRight.dx.clamp(1, scaledImageSize.width - pendingState.textPosition!.dx),
+            bottomRight.dy.clamp(1, scaledImageSize.height - pendingState.textPosition!.dy),
           ),
         );
 
@@ -209,6 +203,7 @@ class HomeCubit extends Cubit<HomeState> {
             errorMessage: error.toString(),
           ),
         );
+        resetPendingState();
       }
     } else {
       emit(
@@ -217,6 +212,7 @@ class HomeCubit extends Cubit<HomeState> {
           errorMessage: 'Error while generating color',
         ),
       );
+      resetPendingState();
     }
 
     final paletteColor = paletteGenerator != null
@@ -227,14 +223,12 @@ class HomeCubit extends Cubit<HomeState> {
                 : _placeholderColor
         : _placeholderColor;
 
-    emit(
-      state.copyWith(
-        textColor: _getInverseColor(
-          paletteColor.withOpacity(1),
-        ),
+    pendingState = pendingState.copyWith(
+      textColor: _getInverseColor(
+        paletteColor.withOpacity(1),
       ),
     );
-    print('textColor = ${state.textColor}');
+    print('textColor = ${pendingState.textColor}');
   }
 
   Color _getInverseColor(Color color) {
@@ -256,11 +250,32 @@ class HomeCubit extends Cubit<HomeState> {
 
   void emitSuccess() {
     emit(
-      state.copyWith(status: Status.success),
+      pendingState.copyWith(status: Status.success),
     );
   }
 
   void start() async {
+    switch (state.status) {
+      case Status.initial || Status.success || Status.error:
+        resetPendingState();
+        await getItemModels();
+        break;
+      case Status.loading:
+        emit(
+          const HomeState(
+            status: Status.error,
+            errorMessage: 'Another process in progress, please wait.',
+          ),
+        );
+        break;
+      default:
+        emit(
+          const HomeState(
+            status: Status.error,
+            errorMessage: 'Wrong status!',
+          ),
+        );
+        break;
     await getItemModels();
   }
 }

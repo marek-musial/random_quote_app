@@ -232,16 +232,27 @@ class _ImageDisplay extends StatelessWidget {
         constraints = imageConstraints;
         return BlocConsumer<HomeCubit, HomeState>(
           listenWhen: (previous, current) {
-            return previous.rawImage == null && current.rawImage != null || previous.status == Status.error && current.status != Status.error;
+            return current.rawImage != null && current.status != Status.success || previous.status == Status.error && current.status != Status.success;
           },
           listener: (context, state) async {
-            context.read<HomeCubit>().calculateScaleFactor(context);
-            context.read<HomeCubit>().calculatePosition(
-                  imageContext: _imageKey.currentContext,
-                  textContext: _textKey.currentContext,
+            final imageWidgetSize = MediaQuery.of(_imageKey.currentContext!).size;
+            context.read<HomeCubit>().calculateScaleFactor(imageWidgetSize);
+            context.read<HomeCubit>().randomizeTextLayout();
+            final RenderBox imageRenderBox = _imageKey.currentContext?.findRenderObject() as RenderBox;
+            final RenderBox textRenderBox = _textKey.currentContext?.findRenderObject() as RenderBox;
+            final textPosition = imageRenderBox.globalToLocal(
+              Offset(
+                textRenderBox.localToGlobal(Offset.zero).dx,
+                textRenderBox.localToGlobal(Offset.zero).dy,
+              ),
+            );
+            context.read<HomeCubit>().getTextPositionAndSize(
+                  textPosition,
+                  textRenderBox.size,
                 );
             await context.read<HomeCubit>().generateColors();
-            if (state.status != Status.error && context.mounted) {
+            if ((state.status == Status.loading 
+            ) && context.mounted) {
               context.read<HomeCubit>().emitSuccess();
               print('success');
             }
