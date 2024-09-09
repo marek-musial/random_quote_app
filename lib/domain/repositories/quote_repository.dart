@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/advice_quote_remote_data_source.dart';
@@ -18,8 +19,20 @@ class QuoteRepository {
   QuoteRepository();
 
   Future<QuoteModel?> getQuoteModel() async {
-    final randomDataSource = quoteDataSources[Random().nextInt(quoteDataSources.length)];
-
-    return await randomDataSource.getQuoteData();
+    final int chosenIndex = Random().nextInt(quoteDataSources.length);
+    try {
+      final randomDataSource = quoteDataSources[chosenIndex];
+      return await randomDataSource.getQuoteData();
+    } catch (e) {
+      dev.log('$e');
+      int otherIndex;
+      if (chosenIndex < quoteDataSources.length - 1) {
+        otherIndex = chosenIndex + 1;
+      } else {
+        otherIndex = chosenIndex - 1;
+      }
+      final randomDataSource = quoteDataSources[otherIndex];
+      return await randomDataSource.getQuoteData();
+    }
   }
 }
