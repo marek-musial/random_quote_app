@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 
@@ -19,7 +20,7 @@ class PexelsImageRemoteDataSource implements ImageDataSource {
     try {
       const int perPage = 1;
       final randomPage = Random().nextInt(8000);
-      final response = await Dio().get<Map<String, dynamic>>(
+      final response = await dioClient.dio.get<Map<String, dynamic>>(
         'https://api.pexels.com/v1/curated/?page=$randomPage&per_page=$perPage',
         options: Options(
           headers: {'Authorization': Env.pexelsApiKey},

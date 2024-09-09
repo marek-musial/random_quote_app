@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 
@@ -13,7 +14,7 @@ class CataasImageRemoteDataSource implements ImageDataSource {
   @override
   Future<ImageModel?> getImageData() async {
     try {
-      final response = await Dio().get<Map<String, dynamic>>(
+      final response = await dioClient.dio.get<Map<String, dynamic>>(
         'https://cataas.com/cat?json=true',
       );
       final json = response.data;

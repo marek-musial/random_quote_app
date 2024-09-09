@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 
@@ -13,7 +14,7 @@ class KanyeQuoteRemoteDataSource implements QuoteDataSource {
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
-      final response = await Dio().get<Map<String, dynamic>>(
+      final response = await dioClient.dio.get<Map<String, dynamic>>(
         'https://api.kanye.rest',
       );
 
