@@ -179,7 +179,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
   Future<void> generateColors() async {
     final double? scaleFactor = pendingState.scaleFactor;
 
-      if (scaleFactor != null && _imageProvider != null && pendingState.rawImage != null && pendingState.textPosition != null && pendingState.textSize != null) {
+    if (scaleFactor != null && _imageProvider != null && pendingState.rawImage != null && pendingState.textPosition != null && pendingState.textSize != null) {
       try {
         final scaledImageSize = Size(pendingState.rawImage!.width * scaleFactor, pendingState.rawImage!.height * scaleFactor);
         final bottomRight = pendingState.textPosition! +
