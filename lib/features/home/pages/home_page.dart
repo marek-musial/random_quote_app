@@ -81,7 +81,16 @@ class HomePage extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                context.read<HomeCubit>().start();
+                if (state.status == Status.loading) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Another process in progress, please wait'),
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                  );
+                } else {
+                  context.read<HomeCubit>().start();
+                }
               },
               tooltip: 'Reroll',
               child: const Icon(Icons.refresh),
@@ -253,7 +262,6 @@ class _ImageDisplay extends StatelessWidget {
             await context.read<HomeCubit>().generateColors();
             if ((state.status == Status.loading || state.status == Status.decoding) && context.mounted) {
               context.read<HomeCubit>().emitSuccess();
-              print('success');
             }
           },
           builder: (context, state) {
