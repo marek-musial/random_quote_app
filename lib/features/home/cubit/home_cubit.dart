@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
   void resetPendingState() {
     pendingState = const HomeState(status: Status.initial);
-    print('pendingState reset');
+    dev.log('pendingState reset');
   }
 
   Future<void> getItemModels() async {
@@ -57,6 +58,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
           errorMessage: error.toString(),
         ),
       );
+      dev.log('$error');
       resetPendingState();
     }
   }
@@ -92,7 +94,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
             rawImage: rawImage,
           ),
         );
-        print('Width: ${rawImage!.width}, height: ${rawImage!.height}');
+        dev.log('Width: ${rawImage!.width}, height: ${rawImage!.height}');
       } catch (error) {
         emit(
           state.copyWith(
@@ -100,6 +102,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
             errorMessage: 'Failed to load image: $error',
           ),
         );
+        dev.log('$error');
         resetPendingState();
       }
     } else {
@@ -125,9 +128,9 @@ class HomeCubit extends HydratedCubit<HomeState> {
         mainAxisAlignmentIndex: mainAxisAlignmentIndex,
         crossAxisAlignmentIndex: crossAxisAlignmentIndex,
       );
-      print('layout randomized');
+      dev.log('layout randomized');
     } else {
-      print('layout not randomized');
+      dev.log('layout not randomized');
     }
   }
 
@@ -158,7 +161,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       pendingState = pendingState.copyWith(
         scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
       );
-      print('scaleFactor: ${pendingState.scaleFactor}');
+      dev.log('scaleFactor: ${pendingState.scaleFactor}');
     } else {
       emit(
         const HomeState(
@@ -197,7 +200,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
           size: scaledImageSize,
           region: region,
         );
-        print('palette generated!');
+        dev.log('palette generated!');
       } catch (error) {
         emit(
           HomeState(
@@ -205,6 +208,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
             errorMessage: error.toString(),
           ),
         );
+        dev.log('$error');
         resetPendingState();
       }
     } else {
@@ -230,7 +234,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
         paletteColor.withOpacity(1),
       ),
     );
-    print('textColor = ${pendingState.textColor}');
+    dev.log('textColor = ${pendingState.textColor}');
   }
 
   Color _getInverseColor(Color color) {
@@ -254,6 +258,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     emit(
       pendingState.copyWith(status: Status.success),
     );
+    dev.log('success');
   }
 
   void start() async {
@@ -328,6 +333,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       _fromJsonState = jsonState;
       return jsonState;
     } catch (e) {
+      dev.log('$e');
       return null;
     }
   }
