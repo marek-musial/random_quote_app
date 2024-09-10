@@ -1,2 +1,34 @@
-*.c++ linguist-detectable=false
+# Exclude C++ files
+*.cpp linguist-detectable=false
+*.hpp linguist-detectable=false
+*.h   linguist-detectable=false
+*.cc  linguist-detectable=false
+*.cxx linguist-detectable=false
+
+# Exclude CMake files
+CMakeLists.txt linguist-detectable=false
 *.cmake linguist-detectable=false
+
+# Exclude Objective-C (iOS)
+*.m    linguist-detectable=false
+*.mm   linguist-detectable=false
+*.h    linguist-detectable=false
+
+# Exclude Swift (iOS)
+*.swift linguist-detectable=false
+
+# Exclude Java (Android)
+*.java linguist-detectable=false
+
+# Exclude Kotlin (Android)
+*.kt linguist-detectable=false
+
+# Exclude Gradle build files (Android)
+*.gradle linguist-detectable=false
+
+# Exclude shell scripts
+*.sh linguist-detectable=false
+
+# Exclude Flutter build output
+/build/** linguist-detectable=false
+/.dart_tool/** linguist-detectable=false
