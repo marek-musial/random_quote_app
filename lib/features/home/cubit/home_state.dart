@@ -1,36 +1,26 @@
 part of 'home_cubit.dart';
 
-class HomeState extends Equatable {
-  const HomeState({
-    this.status = Status.initial,
-    this.errorMessage,
-    this.imageModel,
-    this.quoteModel,
-    this.rawImage,
-    this.fontWeightIndex,
-    this.textAlignmentIndex,
-    this.mainAxisAlignmentIndex,
-    this.crossAxisAlignmentIndex,
-    this.textColor,
-    this.textPosition,
-    this.textSize,
-    this.scaleFactor,
-  });
-  final Status status;
-  final String? errorMessage;
-  final ImageModel? imageModel;
-  final QuoteModel? quoteModel;
-  final ui.Image? rawImage;
-  final int? fontWeightIndex;
-  final int? textAlignmentIndex;
-  final int? mainAxisAlignmentIndex;
-  final int? crossAxisAlignmentIndex;
-  final Color? textColor;
-  final Offset? textPosition;
-  final Size? textSize;
-  final double? scaleFactor;
+@Freezed(equal: true)
+class HomeState with _$HomeState {
+  const HomeState._();
 
-  HomeState copyWith({
+  const factory HomeState({
+    @JsonKey(includeFromJson: false) @Default(Status.initial) Status status,
+    @JsonKey(includeFromJson: false, includeToJson: false) String? errorMessage,
+    ImageModel? imageModel,
+    QuoteModel? quoteModel,
+    @JsonKey(includeFromJson: false, includeToJson: false) ui.Image? rawImage,
+    int? fontWeightIndex,
+    int? textAlignmentIndex,
+    int? mainAxisAlignmentIndex,
+    int? crossAxisAlignmentIndex,
+    @JsonKey(includeFromJson: false, includeToJson: false) Color? textColor,
+    @JsonKey(includeFromJson: false, includeToJson: false) Offset? textPosition,
+    @JsonKey(includeFromJson: false, includeToJson: false) Size? textSize,
+    @JsonKey(includeFromJson: false, includeToJson: false) double? scaleFactor,
+  }) = _HomeState;
+
+  HomeState copyWithX({
     Status? status,
     String? errorMessage,
     ImageModel? imageModel,
@@ -62,22 +52,5 @@ class HomeState extends Equatable {
     );
   }
 
-  @override
-  List<Object?> get props {
-    return [
-      status,
-      errorMessage,
-      imageModel,
-      quoteModel,
-      rawImage,
-      fontWeightIndex,
-      textAlignmentIndex,
-      mainAxisAlignmentIndex,
-      crossAxisAlignmentIndex,
-      textColor,
-      textPosition,
-      textSize,
-      scaleFactor,
-    ];
-  }
+  factory HomeState.fromJson(Map<String, dynamic> json) => _$HomeStateFromJson(json);
 }

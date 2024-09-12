@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:developer' as dev;
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
@@ -15,6 +15,8 @@ import 'package:palette_generator/palette_generator.dart';
 import 'dart:ui' as ui;
 
 part 'home_state.dart';
+part 'home_cubit.freezed.dart';
+part 'home_cubit.g.dart';
 
 ui.Image? rawImage;
 
@@ -33,19 +35,19 @@ class HomeCubit extends HydratedCubit<HomeState> {
   }
 
   Future<void> getItemModels() async {
-    pendingState = pendingState.copyWith(status: Status.loading);
+    pendingState = pendingState.copyWithX(status: Status.loading);
     emit(
       const HomeState(status: Status.loading),
     );
     try {
       final imageModel = await _imageRepository.getImageModel();
       final quoteModel = await _quoteRepository.getQuoteModel();
-      pendingState = pendingState.copyWith(
+      pendingState = pendingState.copyWithX(
         imageModel: imageModel,
         quoteModel: quoteModel,
       );
       emit(
-        state.copyWith(
+        state.copyWithX(
           imageModel: imageModel,
           quoteModel: quoteModel,
         ),
@@ -86,18 +88,18 @@ class HomeCubit extends HydratedCubit<HomeState> {
         final frame = await codec.getNextFrame();
         rawImage = frame.image;
 
-        pendingState = pendingState.copyWith(
+        pendingState = pendingState.copyWithX(
           rawImage: rawImage,
         );
         emit(
-          state.copyWith(
+          state.copyWithX(
             rawImage: rawImage,
           ),
         );
         dev.log('Width: ${rawImage!.width}, height: ${rawImage!.height}');
       } catch (error) {
         emit(
-          state.copyWith(
+          state.copyWithX(
             status: Status.error,
             errorMessage: 'Failed to load image: $error',
           ),
@@ -122,7 +124,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       int textAlignmentIndex = Random().nextInt(3);
       int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
       int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 1);
-      pendingState = pendingState.copyWith(
+      pendingState = pendingState.copyWithX(
         fontWeightIndex: fontWeightIndex,
         textAlignmentIndex: textAlignmentIndex,
         mainAxisAlignmentIndex: mainAxisAlignmentIndex,
@@ -138,7 +140,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     Offset textPosition,
     Size textSize,
   ) {
-    pendingState = pendingState.copyWith(
+    pendingState = pendingState.copyWithX(
       textPosition: textPosition,
       textSize: textSize,
     );
@@ -158,7 +160,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       double widthScaleFactor = widgetImageWidth / rawImageWidth;
       double heightScaleFactor = widgetImageHeight / rawImageHeight;
 
-      pendingState = pendingState.copyWith(
+      pendingState = pendingState.copyWithX(
         scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
       );
       dev.log('scaleFactor: ${pendingState.scaleFactor}');
@@ -229,7 +231,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
                 : _placeholderColor
         : _placeholderColor;
 
-    pendingState = pendingState.copyWith(
+    pendingState = pendingState.copyWithX(
       textColor: _getInverseColor(
         paletteColor.withOpacity(1),
       ),
@@ -256,7 +258,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
   void emitSuccess() {
     emit(
-      pendingState.copyWith(status: Status.success),
+      pendingState.copyWithX(status: Status.success),
     );
     dev.log('success');
   }
@@ -294,16 +296,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
   @override
   Map<String, dynamic>? toJson(HomeState state) {
     if (state.status == Status.success && state.imageModel != _fromJsonState.imageModel && state.quoteModel != _fromJsonState.quoteModel) {
-      final Map<String, dynamic> map = {
-        'imageModelUrl': state.imageModel?.imageUrl,
-        'imageModelAuthor': state.imageModel?.author,
-        'quoteModelQuote': state.quoteModel?.quote,
-        'quoteModelAuthor': state.quoteModel?.author,
-        'fontWeightIndex': state.fontWeightIndex,
-        'textAlignmentIndex': state.textAlignmentIndex,
-        'mainAxisAlignmentIndex': state.mainAxisAlignmentIndex,
-        'crossAxisAlignmentIndex': state.crossAxisAlignmentIndex,
-      };
+      final Map<String, dynamic> map = state.toJson();
       return map;
     } else {
       return null;
@@ -315,25 +308,11 @@ class HomeCubit extends HydratedCubit<HomeState> {
   @override
   HomeState? fromJson(Map<String, dynamic> json) {
     try {
-      final jsonState = HomeState(
-        status: Status.decoding,
-        imageModel: ImageModel(
-          imageUrl: json['imageModelUrl'],
-          author: json['imageModelAuthor'],
-        ),
-        quoteModel: QuoteModel(
-          quote: json['quoteModelQuote'],
-          author: json['quoteModelAuthor'],
-        ),
-        fontWeightIndex: json['fontWeightIndex'] as int?,
-        textAlignmentIndex: json['textAlignmentIndex'] as int?,
-        mainAxisAlignmentIndex: json['mainAxisAlignmentIndex'] as int?,
-        crossAxisAlignmentIndex: json['crossAxisAlignmentIndex'] as int?,
-      );
-      _fromJsonState = jsonState;
-      return jsonState;
+      final jsonState = HomeState.fromJson(json);
+      _fromJsonState = jsonState.copyWithX(status: Status.decoding);
+      return jsonState.copyWithX(status: Status.decoding);
     } catch (e) {
-      dev.log('$e');
+      dev.log('Error on HomeState fromJson: $e');
       return null;
     }
   }
