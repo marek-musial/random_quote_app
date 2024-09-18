@@ -30,7 +30,7 @@ class QuotableQuoteRemoteDataSource implements QuoteDataSource {
       );
       return quoteModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Unknown error');
+      throw Exception(error.response?.data ?? 'Quoteble api unknown error');
     }
   }
 }

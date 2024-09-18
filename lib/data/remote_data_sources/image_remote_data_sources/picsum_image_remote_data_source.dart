@@ -37,7 +37,7 @@ class PicsumImageRemoteDataSource implements ImageDataSource {
       );
       return imageModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Unknown error');
+      throw Exception(error.response?.data ?? 'Picsum api unknown error');
     }
   }
 }
