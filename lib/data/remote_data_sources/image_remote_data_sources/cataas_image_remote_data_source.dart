@@ -31,7 +31,7 @@ class CataasImageRemoteDataSource implements ImageDataSource {
       );
       return imageModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Unknown error');
+      throw Exception(error.response?.data ?? 'Cataas api unknown error');
     }
   }
 }

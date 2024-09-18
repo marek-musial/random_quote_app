@@ -33,7 +33,7 @@ class AdviceQuoteRemoteDataSource implements QuoteDataSource {
       );
       return quoteModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Unknown error');
+      throw Exception(error.response?.data ?? 'Advice api unknown error');
     }
   }
 }

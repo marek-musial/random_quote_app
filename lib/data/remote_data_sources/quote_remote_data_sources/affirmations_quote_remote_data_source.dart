@@ -30,7 +30,7 @@ class AffirmationsQuoteRemoteDataSource implements QuoteDataSource {
       );
       return quoteModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Unknown error');
+      throw Exception(error.response?.data ?? 'Affirmations api unknown error');
     }
   }
 }
