@@ -24,7 +24,7 @@ class QuoteRepository {
       final randomDataSource = quoteDataSources[chosenIndex];
       return await randomDataSource.getQuoteData();
     } catch (e) {
-      dev.log('[Time: ${DateTime.now}] $e');
+      dev.log('[Time: ${DateTime.now().toString()}] $e');
       int otherIndex;
       if (chosenIndex < quoteDataSources.length - 1) {
         otherIndex = chosenIndex + 1;
