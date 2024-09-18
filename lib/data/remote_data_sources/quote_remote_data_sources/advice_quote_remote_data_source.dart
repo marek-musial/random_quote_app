@@ -1,9 +1,40 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
+import 'package:retrofit/retrofit.dart';
+
+part 'advice_quote_remote_data_source.g.dart';
+part 'advice_quote_remote_data_source.freezed.dart';
+
+@freezed
+class AdviceResponse with _$AdviceResponse {
+  factory AdviceResponse({
+    required AdviceSlip slip,
+  }) = _AdviceResponse;
+
+  factory AdviceResponse.fromJson(Map<String, dynamic> json) => _$AdviceResponseFromJson(json);
+}
+
+@freezed
+class AdviceSlip with _$AdviceSlip {
+  factory AdviceSlip({
+    required String advice,
+  }) = _AdviceSlip;
+
+  factory AdviceSlip.fromJson(Map<String, dynamic> json) => _$AdviceSlipFromJson(json);
+}
+
+@RestApi(baseUrl: 'https://api.adviceslip.com')
+abstract class AdviceQuoteRemoteRetrofitDataSource {
+  factory AdviceQuoteRemoteRetrofitDataSource(Dio dio, {String? baseUrl}) = _AdviceQuoteRemoteRetrofitDataSource;
+
+  @GET('/advice')
+  Future<String> getQuoteData();
+}
 
 class AdviceQuoteRemoteDataSource implements QuoteDataSource {
   @override
@@ -16,19 +47,12 @@ class AdviceQuoteRemoteDataSource implements QuoteDataSource {
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
-      final response = await dioClient.dio.get<String>(
-        'https://api.adviceslip.com/advice',
-      );
-
-      final json = response.data;
-
-      if (json == null) {
-        return null;
-      }
-      final map = jsonDecode(json);
-
+      final dataSource = AdviceQuoteRemoteRetrofitDataSource(dioClient.dio);
+      final jsonString = await dataSource.getQuoteData();
+      final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      final response = AdviceResponse.fromJson(jsonMap);
       final quoteModel = QuoteModel(
-        quote: map['slip']['advice'],
+        quote: response.slip.advice,
         author: null,
       );
       return quoteModel;

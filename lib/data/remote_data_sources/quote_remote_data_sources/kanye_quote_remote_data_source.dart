@@ -1,7 +1,29 @@
 import 'package:dio/dio.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
+import 'package:retrofit/retrofit.dart';
+
+part 'kanye_quote_remote_data_source.g.dart';
+part 'kanye_quote_remote_data_source.freezed.dart';
+
+@freezed
+class KanyeResponse with _$KanyeResponse {
+  factory KanyeResponse({
+    required String quote,
+  }) = _KanyeResponse;
+
+  factory KanyeResponse.fromJson(Map<String, dynamic> json) => _$KanyeResponseFromJson(json);
+}
+
+@RestApi(baseUrl: 'https://api.kanye.rest')
+abstract class KanyeQuoteRemoteRetrofitDataSource {
+  factory KanyeQuoteRemoteRetrofitDataSource(Dio dio, {String? baseUrl}) = _KanyeQuoteRemoteRetrofitDataSource;
+
+  @GET('')
+  Future<KanyeResponse> getQuoteData();
+}
 
 class KanyeQuoteRemoteDataSource implements QuoteDataSource {
   @override
@@ -14,18 +36,10 @@ class KanyeQuoteRemoteDataSource implements QuoteDataSource {
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
-      final response = await dioClient.dio.get<Map<String, dynamic>>(
-        'https://api.kanye.rest',
-      );
-
-      final json = response.data;
-
-      if (json == null) {
-        return null;
-      }
-
+      final dataSource = KanyeQuoteRemoteRetrofitDataSource(dioClient.dio);
+      final response = await dataSource.getQuoteData();
       final quoteModel = QuoteModel(
-        quote: json['quote'],
+        quote: response.quote,
         author: 'Kanye West',
       );
       return quoteModel;
