@@ -1,7 +1,29 @@
 import 'package:dio/dio.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
+import 'package:retrofit/retrofit.dart';
+
+part 'cataas_image_remote_data_source.g.dart';
+part 'cataas_image_remote_data_source.freezed.dart';
+
+@freezed
+class CataasResponse with _$CataasResponse {
+  factory CataasResponse({
+    @JsonKey(name: '_id') required String id,
+  }) = _CataasResponse;
+
+  factory CataasResponse.fromJson(Map<String, dynamic> json) => _$CataasResponseFromJson(json);
+}
+
+@RestApi(baseUrl: 'https://cataas.com/')
+abstract class CataasImageRemoteRetrofitDataSource {
+  factory CataasImageRemoteRetrofitDataSource(Dio dio, {String? baseUrl}) = _CataasImageRemoteRetrofitDataSource;
+
+  @GET('/cat?json=true')
+  Future<CataasResponse> getImageData();
+}
 
 class CataasImageRemoteDataSource implements ImageDataSource {
   @override
@@ -14,19 +36,11 @@ class CataasImageRemoteDataSource implements ImageDataSource {
   @override
   Future<ImageModel?> getImageData() async {
     try {
-      final response = await dioClient.dio.get<Map<String, dynamic>>(
-        'https://cataas.com/cat?json=true',
-      );
-      final json = response.data;
-
-      if (json == null) {
-        return null;
-      }
-
-      final id = json['_id'];
-
+      final dataSource = CataasImageRemoteRetrofitDataSource(dioClient.dio);
+      final imageData = await dataSource.getImageData();
+      final imageId = imageData.id;
       final imageModel = ImageModel(
-        imageUrl: 'https://cataas.com/cat/$id',
+        imageUrl: 'https://cataas.com/cat/$imageId',
         author: null,
       );
       return imageModel;
