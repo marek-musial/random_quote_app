@@ -22,7 +22,7 @@ class ImageRepository {
       final randomDataSource = imageDataSources[chosenIndex];
       return await randomDataSource.getImageData();
     } catch (e) {
-      dev.log('[Time: ${DateTime.now}] $e');
+      dev.log('[Time: ${DateTime.now().toString()}] $e');
       int otherIndex;
       if (chosenIndex < imageDataSources.length - 1) {
         otherIndex = chosenIndex + 1;
