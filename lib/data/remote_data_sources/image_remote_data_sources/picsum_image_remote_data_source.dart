@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
@@ -20,9 +21,13 @@ class PicsumResponse with _$PicsumResponse {
   factory PicsumResponse.fromJson(Map<String, dynamic> json) => _$PicsumResponseFromJson(json);
 }
 
+@injectable
 @RestApi(baseUrl: 'https://picsum.photos/v2')
 abstract class PicsumImageRemoteRetrofitDataSource {
-  factory PicsumImageRemoteRetrofitDataSource(Dio dio, {String? baseUrl}) = _PicsumImageRemoteRetrofitDataSource;
+  @factoryMethod
+  factory PicsumImageRemoteRetrofitDataSource(
+    Dio dio,
+  ) = _PicsumImageRemoteRetrofitDataSource;
 
   @GET('/list')
   Future<List<PicsumResponse>> getImageData({

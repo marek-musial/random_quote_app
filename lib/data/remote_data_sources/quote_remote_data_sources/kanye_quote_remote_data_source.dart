@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
@@ -17,9 +18,13 @@ class KanyeResponse with _$KanyeResponse {
   factory KanyeResponse.fromJson(Map<String, dynamic> json) => _$KanyeResponseFromJson(json);
 }
 
+@injectable
 @RestApi(baseUrl: 'https://api.kanye.rest')
 abstract class KanyeQuoteRemoteRetrofitDataSource {
-  factory KanyeQuoteRemoteRetrofitDataSource(Dio dio, {String? baseUrl}) = _KanyeQuoteRemoteRetrofitDataSource;
+  @factoryMethod
+  factory KanyeQuoteRemoteRetrofitDataSource(
+    Dio dio,
+  ) = _KanyeQuoteRemoteRetrofitDataSource;
 
   @GET('')
   Future<KanyeResponse> getQuoteData();

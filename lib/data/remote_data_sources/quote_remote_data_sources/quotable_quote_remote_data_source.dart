@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
@@ -18,9 +19,13 @@ class QuotableResponse with _$QuotableResponse {
   factory QuotableResponse.fromJson(Map<String, dynamic> json) => _$QuotableResponseFromJson(json);
 }
 
+@injectable
 @RestApi(baseUrl: 'https://api.quotable.io/quotes')
 abstract class QuotableQuoteRemoteRetrofitDataSource {
-  factory QuotableQuoteRemoteRetrofitDataSource(Dio dio, {String? baseUrl}) = _QuotableQuoteRemoteRetrofitDataSource;
+  @factoryMethod
+  factory QuotableQuoteRemoteRetrofitDataSource(
+    Dio dio,
+  ) = _QuotableQuoteRemoteRetrofitDataSource;
 
   @GET('/random')
   Future<List<QuotableResponse>> getQuoteData();

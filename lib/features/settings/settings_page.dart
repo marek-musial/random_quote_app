@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:random_quote_app/core/injection_container.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
@@ -169,7 +170,9 @@ class ColorButton extends StatelessWidget {
     BuildContext context,
   ) {
     return BlocProvider(
-      create: (context) => RootCubit(),
+      create: (context) {
+        return getIt<RootCubit>();
+      },
       child: InkWell(
         borderRadius: BorderRadius.circular(screenWidth / 10),
         child: Container(
