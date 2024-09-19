@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
@@ -17,9 +18,13 @@ class CataasResponse with _$CataasResponse {
   factory CataasResponse.fromJson(Map<String, dynamic> json) => _$CataasResponseFromJson(json);
 }
 
+@injectable
 @RestApi(baseUrl: 'https://cataas.com/')
 abstract class CataasImageRemoteRetrofitDataSource {
-  factory CataasImageRemoteRetrofitDataSource(Dio dio, {String? baseUrl}) = _CataasImageRemoteRetrofitDataSource;
+  @factoryMethod
+  factory CataasImageRemoteRetrofitDataSource(
+    Dio dio,
+  ) = _CataasImageRemoteRetrofitDataSource;
 
   @GET('/cat?json=true')
   Future<CataasResponse> getImageData();

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:developer' as dev;
 
+import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/image_remote_data_sources/cataas_image_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/image_remote_data_sources/pexels_image_remote_data_source.dart';
@@ -13,6 +14,7 @@ final List<ImageDataSource> imageDataSources = [
   PexelsImageRemoteDataSource(),
 ];
 
+@injectable
 class ImageRepository {
   ImageRepository();
 

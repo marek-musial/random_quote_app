@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
@@ -42,9 +43,13 @@ class PexelsSizes with _$PexelsSizes {
 
 final int randomPage = Random().nextInt(8000);
 
+@injectable
 @RestApi(baseUrl: 'https://api.pexels.com/v1/')
 abstract class PexelsImageRemoteRetrofitDataSource {
-  factory PexelsImageRemoteRetrofitDataSource(Dio dio, {String? baseUrl}) = _PexelsImageRemoteRetrofitDataSource;
+  @factoryMethod
+  factory PexelsImageRemoteRetrofitDataSource(
+    Dio dio,
+  ) = _PexelsImageRemoteRetrofitDataSource;
 
   @GET('/curated/')
   Future<PexelsResponse> getImageData({

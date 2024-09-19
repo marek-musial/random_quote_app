@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 part 'root_state.dart';
 
+@injectable
 class RootCubit extends Cubit<RootState> {
   RootCubit() : super(const RootState());
 

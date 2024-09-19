@@ -1,22 +1,19 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import 'package:random_quote_app/core/injection_container.dart';
 
+@singleton
 class DioClient {
-  static final DioClient _instance = DioClient._internal(Dio());
-
   final Dio _dio;
 
-  DioClient._internal(this._dio) {
+  DioClient(this._dio) {
     _dio.options = BaseOptions(
       connectTimeout: const Duration(seconds: 5),
       receiveTimeout: const Duration(seconds: 3),
     );
   }
 
-  factory DioClient() {
-    return _instance;
-  }
-
   Dio get dio => _dio;
 }
 
-final DioClient dioClient = DioClient();
+final dioClient = getIt<DioClient>();

@@ -5,6 +5,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
@@ -20,6 +21,7 @@ part 'home_cubit.g.dart';
 
 ui.Image? rawImage;
 
+@injectable
 class HomeCubit extends HydratedCubit<HomeState> {
   HomeCubit(this._imageRepository, this._quoteRepository) : super(const HomeState());
 

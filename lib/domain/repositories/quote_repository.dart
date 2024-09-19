@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:developer' as dev;
 
+import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/advice_quote_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/affirmations_quote_remote_data_source.dart';
@@ -15,6 +16,7 @@ final List<QuoteDataSource> quoteDataSources = [
   QuotableQuoteRemoteDataSource(),
 ];
 
+@injectable
 class QuoteRepository {
   QuoteRepository();
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/data/dio_client.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
@@ -28,9 +29,13 @@ class AdviceSlip with _$AdviceSlip {
   factory AdviceSlip.fromJson(Map<String, dynamic> json) => _$AdviceSlipFromJson(json);
 }
 
+@injectable
 @RestApi(baseUrl: 'https://api.adviceslip.com')
 abstract class AdviceQuoteRemoteRetrofitDataSource {
-  factory AdviceQuoteRemoteRetrofitDataSource(Dio dio, {String? baseUrl}) = _AdviceQuoteRemoteRetrofitDataSource;
+  @factoryMethod
+  factory AdviceQuoteRemoteRetrofitDataSource(
+    Dio dio,
+  ) = _AdviceQuoteRemoteRetrofitDataSource;
 
   @GET('/advice')
   Future<String> getQuoteData();
