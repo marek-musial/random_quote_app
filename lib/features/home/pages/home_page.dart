@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/extensions.dart';
@@ -8,6 +9,8 @@ import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
+
+final widgetToImageKey = GlobalKey();
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.title});
@@ -61,14 +64,25 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (imageModel != null && quoteModel != null)
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Center(
-                              child: _ImageDisplay(imageModel: imageModel),
+                        InkWell(
+                          child: RepaintBoundary(
+                            key: widgetToImageKey,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Center(
+                                  child: _ImageDisplay(
+                                    imageModel: imageModel,
+                                  ),
+                                ),
+                                _QuoteDisplay(quoteModel: quoteModel),
+                              ],
                             ),
-                            _QuoteDisplay(quoteModel: quoteModel),
-                          ],
+                          ),
+                          onLongPress: () {
+                            final RenderRepaintBoundary boundary = widgetToImageKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+                            context.read<HomeCubit>().capturePng(boundary);
+                          },
                         )
                       else
                         const Center(
