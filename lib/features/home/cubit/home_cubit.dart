@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
@@ -328,7 +329,8 @@ class HomeCubit extends HydratedCubit<HomeState> {
     final ui.Image image = await boundary.toImage();
     final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
-    final File imageFile = await File('$appDirectoryPath/image.png').create();
+    String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
+    final File imageFile = await File('$appDirectoryPath/image_$timestamp.png').create();
     imageFile.writeAsBytesSync(pngBytes);
   }
 }
