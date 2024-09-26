@@ -326,11 +326,13 @@ class HomeCubit extends HydratedCubit<HomeState> {
   }
 
   Future<void> capturePng(RenderRepaintBoundary boundary) async {
+    dev.log('Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}');
     final ui.Image image = await boundary.toImage();
     final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
     String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
     final File imageFile = await File('$appDirectoryPath/image_$timestamp.png').create();
     imageFile.writeAsBytesSync(pngBytes);
+    dev.log('Saved image width: ${image.width}, saved image height: ${image.height}');
   }
 }
