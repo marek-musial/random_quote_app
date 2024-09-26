@@ -64,25 +64,26 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (imageModel != null && quoteModel != null)
-                        InkWell(
-                          child: RepaintBoundary(
-                            key: widgetToImageKey,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Center(
-                                  child: _ImageDisplay(
-                                    imageModel: imageModel,
-                                  ),
+                        Center(
+                          child: ConstrainedBox(
+                            constraints: imageConstraints,
+                            child: InkWell(
+                              child: RepaintBoundary(
+                                key: widgetToImageKey,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    _ImageDisplay(imageModel: imageModel),
+                                    _QuoteDisplay(quoteModel: quoteModel),
+                                  ],
                                 ),
-                                _QuoteDisplay(quoteModel: quoteModel),
-                              ],
+                              ),
+                              onLongPress: () {
+                                final RenderRepaintBoundary boundary = widgetToImageKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+                                context.read<HomeCubit>().capturePng(boundary);
+                              },
                             ),
                           ),
-                          onLongPress: () {
-                            final RenderRepaintBoundary boundary = widgetToImageKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-                            context.read<HomeCubit>().capturePng(boundary);
-                          },
                         )
                       else
                         const Center(
