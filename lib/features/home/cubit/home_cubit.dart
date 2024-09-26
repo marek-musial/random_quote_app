@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:developer' as dev;
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -14,6 +17,8 @@ import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 
 import 'package:palette_generator/palette_generator.dart';
 import 'dart:ui' as ui;
+
+import 'package:random_quote_app/main.dart';
 
 part 'home_state.dart';
 part 'home_cubit.freezed.dart';
@@ -317,5 +322,13 @@ class HomeCubit extends HydratedCubit<HomeState> {
       dev.log('Error on HomeState fromJson: $e');
       return null;
     }
+  }
+
+  Future<void> capturePng(RenderRepaintBoundary boundary) async {
+    final ui.Image image = await boundary.toImage();
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List pngBytes = byteData!.buffer.asUint8List();
+    final File imageFile = await File('$appDirectoryPath/image.png').create();
+    imageFile.writeAsBytesSync(pngBytes);
   }
 }
