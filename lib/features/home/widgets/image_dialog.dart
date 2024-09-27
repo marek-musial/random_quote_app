@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
-import 'package:random_quote_app/features/home/pages/home_page.dart';
+import 'package:random_quote_app/features/home/widgets/home_page_widgets_export.dart';
 
 class ImageManagementDialog extends StatelessWidget {
   const ImageManagementDialog({
