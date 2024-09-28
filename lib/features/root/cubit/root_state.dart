@@ -18,4 +18,8 @@ class RootState {
       isThemeBright: isThemeBright ?? this.isThemeBright,
     );
   }
+
+  Map<String, dynamic> toJson(){
+    return {'themeColor': themeColor?.value, 'isThemeBright': isThemeBright};
+  }
 }
