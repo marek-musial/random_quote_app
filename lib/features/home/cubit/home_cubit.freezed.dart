@@ -26,20 +26,6 @@ mixin _$HomeState {
   String? get errorMessage => throw _privateConstructorUsedError;
   ImageModel? get imageModel => throw _privateConstructorUsedError;
   QuoteModel? get quoteModel => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Image? get rawImage => throw _privateConstructorUsedError;
-  int? get fontWeightIndex => throw _privateConstructorUsedError;
-  int? get textAlignmentIndex => throw _privateConstructorUsedError;
-  int? get mainAxisAlignmentIndex => throw _privateConstructorUsedError;
-  int? get crossAxisAlignmentIndex => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Color? get textColor => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Offset? get textPosition => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Size? get textSize => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  double? get scaleFactor => throw _privateConstructorUsedError;
 
   /// Serializes this HomeState to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -61,19 +47,7 @@ abstract class $HomeStateCopyWith<$Res> {
       @JsonKey(includeFromJson: false, includeToJson: false)
       String? errorMessage,
       ImageModel? imageModel,
-      QuoteModel? quoteModel,
-      @JsonKey(includeFromJson: false, includeToJson: false) ui.Image? rawImage,
-      int? fontWeightIndex,
-      int? textAlignmentIndex,
-      int? mainAxisAlignmentIndex,
-      int? crossAxisAlignmentIndex,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      ui.Color? textColor,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      ui.Offset? textPosition,
-      @JsonKey(includeFromJson: false, includeToJson: false) ui.Size? textSize,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      double? scaleFactor});
+      QuoteModel? quoteModel});
 
   $ImageModelCopyWith<$Res>? get imageModel;
   $QuoteModelCopyWith<$Res>? get quoteModel;
@@ -98,15 +72,6 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
     Object? errorMessage = freezed,
     Object? imageModel = freezed,
     Object? quoteModel = freezed,
-    Object? rawImage = freezed,
-    Object? fontWeightIndex = freezed,
-    Object? textAlignmentIndex = freezed,
-    Object? mainAxisAlignmentIndex = freezed,
-    Object? crossAxisAlignmentIndex = freezed,
-    Object? textColor = freezed,
-    Object? textPosition = freezed,
-    Object? textSize = freezed,
-    Object? scaleFactor = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -125,42 +90,6 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.quoteModel
           : quoteModel // ignore: cast_nullable_to_non_nullable
               as QuoteModel?,
-      rawImage: freezed == rawImage
-          ? _value.rawImage
-          : rawImage // ignore: cast_nullable_to_non_nullable
-              as ui.Image?,
-      fontWeightIndex: freezed == fontWeightIndex
-          ? _value.fontWeightIndex
-          : fontWeightIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      textAlignmentIndex: freezed == textAlignmentIndex
-          ? _value.textAlignmentIndex
-          : textAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      mainAxisAlignmentIndex: freezed == mainAxisAlignmentIndex
-          ? _value.mainAxisAlignmentIndex
-          : mainAxisAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      crossAxisAlignmentIndex: freezed == crossAxisAlignmentIndex
-          ? _value.crossAxisAlignmentIndex
-          : crossAxisAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      textColor: freezed == textColor
-          ? _value.textColor
-          : textColor // ignore: cast_nullable_to_non_nullable
-              as ui.Color?,
-      textPosition: freezed == textPosition
-          ? _value.textPosition
-          : textPosition // ignore: cast_nullable_to_non_nullable
-              as ui.Offset?,
-      textSize: freezed == textSize
-          ? _value.textSize
-          : textSize // ignore: cast_nullable_to_non_nullable
-              as ui.Size?,
-      scaleFactor: freezed == scaleFactor
-          ? _value.scaleFactor
-          : scaleFactor // ignore: cast_nullable_to_non_nullable
-              as double?,
     ) as $Val);
   }
 
@@ -206,19 +135,7 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       @JsonKey(includeFromJson: false, includeToJson: false)
       String? errorMessage,
       ImageModel? imageModel,
-      QuoteModel? quoteModel,
-      @JsonKey(includeFromJson: false, includeToJson: false) ui.Image? rawImage,
-      int? fontWeightIndex,
-      int? textAlignmentIndex,
-      int? mainAxisAlignmentIndex,
-      int? crossAxisAlignmentIndex,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      ui.Color? textColor,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      ui.Offset? textPosition,
-      @JsonKey(includeFromJson: false, includeToJson: false) ui.Size? textSize,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      double? scaleFactor});
+      QuoteModel? quoteModel});
 
   @override
   $ImageModelCopyWith<$Res>? get imageModel;
@@ -243,15 +160,6 @@ class __$$HomeStateImplCopyWithImpl<$Res>
     Object? errorMessage = freezed,
     Object? imageModel = freezed,
     Object? quoteModel = freezed,
-    Object? rawImage = freezed,
-    Object? fontWeightIndex = freezed,
-    Object? textAlignmentIndex = freezed,
-    Object? mainAxisAlignmentIndex = freezed,
-    Object? crossAxisAlignmentIndex = freezed,
-    Object? textColor = freezed,
-    Object? textPosition = freezed,
-    Object? textSize = freezed,
-    Object? scaleFactor = freezed,
   }) {
     return _then(_$HomeStateImpl(
       status: null == status
@@ -270,42 +178,6 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.quoteModel
           : quoteModel // ignore: cast_nullable_to_non_nullable
               as QuoteModel?,
-      rawImage: freezed == rawImage
-          ? _value.rawImage
-          : rawImage // ignore: cast_nullable_to_non_nullable
-              as ui.Image?,
-      fontWeightIndex: freezed == fontWeightIndex
-          ? _value.fontWeightIndex
-          : fontWeightIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      textAlignmentIndex: freezed == textAlignmentIndex
-          ? _value.textAlignmentIndex
-          : textAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      mainAxisAlignmentIndex: freezed == mainAxisAlignmentIndex
-          ? _value.mainAxisAlignmentIndex
-          : mainAxisAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      crossAxisAlignmentIndex: freezed == crossAxisAlignmentIndex
-          ? _value.crossAxisAlignmentIndex
-          : crossAxisAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      textColor: freezed == textColor
-          ? _value.textColor
-          : textColor // ignore: cast_nullable_to_non_nullable
-              as ui.Color?,
-      textPosition: freezed == textPosition
-          ? _value.textPosition
-          : textPosition // ignore: cast_nullable_to_non_nullable
-              as ui.Offset?,
-      textSize: freezed == textSize
-          ? _value.textSize
-          : textSize // ignore: cast_nullable_to_non_nullable
-              as ui.Size?,
-      scaleFactor: freezed == scaleFactor
-          ? _value.scaleFactor
-          : scaleFactor // ignore: cast_nullable_to_non_nullable
-              as double?,
     ));
   }
 }
@@ -317,16 +189,7 @@ class _$HomeStateImpl extends _HomeState {
       {@JsonKey(includeFromJson: false) this.status = Status.initial,
       @JsonKey(includeFromJson: false, includeToJson: false) this.errorMessage,
       this.imageModel,
-      this.quoteModel,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.rawImage,
-      this.fontWeightIndex,
-      this.textAlignmentIndex,
-      this.mainAxisAlignmentIndex,
-      this.crossAxisAlignmentIndex,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.textColor,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.textPosition,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.textSize,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.scaleFactor})
+      this.quoteModel})
       : super._();
 
   factory _$HomeStateImpl.fromJson(Map<String, dynamic> json) =>
@@ -342,33 +205,10 @@ class _$HomeStateImpl extends _HomeState {
   final ImageModel? imageModel;
   @override
   final QuoteModel? quoteModel;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  final ui.Image? rawImage;
-  @override
-  final int? fontWeightIndex;
-  @override
-  final int? textAlignmentIndex;
-  @override
-  final int? mainAxisAlignmentIndex;
-  @override
-  final int? crossAxisAlignmentIndex;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  final ui.Color? textColor;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  final ui.Offset? textPosition;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  final ui.Size? textSize;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  final double? scaleFactor;
 
   @override
   String toString() {
-    return 'HomeState(status: $status, errorMessage: $errorMessage, imageModel: $imageModel, quoteModel: $quoteModel, rawImage: $rawImage, fontWeightIndex: $fontWeightIndex, textAlignmentIndex: $textAlignmentIndex, mainAxisAlignmentIndex: $mainAxisAlignmentIndex, crossAxisAlignmentIndex: $crossAxisAlignmentIndex, textColor: $textColor, textPosition: $textPosition, textSize: $textSize, scaleFactor: $scaleFactor)';
+    return 'HomeState(status: $status, errorMessage: $errorMessage, imageModel: $imageModel, quoteModel: $quoteModel)';
   }
 
   @override
@@ -382,45 +222,13 @@ class _$HomeStateImpl extends _HomeState {
             (identical(other.imageModel, imageModel) ||
                 other.imageModel == imageModel) &&
             (identical(other.quoteModel, quoteModel) ||
-                other.quoteModel == quoteModel) &&
-            (identical(other.rawImage, rawImage) ||
-                other.rawImage == rawImage) &&
-            (identical(other.fontWeightIndex, fontWeightIndex) ||
-                other.fontWeightIndex == fontWeightIndex) &&
-            (identical(other.textAlignmentIndex, textAlignmentIndex) ||
-                other.textAlignmentIndex == textAlignmentIndex) &&
-            (identical(other.mainAxisAlignmentIndex, mainAxisAlignmentIndex) ||
-                other.mainAxisAlignmentIndex == mainAxisAlignmentIndex) &&
-            (identical(
-                    other.crossAxisAlignmentIndex, crossAxisAlignmentIndex) ||
-                other.crossAxisAlignmentIndex == crossAxisAlignmentIndex) &&
-            (identical(other.textColor, textColor) ||
-                other.textColor == textColor) &&
-            (identical(other.textPosition, textPosition) ||
-                other.textPosition == textPosition) &&
-            (identical(other.textSize, textSize) ||
-                other.textSize == textSize) &&
-            (identical(other.scaleFactor, scaleFactor) ||
-                other.scaleFactor == scaleFactor));
+                other.quoteModel == quoteModel));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      status,
-      errorMessage,
-      imageModel,
-      quoteModel,
-      rawImage,
-      fontWeightIndex,
-      textAlignmentIndex,
-      mainAxisAlignmentIndex,
-      crossAxisAlignmentIndex,
-      textColor,
-      textPosition,
-      textSize,
-      scaleFactor);
+  int get hashCode =>
+      Object.hash(runtimeType, status, errorMessage, imageModel, quoteModel);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -444,21 +252,7 @@ abstract class _HomeState extends HomeState {
       @JsonKey(includeFromJson: false, includeToJson: false)
       final String? errorMessage,
       final ImageModel? imageModel,
-      final QuoteModel? quoteModel,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      final ui.Image? rawImage,
-      final int? fontWeightIndex,
-      final int? textAlignmentIndex,
-      final int? mainAxisAlignmentIndex,
-      final int? crossAxisAlignmentIndex,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      final ui.Color? textColor,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      final ui.Offset? textPosition,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      final ui.Size? textSize,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      final double? scaleFactor}) = _$HomeStateImpl;
+      final QuoteModel? quoteModel}) = _$HomeStateImpl;
   const _HomeState._() : super._();
 
   factory _HomeState.fromJson(Map<String, dynamic> json) =
@@ -474,29 +268,6 @@ abstract class _HomeState extends HomeState {
   ImageModel? get imageModel;
   @override
   QuoteModel? get quoteModel;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Image? get rawImage;
-  @override
-  int? get fontWeightIndex;
-  @override
-  int? get textAlignmentIndex;
-  @override
-  int? get mainAxisAlignmentIndex;
-  @override
-  int? get crossAxisAlignmentIndex;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Color? get textColor;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Offset? get textPosition;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Size? get textSize;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  double? get scaleFactor;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.

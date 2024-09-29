@@ -21,8 +21,8 @@ class QuoteDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        final FontWeight fontWeight = FontWeight.values[state.fontWeightIndex ?? 1];
-        final TextAlign textAlign = TextAlign.values[state.textAlignmentIndex ?? 2];
+        final FontWeight fontWeight = FontWeight.values[state.quoteModel?.fontWeightIndex ?? 1];
+        final TextAlign textAlign = TextAlign.values[state.quoteModel?.textAlignmentIndex ?? 2];
         return Center(
           child: Container(
             constraints: BoxConstraints(
@@ -30,8 +30,8 @@ class QuoteDisplay extends StatelessWidget {
               maxWidth: (screenWidth * 6 / 8).roundToDouble(),
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.values[state.mainAxisAlignmentIndex ?? 2],
-              crossAxisAlignment: CrossAxisAlignment.values[state.crossAxisAlignmentIndex ?? 2],
+              mainAxisAlignment: MainAxisAlignment.values[state.quoteModel?.mainAxisAlignmentIndex ?? 2],
+              crossAxisAlignment: CrossAxisAlignment.values[state.quoteModel?.crossAxisAlignmentIndex ?? 2],
               mainAxisSize: MainAxisSize.max,
               children: [
                 AnimatedOpacity(
@@ -49,10 +49,12 @@ class QuoteDisplay extends StatelessWidget {
                               : imageConstraints.maxHeight / 20
                           : imageConstraints.maxHeight / 24,
                       fontWeight: fontWeight,
-                      color: state.textColor,
-                      shadows: state.textColor != null
-                          ? state.textColor!.isBright()
-                              ? [shadows.black]
+                      color: state.quoteModel?.textColor,
+                      shadows: state.quoteModel != null
+                          ? state.quoteModel!.textColor != null
+                              ? state.quoteModel!.textColor!.isBright()
+                                  ? [shadows.black]
+                                  : [shadows.white]
                               : [shadows.white]
                           : [shadows.white],
                     ),
@@ -67,10 +69,12 @@ class QuoteDisplay extends StatelessWidget {
                     style: TextStyle(
                       fontSize: imageConstraints.maxHeight / 24,
                       fontWeight: fontWeight,
-                      color: state.textColor,
-                      shadows: state.textColor != null
-                          ? state.textColor!.isBright()
-                              ? [shadows.black]
+                      color: state.quoteModel?.textColor,
+                      shadows: state.quoteModel != null
+                          ? state.quoteModel!.textColor != null
+                              ? state.quoteModel!.textColor!.isBright()
+                                  ? [shadows.black]
+                                  : [shadows.white]
                               : [shadows.white]
                           : [shadows.white],
                     ),
