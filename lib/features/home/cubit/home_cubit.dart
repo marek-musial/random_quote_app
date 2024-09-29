@@ -41,19 +41,19 @@ class HomeCubit extends HydratedCubit<HomeState> {
   }
 
   Future<void> getItemModels() async {
-    pendingState = pendingState.copyWithX(status: Status.loading);
+    pendingState = pendingState.copyWith(status: Status.loading);
     emit(
       const HomeState(status: Status.loading),
     );
     try {
       final imageModel = await _imageRepository.getImageModel();
       final quoteModel = await _quoteRepository.getQuoteModel();
-      pendingState = pendingState.copyWithX(
+      pendingState = pendingState.copyWith(
         imageModel: imageModel,
         quoteModel: quoteModel,
       );
       emit(
-        state.copyWithX(
+        state.copyWith(
           imageModel: imageModel,
           quoteModel: quoteModel,
         ),
@@ -94,18 +94,18 @@ class HomeCubit extends HydratedCubit<HomeState> {
         final frame = await codec.getNextFrame();
         rawImage = frame.image;
 
-        pendingState = pendingState.copyWithX(
+        pendingState = pendingState.copyWith.imageModel!(
           rawImage: rawImage,
         );
         emit(
-          state.copyWithX(
+          state.copyWith.imageModel!(
             rawImage: rawImage,
           ),
         );
         dev.log('Width: ${rawImage!.width}, height: ${rawImage!.height}');
       } catch (error) {
         emit(
-          state.copyWithX(
+          state.copyWith(
             status: Status.error,
             errorMessage: 'Failed to load image: $error',
           ),
@@ -130,7 +130,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       int textAlignmentIndex = Random().nextInt(3);
       int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
       int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 1);
-      pendingState = pendingState.copyWithX(
+      pendingState = pendingState.copyWith.quoteModel!(
         fontWeightIndex: fontWeightIndex,
         textAlignmentIndex: textAlignmentIndex,
         mainAxisAlignmentIndex: mainAxisAlignmentIndex,
@@ -146,7 +146,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     Offset textPosition,
     Size textSize,
   ) {
-    pendingState = pendingState.copyWithX(
+    pendingState = pendingState.copyWith.quoteModel!(
       textPosition: textPosition,
       textSize: textSize,
     );
@@ -166,10 +166,10 @@ class HomeCubit extends HydratedCubit<HomeState> {
       double widthScaleFactor = widgetImageWidth / rawImageWidth;
       double heightScaleFactor = widgetImageHeight / rawImageHeight;
 
-      pendingState = pendingState.copyWithX(
+      pendingState = pendingState.copyWith.imageModel!(
         scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
       );
-      dev.log('scaleFactor: ${pendingState.scaleFactor}');
+      dev.log('scaleFactor: ${pendingState.imageModel?.scaleFactor}');
     } else {
       emit(
         const HomeState(
@@ -185,21 +185,27 @@ class HomeCubit extends HydratedCubit<HomeState> {
   final _placeholderColor = Colors.white;
 
   Future<void> generateColors() async {
-    final double? scaleFactor = pendingState.scaleFactor;
+    final ImageModel? pendingImageModel = pendingState.imageModel;
+    final QuoteModel? pendingQuoteModel = pendingState.quoteModel;
+    final double? scaleFactor = pendingState.imageModel?.scaleFactor;
 
-    if (scaleFactor != null && _imageProvider != null && pendingState.rawImage != null && pendingState.textPosition != null && pendingState.textSize != null) {
+    if (scaleFactor != null &&
+        _imageProvider != null &&
+        pendingImageModel?.rawImage != null &&
+        pendingQuoteModel?.textPosition != null &&
+        pendingQuoteModel?.textSize != null) {
       try {
-        final scaledImageSize = Size(pendingState.rawImage!.width * scaleFactor, pendingState.rawImage!.height * scaleFactor);
-        final bottomRight = pendingState.textPosition! +
+        final scaledImageSize = Size(pendingImageModel!.rawImage!.width * scaleFactor, pendingImageModel.rawImage!.height * scaleFactor);
+        final bottomRight = pendingQuoteModel!.textPosition! +
             Offset(
-              pendingState.textSize!.width,
-              pendingState.textSize!.height,
+              pendingState.quoteModel!.textSize!.width,
+              pendingState.quoteModel!.textSize!.height,
             );
         final region = Rect.fromPoints(
-          pendingState.textPosition!,
+          pendingQuoteModel.textPosition!,
           Offset(
-            bottomRight.dx.clamp(1, scaledImageSize.width - pendingState.textPosition!.dx),
-            bottomRight.dy.clamp(1, scaledImageSize.height - pendingState.textPosition!.dy),
+            bottomRight.dx.clamp(1, scaledImageSize.width - pendingQuoteModel.textPosition!.dx),
+            bottomRight.dy.clamp(1, scaledImageSize.height - pendingQuoteModel.textPosition!.dy),
           ),
         );
 
@@ -237,12 +243,12 @@ class HomeCubit extends HydratedCubit<HomeState> {
                 : _placeholderColor
         : _placeholderColor;
 
-    pendingState = pendingState.copyWithX(
+    pendingState = pendingState.copyWith.quoteModel!(
       textColor: _getInverseColor(
         paletteColor.withOpacity(1),
       ),
     );
-    dev.log('textColor = ${pendingState.textColor}');
+    dev.log('textColor = ${pendingState.quoteModel?.textColor}');
   }
 
   Color _getInverseColor(Color color) {
@@ -264,7 +270,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
   void emitSuccess() {
     emit(
-      pendingState.copyWithX(status: Status.success),
+      pendingState.copyWith(status: Status.success),
     );
     dev.log('success');
   }
@@ -315,8 +321,8 @@ class HomeCubit extends HydratedCubit<HomeState> {
   HomeState? fromJson(Map<String, dynamic> json) {
     try {
       final jsonState = HomeState.fromJson(json);
-      _fromJsonState = jsonState.copyWithX(status: Status.decoding);
-      return jsonState.copyWithX(status: Status.decoding);
+      _fromJsonState = jsonState.copyWith(status: Status.decoding);
+      return jsonState.copyWith(status: Status.decoding);
     } catch (e) {
       dev.log('Error on HomeState fromJson: $e');
       return null;

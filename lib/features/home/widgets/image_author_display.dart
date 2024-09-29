@@ -7,7 +7,8 @@ import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 
 class ImageAuthorDisplay extends StatelessWidget {
-  const ImageAuthorDisplay({super.key, 
+  const ImageAuthorDisplay({
+    super.key,
     required this.imageModel,
   });
 
@@ -18,6 +19,7 @@ class ImageAuthorDisplay extends StatelessWidget {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         final imageModel = state.imageModel;
+        final quoteModel = state.quoteModel;
         if (imageModel != null) {
           return Padding(
             padding: EdgeInsets.symmetric(
@@ -30,9 +32,11 @@ class ImageAuthorDisplay extends StatelessWidget {
                 imageModel.author != null ? 'Image author: ${imageModel.author}' : '',
                 style: TextStyle(
                   fontSize: imageConstraints.maxHeight / 45,
-                  color: state.textColor != null
-                      ? state.textColor!.isBright()
-                          ? Colors.white
+                  color: quoteModel != null
+                      ? quoteModel.textColor != null
+                          ? quoteModel.textColor!.isBright()
+                              ? Colors.white
+                              : Colors.black
                           : Colors.black
                       : Colors.black,
                 ),

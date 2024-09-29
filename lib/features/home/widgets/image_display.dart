@@ -7,7 +7,8 @@ import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 import 'package:random_quote_app/features/home/widgets/home_page_widgets_export.dart';
 
 class ImageDisplay extends StatelessWidget {
-  const ImageDisplay({super.key, 
+  const ImageDisplay({
+    super.key,
     required this.imageModel,
   });
 
@@ -20,7 +21,8 @@ class ImageDisplay extends StatelessWidget {
         constraints = imageConstraints;
         return BlocConsumer<HomeCubit, HomeState>(
           listenWhen: (previous, current) {
-            return current.rawImage != null && current.status != Status.success || previous.status == Status.error && current.status != Status.success;
+            return current.imageModel?.rawImage != null && current.status != Status.success ||
+                previous.status == Status.error && current.status != Status.success;
           },
           listener: (context, state) async {
             final imageWidgetSize = MediaQuery.of(imageKey.currentContext!).size;
@@ -56,7 +58,11 @@ class ImageDisplay extends StatelessWidget {
                     child: Image.network(
                       imageModel.imageUrl,
                       key: imageKey,
-                      fit: state.rawImage != null && state.rawImage!.height < state.rawImage!.width ? BoxFit.fitHeight : BoxFit.fitWidth,
+                      fit: state.imageModel != null &&
+                              state.imageModel?.rawImage != null &&
+                              state.imageModel!.rawImage!.height < state.imageModel!.rawImage!.width
+                          ? BoxFit.fitHeight
+                          : BoxFit.fitWidth,
                     ),
                   ),
                 ),
