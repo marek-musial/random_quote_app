@@ -1,25 +1,11 @@
 part of 'root_cubit.dart';
 
-@immutable
-class RootState {
-  const RootState({
-    this.themeColor,
-    this.isThemeBright = true,
-  });
-  final Color? themeColor;
-  final bool isThemeBright;
-
-  RootState copyWith({
-    final Color? themeColor,
-    final bool? isThemeBright,
-  }) {
-    return RootState(
-      themeColor: themeColor ?? this.themeColor,
-      isThemeBright: isThemeBright ?? this.isThemeBright,
-    );
-  }
-
-  Map<String, dynamic> toJson(){
-    return {'themeColor': themeColor?.value, 'isThemeBright': isThemeBright};
-  }
+@freezed
+class RootState with _$RootState {
+  const factory RootState({
+    int? themeColorValue,
+    @Default(true) bool isThemeBright,
+  }) = _RootState;
+  
+  factory RootState.fromJson(Map<String, dynamic> json) => _$RootStateFromJson(json);
 }

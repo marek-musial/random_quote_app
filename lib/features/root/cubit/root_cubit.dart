@@ -1,10 +1,13 @@
 import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 part 'root_state.dart';
+part 'root_cubit.freezed.dart';
+part 'root_cubit.g.dart';
 
 @injectable
 class RootCubit extends HydratedCubit<RootState> {
@@ -21,7 +24,7 @@ class RootCubit extends HydratedCubit<RootState> {
   void setThemeColor(Color? color) {
     emit(
       RootState(
-        themeColor: color,
+        themeColorValue: color?.value,
       ).copyWith(
         isThemeBright: state.isThemeBright,
       ),
@@ -37,10 +40,8 @@ class RootCubit extends HydratedCubit<RootState> {
   @override
   RootState? fromJson(Map<String, dynamic> json) {
     try {
-      return RootState(
-        themeColor: Color(json['themeColor']),
-        isThemeBright: json['isThemeBright'],
-      );
+      final jsonState = RootState.fromJson(json);
+      return jsonState;
     } on Exception catch (e) {
       dev.log('Error on RootState fromJson: $e');
       return null;
