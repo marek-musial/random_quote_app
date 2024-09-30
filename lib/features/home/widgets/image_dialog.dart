@@ -16,23 +16,26 @@ class ImageManagementDialog extends StatelessWidget {
         'What do you want to do?',
         style: Theme.of(context).textTheme.titleLarge,
       ),
+      actionsAlignment: MainAxisAlignment.center,
       actions: <Widget>[
-        TextButton(
+        TextButton.icon(
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.labelLarge,
           ),
-          child: const Text('Save'),
+          icon: const Icon(Icons.save_alt),
+          label: const Text('Save'),
           onPressed: () {
             final RenderRepaintBoundary boundary = widgetToImageKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
             context.read<HomeCubit>().capturePng(boundary);
             Navigator.of(context).pop();
           },
         ),
-        TextButton(
+        TextButton.icon(
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.labelLarge,
           ),
-          child: const Text('Back'),
+          icon: const Icon(Icons.arrow_back),
+          label: const Text('Back'),
           onPressed: () {
             Navigator.of(context).pop();
           },
