@@ -61,25 +61,33 @@ class HomePage extends StatelessWidget {
                         Center(
                           child: ConstrainedBox(
                             constraints: imageConstraints,
-                            child: InkWell(
-                              child: RepaintBoundary(
-                                key: widgetToImageKey,
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    ImageDisplay(imageModel: imageModel),
-                                    QuoteDisplay(quoteModel: quoteModel),
-                                  ],
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(imageConstraints.maxWidth / 20),
                                 ),
                               ),
-                              onLongPress: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return const ImageManagementDialog();
-                                  },
-                                );
-                              },
+                              clipBehavior: Clip.hardEdge,
+                              child: InkWell(
+                                child: RepaintBoundary(
+                                  key: widgetToImageKey,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      ImageDisplay(imageModel: imageModel),
+                                      QuoteDisplay(quoteModel: quoteModel),
+                                    ],
+                                  ),
+                                ),
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return const ImageManagementDialog();
+                                    },
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         )
