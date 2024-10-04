@@ -58,7 +58,6 @@ class HomeCubit extends HydratedCubit<HomeState> {
           quoteModel: quoteModel,
         ),
       );
-      await loadImage();
     } catch (error) {
       emit(
         HomeState(
@@ -280,6 +279,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       case Status.initial || Status.success || Status.error:
         resetPendingState();
         await getItemModels();
+        await loadImage();
         break;
       case Status.decoding:
         resetPendingState();
