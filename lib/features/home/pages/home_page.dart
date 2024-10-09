@@ -102,15 +102,18 @@ class HomePage extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                if (state.status == Status.loading) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Another process in progress, please wait'),
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                    ),
-                  );
-                } else {
-                  context.read<HomeCubit>().start();
+                switch (state.status) {
+                  case Status.loading || Status.decoding:
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Another process in progress, please wait'),
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                      ),
+                    );
+                    break;
+                  default:
+                    context.read<HomeCubit>().start();
+                    break;
                 }
               },
               tooltip: 'Reroll',
