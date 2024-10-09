@@ -49,6 +49,7 @@ dependencies:
   injectable: ^2.4.4
   intl: ^0.19.0
   gal: ^2.3.0
+  mocktail: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +67,7 @@ dev_dependencies:
   freezed: ^2.5.2
   retrofit_generator: ^9.1.2
   injectable_generator: ^2.6.2
+  bloc_test: ^9.1.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
