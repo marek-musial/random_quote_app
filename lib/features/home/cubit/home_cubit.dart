@@ -287,12 +287,6 @@ class HomeCubit extends HydratedCubit<HomeState> {
         await loadImage();
         break;
       case Status.loading:
-        emit(
-          const HomeState(
-            status: Status.error,
-            errorMessage: 'Another process in progress, please wait.',
-          ),
-        );
         break;
       default:
         emit(
