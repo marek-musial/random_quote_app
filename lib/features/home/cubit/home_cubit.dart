@@ -55,6 +55,25 @@ class ImageLoader {
   }
 }
 
+class PaletteGeneratorService {
+  Future<Color> generateColors(
+    Size scaledImageSize,
+    Rect region,
+  ) async {
+    PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(
+      imageProvider!,
+      size: scaledImageSize,
+      region: region,
+    );
+    const placeholderColor = Colors.white;
+    final paletteColor = paletteGenerator.dominantColor != null
+        ? paletteGenerator.dominantColor!.color
+        : paletteGenerator.vibrantColor != null
+            ? paletteGenerator.vibrantColor!.color
+            : placeholderColor;
+    return paletteColor;
+  }
+}
 
 @injectable
 class HomeCubit extends HydratedCubit<HomeState> {
@@ -63,6 +82,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
   final ImageRepository _imageRepository;
   final QuoteRepository _quoteRepository;
   ImageLoader imageLoader = ImageLoader();
+  PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService();
 
   HomeState pendingState = const HomeState(status: Status.initial);
 
@@ -191,9 +211,6 @@ class HomeCubit extends HydratedCubit<HomeState> {
     }
   }
 
-  PaletteGenerator? paletteGenerator;
-  final _placeholderColor = Colors.white;
-
   Future<void> generateColors() async {
     final ImageModel? pendingImageModel = pendingState.imageModel;
     final QuoteModel? pendingQuoteModel = pendingState.quoteModel;
@@ -219,11 +236,18 @@ class HomeCubit extends HydratedCubit<HomeState> {
           ),
         );
 
-        paletteGenerator = await PaletteGenerator.fromImageProvider(
-          _imageProvider!,
-          size: scaledImageSize,
-          region: region,
+        final paletteColor = await paletteGeneratorService.generateColors(
+          scaledImageSize,
+          region,
         );
+
+        pendingState = pendingState.copyWith.quoteModel!(
+          textColor: getInverseColor(
+            paletteColor.withOpacity(1),
+          ),
+        );
+
+        dev.log('textColor = ${pendingState.quoteModel?.textColor}');
         dev.log('palette generated!');
       } catch (error) {
         emit(
@@ -244,21 +268,6 @@ class HomeCubit extends HydratedCubit<HomeState> {
       );
       resetPendingState();
     }
-
-    final paletteColor = paletteGenerator != null
-        ? paletteGenerator!.dominantColor != null
-            ? paletteGenerator!.dominantColor!.color
-            : paletteGenerator!.vibrantColor != null
-                ? paletteGenerator!.vibrantColor!.color
-                : _placeholderColor
-        : _placeholderColor;
-
-    pendingState = pendingState.copyWith.quoteModel!(
-      textColor: _getInverseColor(
-        paletteColor.withOpacity(1),
-      ),
-    );
-    dev.log('textColor = ${pendingState.quoteModel?.textColor}');
   }
 
   Color getInverseColor(Color color) {
