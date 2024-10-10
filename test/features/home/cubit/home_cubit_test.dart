@@ -251,4 +251,64 @@ void main() async {
       ],
     );
   });
+
+  group('randomizeTextLayout', () {
+    test(
+      'layout is randomized',
+      () {
+        sut.emit(const HomeState(status: Status.loading));
+        sut.pendingState = HomeState(
+          status: Status.loading,
+          quoteModel: QuoteModel(
+            quote: 'quote',
+            fontWeightIndex: 1,
+            textAlignmentIndex: 1,
+            mainAxisAlignmentIndex: 1,
+            crossAxisAlignmentIndex: 1,
+          ),
+        );
+        sut.randomizeTextLayout();
+        QuoteModel? quoteModel = sut.pendingState.quoteModel;
+        expect(
+          quoteModel?.fontWeightIndex,
+          inInclusiveRange(2, 9),
+        );
+        expect(
+          quoteModel?.textAlignmentIndex,
+          inInclusiveRange(0, 2),
+        );
+        expect(
+          quoteModel?.mainAxisAlignmentIndex,
+          inInclusiveRange(0, 2),
+        );
+        expect(
+          quoteModel?.crossAxisAlignmentIndex,
+          inInclusiveRange(0, 2),
+        );
+      },
+    );
+
+    test(
+      'layout is not randomized due to decoding status',
+      () {
+        sut.emit(const HomeState(status: Status.decoding));
+        sut.pendingState = HomeState(
+          status: Status.decoding,
+          quoteModel: QuoteModel(
+            quote: 'quote',
+            fontWeightIndex: 1,
+            textAlignmentIndex: 1,
+            mainAxisAlignmentIndex: 1,
+            crossAxisAlignmentIndex: 1,
+          ),
+        );
+        sut.randomizeTextLayout();
+        QuoteModel? quoteModel = sut.pendingState.quoteModel;
+        expect(quoteModel?.fontWeightIndex, 1);
+        expect(quoteModel?.textAlignmentIndex, 1);
+        expect(quoteModel?.mainAxisAlignmentIndex, 1);
+        expect(quoteModel?.crossAxisAlignmentIndex, 1);
+      },
+    );
+  });
 }
