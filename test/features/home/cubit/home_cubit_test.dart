@@ -30,11 +30,7 @@ void main() async {
   late MockImage mockImage;
   late MockImageLoader mockImageLoader;
 
-  setUpAll(
-    () {
-      WidgetsFlutterBinding.ensureInitialized();
-    },
-  );
+  WidgetsFlutterBinding.ensureInitialized();
 
   void initHydratedStorage() {
     storage = MockStorage();
