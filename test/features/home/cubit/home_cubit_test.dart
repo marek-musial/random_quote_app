@@ -16,11 +16,17 @@ class MockQuoteRepository extends Mock implements QuoteRepository {}
 
 class MockStorage extends Mock implements Storage {}
 
+class MockImage extends Mock implements ui.Image {}
+
+class MockImageLoader extends Mock implements ImageLoader {}
+
 void main() async {
   late Storage storage;
   late HomeCubit sut;
   late MockImageRepository imageRepository;
   late MockQuoteRepository quoteRepository;
+  late MockImage mockImage;
+  late MockImageLoader mockImageLoader;
 
   setUpAll(
     () {
@@ -136,6 +142,115 @@ void main() async {
           ],
         );
       },
+    );
+  });
+
+  group('loadImage', () {
+    setUp(
+      () {
+        mockImageLoader = MockImageLoader();
+        mockImage = MockImage();
+
+        sut.emit(
+          HomeState(
+            status: Status.loading,
+            imageModel: ImageModel(
+              imageUrl: 'imageUrl',
+              author: 'author',
+            ),
+            quoteModel: QuoteModel(
+              quote: 'quote',
+            ),
+          ),
+        );
+        sut.pendingState = sut.state;
+      },
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'emits state with imageModel.rawImage when image loads successfully',
+      build: () => sut,
+      act: (cubit) async {
+        when(
+          () => mockImageLoader.loadImage(any()),
+        ).thenAnswer((_) async {
+          return mockImage;
+        });
+        when(() => mockImage.width).thenReturn(100);
+        when(() => mockImage.height).thenReturn(200);
+        cubit.imageLoader = mockImageLoader;
+        await cubit.loadImage();
+      },
+      expect: () => [
+        isA<HomeState>()
+            .having(
+              (state) => state.imageModel!.rawImage,
+              'rawImage',
+              isNotNull,
+            )
+            .having(
+              (state) => state.status,
+              'status',
+              Status.loading,
+            ),
+      ],
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'emits error state when image loading fails',
+      build: () => sut,
+      act: (cubit) async {
+        when(
+          () => mockImageLoader.loadImage(any()),
+        ).thenThrow(
+          Exception('Error loading image'),
+        );
+        cubit.imageLoader = mockImageLoader;
+        await cubit.loadImage();
+      },
+      expect: () => [
+        isA<HomeState>()
+            .having(
+              (state) => state.status,
+              'status',
+              Status.error,
+            )
+            .having(
+              (state) => state.errorMessage,
+              'errorMessage',
+              'Failed to load image: Exception: Error loading image',
+            ),
+      ],
+    );
+    blocTest<HomeCubit, HomeState>(
+      'emits error state when imageModel is null',
+      build: () => sut,
+      seed: () {
+        sut.pendingState = const HomeState(
+          status: Status.loading,
+          imageModel: null,
+        );
+        return const HomeState(
+          status: Status.loading,
+          imageModel: null,
+        );
+      },
+      act: (cubit) async {
+        await cubit.loadImage();
+      },
+      expect: () => [
+        isA<HomeState>()
+            .having(
+              (state) => state.status,
+              'status',
+              Status.error,
+            )
+            .having(
+              (state) => state.errorMessage,
+              'errorMessage',
+              'An error occured while getting the image',
+            ),
+      ],
     );
   });
 }
