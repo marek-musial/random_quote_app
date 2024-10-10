@@ -23,7 +23,38 @@ part 'home_state.dart';
 part 'home_cubit.freezed.dart';
 part 'home_cubit.g.dart';
 
-ui.Image? rawImage;
+ImageProvider? imageProvider;
+
+class ImageLoader {
+  Future<ui.Image> loadImage(String url) async {
+    imageProvider = NetworkImage(url);
+    final completer = Completer<ImageInfo>();
+    final stream = imageProvider?.resolve(ImageConfiguration.empty);
+
+    final listener = ImageStreamListener(
+      (info, _) {
+        completer.complete(info);
+      },
+      onError: (dynamic error, StackTrace? stackTrace) {
+        completer.completeError(error, stackTrace);
+      },
+    );
+
+    stream?.addListener(listener);
+    final info = await completer.future;
+    stream?.removeListener(listener);
+
+    final byteData = await info.image.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
+    final codec = await ui.instantiateImageCodec(
+      byteData!.buffer.asUint8List(),
+    );
+    final frame = await codec.getNextFrame();
+    return frame.image;
+  }
+}
+
 
 @injectable
 class HomeCubit extends HydratedCubit<HomeState> {
@@ -31,7 +62,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
   final ImageRepository _imageRepository;
   final QuoteRepository _quoteRepository;
-  ImageProvider? _imageProvider;
+  ImageLoader imageLoader = ImageLoader();
 
   HomeState pendingState = const HomeState(status: Status.initial);
 
@@ -73,25 +104,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
   Future<void> loadImage() async {
     if (pendingState.imageModel != null) {
       try {
-        _imageProvider = NetworkImage(pendingState.imageModel!.imageUrl);
-        final completer = Completer<ImageInfo>();
-        final stream = _imageProvider!.resolve(ImageConfiguration.empty);
-        final listener = ImageStreamListener(
-          (info, _) {
-            completer.complete(info);
-          },
-          onError: (dynamic error, StackTrace? stackTrace) {
-            completer.completeError(error, stackTrace);
-          },
-        );
-
-        stream.addListener(listener);
-        final info = await completer.future;
-        stream.removeListener(listener);
-        final image = await info.image.toByteData(format: ui.ImageByteFormat.png);
-        final codec = await ui.instantiateImageCodec(image!.buffer.asUint8List());
-        final frame = await codec.getNextFrame();
-        rawImage = frame.image;
+        ui.Image? rawImage = await imageLoader.loadImage(pendingState.imageModel!.imageUrl);
 
         pendingState = pendingState.copyWith.imageModel!(
           rawImage: rawImage,
@@ -101,7 +114,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
             rawImage: rawImage,
           ),
         );
-        dev.log('Width: ${rawImage!.width}, height: ${rawImage!.height}');
+        dev.log('Width: ${rawImage.width}, height: ${rawImage.height}');
       } catch (error) {
         emit(
           state.copyWith(
@@ -189,7 +202,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     final double? scaleFactor = pendingState.imageModel?.scaleFactor;
 
     if (scaleFactor != null &&
-        _imageProvider != null &&
+        imageProvider != null &&
         pendingImageModel?.rawImage != null &&
         pendingQuoteModel?.textPosition != null &&
         pendingQuoteModel?.textSize != null) {
