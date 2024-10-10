@@ -164,11 +164,9 @@ class HomeCubit extends HydratedCubit<HomeState> {
     );
   }
 
-  void calculateScaleFactor(Size? imageWidgetSize) {
-    if (imageWidgetSize != null) {
-      final ui.Image? image = rawImage;
-      if (image == null) return;
-
+  void calculateScaleFactor(Size imageWidgetSize) {
+    final ui.Image? image = pendingState.imageModel?.rawImage;
+    if (image != null) {
       double rawImageWidth = image.width.toDouble();
       double rawImageHeight = image.height.toDouble();
 
@@ -186,7 +184,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       emit(
         const HomeState(
           status: Status.error,
-          errorMessage: 'scale factor calculation error! Widget size is null!',
+          errorMessage: 'scale factor calculation error',
         ),
       );
       resetPendingState();
