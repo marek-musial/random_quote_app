@@ -343,4 +343,60 @@ void main() async {
       },
     );
   });
+
+  group('calculateScaleFactor', () {
+    setUp(() {
+      mockImage = MockImage();
+    });
+
+    test(
+      'calculates scaleFactor correctly',
+      () {
+        sut.pendingState = HomeState(
+          status: Status.loading,
+          imageModel: ImageModel(
+            imageUrl: 'imageUrl',
+            author: '',
+            rawImage: mockImage,
+          ),
+        );
+        sut.emit(
+          sut.pendingState,
+        );
+        when(
+          () => mockImage.width,
+        ).thenReturn(100);
+        when(() => mockImage.height).thenReturn(200);
+        sut.calculateScaleFactor(const Size(200, 100));
+        expect(sut.pendingState.imageModel?.scaleFactor, .5);
+      },
+    );
+
+    blocTest(
+      'emits an error state when the image passed for calculation is null',
+      build: () => sut,
+      seed: () => HomeState(
+        status: Status.loading,
+        imageModel: ImageModel(
+          imageUrl: 'imageUrl',
+          author: '',
+          rawImage: null,
+        ),
+      ),
+      act: (cubit) => cubit.calculateScaleFactor(const Size(200, 100)),
+      expect: () => [
+        isA<HomeState>()
+            .having(
+              (state) => state.status,
+              'status',
+              Status.error,
+            )
+            .having(
+              (state) => state.errorMessage,
+              'errorMessage',
+              'scale factor calculation error',
+            ),
+      ],
+    );
+  });
 }
