@@ -311,4 +311,36 @@ void main() async {
       },
     );
   });
+
+  group('getTextPositionAndSize', () {
+    setUp(
+      () {
+        sut.pendingState = HomeState(
+          status: Status.loading,
+          quoteModel: QuoteModel(
+            quote: 'quote',
+          ),
+        );
+      },
+    );
+
+    test(
+      'gets passed pendingState textPosition and textSize',
+      () {
+        sut.getTextPositionAndSize(
+          const Offset(1, 1),
+          const Size(1, 1),
+        );
+        QuoteModel? quoteModel = sut.pendingState.quoteModel;
+        expect(
+          quoteModel?.textPosition,
+          const Offset(1, 1),
+        );
+        expect(
+          quoteModel?.textSize,
+          const Size(1, 1),
+        );
+      },
+    );
+  });
 }
