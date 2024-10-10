@@ -261,7 +261,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     dev.log('textColor = ${pendingState.quoteModel?.textColor}');
   }
 
-  Color _getInverseColor(Color color) {
+  Color getInverseColor(Color color) {
     if (color.red > 225 && color.green > 225 && color.blue > 225) {
       return Colors.black;
     }
