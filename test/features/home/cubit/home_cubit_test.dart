@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:mocktail/mocktail.dart';
@@ -29,6 +30,15 @@ class MockPaletteGeneratorService extends Mock implements PaletteGeneratorServic
 class FakeSize extends Fake implements Size {}
 
 class FakeRect extends Fake implements Rect {}
+
+class MockGalService extends Mock implements GalService {}
+
+class MockRenderRepaintBoundary extends Mock implements RenderRepaintBoundary {
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'MockNetworkImage';
+  }
+}
 
 void main() async {
   late Storage storage;
@@ -615,6 +625,65 @@ void main() async {
       verify: (cubit) {
         stateA == stateB;
       },
+    );
+  });
+
+  group('capturePng', () {
+    late MockGalService mockGalService;
+    late MockRenderRepaintBoundary mockRenderRepaintBoundary;
+    registerFallbackValue(RenderRepaintBoundary());
+    setUp(
+      () {
+        mockGalService = MockGalService();
+        mockRenderRepaintBoundary = MockRenderRepaintBoundary();
+        mockImage = MockImage();
+        sut.galService = mockGalService;
+        when(
+          () => mockRenderRepaintBoundary.size,
+        ).thenReturn(
+          const Size(100, 200),
+        );
+      },
+    );
+
+    test(
+      'succesfully runs galService.capturePng',
+      () async {
+        when(() => sut.galService.capturePng(any())).thenAnswer((_) async {});
+
+        await sut.capturePng(mockRenderRepaintBoundary);
+
+        verify(
+          () => sut.galService.capturePng(any()),
+        );
+      },
+    );
+
+    blocTest(
+      'emits error state when capturing png fails',
+      build: () => sut,
+      act: (cubit) async {
+        when(
+          () => mockGalService.capturePng(any()),
+        ).thenThrow(
+          Exception('Error on capturing image'),
+        );
+
+        await cubit.capturePng(mockRenderRepaintBoundary);
+      },
+      expect: () => [
+        isA<HomeState>()
+            .having(
+              (state) => state.status,
+              'status',
+              Status.error,
+            )
+            .having(
+              (state) => state.errorMessage,
+              'errorMessage',
+              'Exception: Error on capturing image',
+            ),
+      ],
     );
   });
 }
