@@ -560,4 +560,61 @@ void main() async {
       ],
     );
   });
+
+  group('start', () {
+    test(
+      'on Status.initial reset old pendingStatus, then run getItemModels and loadImage',
+      () {
+        sut.emit(
+          const HomeState(status: Status.initial),
+        );
+
+        sut.start();
+
+        verifyInOrder(
+          [
+            () => sut.resetPendingState(),
+            () => sut.getItemModels(),
+            () => sut.loadImage(),
+          ],
+        );
+      },
+    );
+
+    test(
+      'on Status.decoding reset pendingStatus, copy state to pendingState and loadImage',
+      () {
+        sut.emit(
+          const HomeState(status: Status.decoding),
+        );
+
+        sut.start();
+
+        verifyInOrder(
+          [
+            () => sut.resetPendingState(),
+            () => sut.pendingState = sut.state,
+            () => sut.loadImage(),
+          ],
+        );
+      },
+    );
+
+    HomeState stateA = const HomeState();
+    HomeState stateB = const HomeState();
+
+    blocTest(
+      'on Status.loading, no further interaction',
+      build: () => sut,
+      seed: () => const HomeState(status: Status.loading),
+      act: (cubit) {
+        stateA = cubit.state;
+        cubit.start();
+        stateB = cubit.state;
+      },
+      verify: (cubit) {
+        stateA == stateB;
+      },
+    );
+  });
 }
