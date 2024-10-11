@@ -22,6 +22,14 @@ class MockImage extends Mock implements ui.Image {}
 
 class MockImageLoader extends Mock implements ImageLoader {}
 
+class MockImageProvider extends Mock implements ImageProvider {}
+
+class MockPaletteGeneratorService extends Mock implements PaletteGeneratorService {}
+
+class FakeSize extends Fake implements Size {}
+
+class FakeRect extends Fake implements Rect {}
+
 void main() async {
   late Storage storage;
   late HomeCubit sut;
@@ -395,6 +403,118 @@ void main() async {
               (state) => state.errorMessage,
               'errorMessage',
               'scale factor calculation error',
+            ),
+      ],
+    );
+  });
+
+  group('generateColors', () {
+    mockImage = MockImage();
+    mockImageLoader = MockImageLoader();
+    MockPaletteGeneratorService mockPaletteGeneratorService = MockPaletteGeneratorService();
+    MockImageProvider mockImageProvider = MockImageProvider();
+
+    registerFallbackValue(FakeSize());
+    registerFallbackValue(FakeRect());
+
+    setUp(
+      () {
+        sut.pendingState = HomeState(
+          status: Status.loading,
+          imageModel: ImageModel(
+            imageUrl: 'imageUrl',
+            author: '',
+            rawImage: mockImage,
+            scaleFactor: .8,
+          ),
+          quoteModel: QuoteModel(
+            quote: 'quote',
+            textPosition: const Offset(10, 10),
+            textSize: const Size(50, 20),
+          ),
+        );
+        sut.paletteGeneratorService = mockPaletteGeneratorService;
+      },
+    );
+
+    test(
+      'generates color correctly',
+      () async {
+        imageProvider = mockImageProvider;
+
+        when(
+          () => mockPaletteGeneratorService.generateColors(any(), any()),
+        ).thenAnswer(
+          (_) => Future.value(
+            const ui.Color.fromARGB(255, 0, 0, 0),
+          ),
+        );
+        when(() => mockImage.width).thenReturn(400);
+        when(() => mockImage.height).thenReturn(600);
+
+        await sut.generateColors();
+
+        expect(
+          sut.pendingState.quoteModel?.textColor,
+          const ui.Color.fromARGB(255, 255, 255, 255),
+        );
+      },
+    );
+
+    blocTest(
+      'emits an error state when color generator service fails',
+      build: () => sut,
+      seed: () {
+        imageProvider = mockImageProvider;
+        return sut.pendingState;
+      },
+      act: (cubit) async {
+        when(
+          () => mockPaletteGeneratorService.generateColors(any(), any()),
+        ).thenThrow(
+          Exception('Error generating colors'),
+        );
+        when(() => mockImage.width).thenReturn(400);
+        when(() => mockImage.height).thenReturn(600);
+
+        await cubit.generateColors();
+      },
+      expect: () => [
+        isA<HomeState>()
+            .having(
+              (state) => state.status,
+              'status',
+              Status.error,
+            )
+            .having(
+              (state) => state.errorMessage,
+              'errorMessage',
+              'Exception: Error generating colors',
+            ),
+      ],
+    );
+
+    blocTest(
+      'emits an error state when an argument passed to color generator is null',
+      build: () => sut,
+      seed: () {
+        imageProvider = null;
+        return sut.pendingState;
+      },
+      act: (cubit) async {
+        await cubit.generateColors();
+      },
+      expect: () => [
+        isA<HomeState>()
+            .having(
+              (state) => state.status,
+              'status',
+              Status.error,
+            )
+            .having(
+              (state) => state.errorMessage,
+              'errorMessage',
+              'Error while generating color',
             ),
       ],
     );
