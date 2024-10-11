@@ -532,4 +532,32 @@ void main() async {
       },
     );
   });
+
+  group('emitSuccess', () {
+    setUp(
+      () {
+        sut.pendingState = HomeState(
+          status: Status.loading,
+          imageModel: ImageModel(
+            imageUrl: 'imageUrl',
+            author: '',
+            rawImage: mockImage,
+            scaleFactor: .8,
+          ),
+          quoteModel: QuoteModel(
+            quote: 'quote',
+          ),
+        );
+      },
+    );
+
+    blocTest(
+      'emits the pending state with success status',
+      build: () => sut,
+      act: (cubit) => sut.emitSuccess(),
+      expect: () => [
+        sut.pendingState.copyWith(status: Status.success),
+      ],
+    );
+  });
 }
