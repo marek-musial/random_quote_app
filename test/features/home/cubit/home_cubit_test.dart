@@ -519,4 +519,17 @@ void main() async {
       ],
     );
   });
+
+  group('getInverseColor', () {
+    test(
+      'inverts all rgb values of the passed color and returns color with max alpha value',
+      () {
+        Color testColor = const ui.Color.fromARGB(200, 55, 100, 200);
+
+        Color inverseColor = sut.getInverseColor(testColor);
+
+        expect(inverseColor, const Color.fromARGB(255, 200, 155, 55));
+      },
+    );
+  });
 }
