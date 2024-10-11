@@ -75,6 +75,20 @@ class PaletteGeneratorService {
   }
 }
 
+class GalService {
+  Future<void> capturePng(RenderRepaintBoundary boundary) async {
+    final ui.Image image = await boundary.toImage();
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List pngBytes = byteData!.buffer.asUint8List();
+    String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
+    await Gal.putImageBytes(
+      pngBytes,
+      name: 'image_$timestamp',
+    );
+    dev.log('Saved image width: ${image.width}, saved image height: ${image.height}');
+  }
+}
+
 @injectable
 class HomeCubit extends HydratedCubit<HomeState> {
   HomeCubit(this._imageRepository, this._quoteRepository) : super(const HomeState());
@@ -83,6 +97,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
   final QuoteRepository _quoteRepository;
   ImageLoader imageLoader = ImageLoader();
   PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService();
+  GalService galService = GalService();
 
   HomeState pendingState = const HomeState(status: Status.initial);
 
@@ -345,17 +360,10 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
   Future<void> capturePng(RenderRepaintBoundary boundary) async {
     dev.log('Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}');
-    final ui.Image image = await boundary.toImage();
-    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    final Uint8List pngBytes = byteData!.buffer.asUint8List();
-    String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
     try {
-      await Gal.putImageBytes(
-        pngBytes,
-        name: 'image_$timestamp',
-      );
-    } on GalException catch (e) {
-      String galErrorMessage = e.type.message;
+      await galService.capturePng(boundary);
+    } on Exception catch (e) {
+      String galErrorMessage = e.toString();
       emit(
         HomeState(
           status: Status.error,
@@ -364,6 +372,5 @@ class HomeCubit extends HydratedCubit<HomeState> {
       );
       dev.log(galErrorMessage);
     }
-    dev.log('Saved image width: ${image.width}, saved image height: ${image.height}');
   }
 }
