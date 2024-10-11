@@ -1,3 +1,4 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'cataas_image_remote_data_source.dart';
