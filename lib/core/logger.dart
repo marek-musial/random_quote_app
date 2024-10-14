@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 
 @injectable
 class Logger {
-  void logError(String message) {
+  void log(String message) {
     dev.log(message);
   }
 }
