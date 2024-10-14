@@ -30,4 +30,22 @@ void main() async {
       sut = RootCubit();
     },
   );
+
+  group('toggleThemeBrightness', () {
+    blocTest(
+      'emits state with opposite bool isThemeBright and the same themeColorValue',
+      build: () => sut,
+      seed: () => const RootState(
+        isThemeBright: true,
+        themeColorValue: 1,
+      ),
+      act: (cubit) => cubit.toggleThemeBrightness(),
+      expect: () => [
+        const RootState(
+          isThemeBright: false,
+          themeColorValue: 1,
+        ),
+      ],
+    );
+  });
 }
