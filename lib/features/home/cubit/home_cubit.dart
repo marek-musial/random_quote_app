@@ -181,7 +181,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       int fontWeightIndex = Random().nextInt(7) + 2;
       int textAlignmentIndex = Random().nextInt(3);
       int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
-      int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 1);
+      int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 2);
       pendingState = pendingState.copyWith.quoteModel!(
         fontWeightIndex: fontWeightIndex,
         textAlignmentIndex: textAlignmentIndex,
