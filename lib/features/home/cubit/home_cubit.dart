@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:developer' as dev;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:random_quote_app/core/enums.dart';
+import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
@@ -24,6 +24,7 @@ part 'home_cubit.freezed.dart';
 part 'home_cubit.g.dart';
 
 ImageProvider? imageProvider;
+Logger homeCubitLogger = Logger();
 
 class ImageLoader {
   Future<ui.Image> loadImage(String url) async {
@@ -85,14 +86,18 @@ class GalService {
       pngBytes,
       name: 'image_$timestamp',
     );
-    dev.log('Saved image width: ${image.width}, saved image height: ${image.height}');
+    homeCubitLogger.log('Saved image width: ${image.width}, saved image height: ${image.height}');
   }
 }
 
 @injectable
 class HomeCubit extends HydratedCubit<HomeState> {
-  HomeCubit(this._imageRepository, this._quoteRepository) : super(const HomeState());
+  HomeCubit(
+    this._imageRepository,
+    this._quoteRepository,
+  ) : super(const HomeState());
 
+  Logger logger = homeCubitLogger;
   final ImageRepository _imageRepository;
   final QuoteRepository _quoteRepository;
   ImageLoader imageLoader = ImageLoader();
@@ -103,7 +108,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
   void resetPendingState() {
     pendingState = const HomeState(status: Status.initial);
-    dev.log('pendingState reset');
+    logger.log('pendingState reset');
   }
 
   Future<void> getItemModels() async {
@@ -131,7 +136,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
           errorMessage: error.toString(),
         ),
       );
-      dev.log('$error');
+      logger.log('$error');
       resetPendingState();
     }
   }
@@ -149,7 +154,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
             rawImage: rawImage,
           ),
         );
-        dev.log('Width: ${rawImage.width}, height: ${rawImage.height}');
+        logger.log('Width: ${rawImage.width}, height: ${rawImage.height}');
       } catch (error) {
         emit(
           state.copyWith(
@@ -157,7 +162,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
             errorMessage: 'Failed to load image: $error',
           ),
         );
-        dev.log('$error');
+        logger.log('$error');
         resetPendingState();
       }
     } else {
@@ -183,9 +188,9 @@ class HomeCubit extends HydratedCubit<HomeState> {
         mainAxisAlignmentIndex: mainAxisAlignmentIndex,
         crossAxisAlignmentIndex: crossAxisAlignmentIndex,
       );
-      dev.log('layout randomized');
+      logger.log('layout randomized');
     } else {
-      dev.log('layout not randomized');
+      logger.log('layout not randomized');
     }
   }
 
@@ -214,7 +219,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       pendingState = pendingState.copyWith.imageModel!(
         scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
       );
-      dev.log('scaleFactor: ${pendingState.imageModel?.scaleFactor}');
+      logger.log('scaleFactor: ${pendingState.imageModel?.scaleFactor}');
     } else {
       emit(
         const HomeState(
@@ -262,8 +267,8 @@ class HomeCubit extends HydratedCubit<HomeState> {
           ),
         );
 
-        dev.log('textColor = ${pendingState.quoteModel?.textColor}');
-        dev.log('palette generated!');
+        logger.log('textColor = ${pendingState.quoteModel?.textColor}');
+        logger.log('palette generated!');
       } catch (error) {
         emit(
           HomeState(
@@ -271,7 +276,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
             errorMessage: error.toString(),
           ),
         );
-        dev.log('$error');
+        logger.log('$error');
         resetPendingState();
       }
     } else {
@@ -306,7 +311,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     emit(
       pendingState.copyWith(status: Status.success),
     );
-    dev.log('success');
+    logger.log('success');
   }
 
   void start() async {
@@ -353,13 +358,13 @@ class HomeCubit extends HydratedCubit<HomeState> {
       _fromJsonState = jsonState.copyWith(status: Status.decoding);
       return jsonState.copyWith(status: Status.decoding);
     } catch (e) {
-      dev.log('Error on HomeState fromJson: $e');
+      logger.log('Error on HomeState fromJson: $e');
       return null;
     }
   }
 
   Future<void> capturePng(RenderRepaintBoundary boundary) async {
-    dev.log('Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}');
+    logger.log('Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}');
     try {
       await galService.capturePng(boundary);
     } on Exception catch (e) {
@@ -370,7 +375,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
           errorMessage: galErrorMessage,
         ),
       );
-      dev.log(galErrorMessage);
+      logger.log(galErrorMessage);
     }
   }
 }
