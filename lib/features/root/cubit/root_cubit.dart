@@ -1,9 +1,8 @@
-import 'dart:developer' as dev;
-
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:random_quote_app/core/logger.dart';
 
 part 'root_state.dart';
 part 'root_cubit.freezed.dart';
@@ -11,7 +10,9 @@ part 'root_cubit.g.dart';
 
 @injectable
 class RootCubit extends HydratedCubit<RootState> {
-  RootCubit() : super(const RootState());
+  RootCubit(this.logger) : super(const RootState());
+
+  Logger logger = Logger();
 
   void toggleThemeBrightness() {
     emit(
@@ -42,8 +43,8 @@ class RootCubit extends HydratedCubit<RootState> {
     try {
       final jsonState = RootState.fromJson(json);
       return jsonState;
-    } on Exception catch (e) {
-      dev.log('Error on RootState fromJson: $e');
+    } on TypeError catch (e) {
+      logger.logError('Error on RootState fromJson: $e');
       return null;
     }
   }
