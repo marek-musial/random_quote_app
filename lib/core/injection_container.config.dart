@@ -12,6 +12,7 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:random_quote_app/core/injection_container.dart' as _i408;
+import 'package:random_quote_app/core/logger.dart' as _i1063;
 import 'package:random_quote_app/data/dio_client.dart' as _i427;
 import 'package:random_quote_app/data/remote_data_sources/image_remote_data_sources/cataas_image_remote_data_source.dart'
     as _i131;
@@ -46,6 +47,7 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final dioModule = _$DioModule();
+    gh.factory<_i1063.Logger>(() => _i1063.Logger());
     gh.factory<_i501.ImageRepository>(() => _i501.ImageRepository());
     gh.factory<_i1031.QuoteRepository>(() => _i1031.QuoteRepository());
     gh.factory<_i701.RootCubit>(() => _i701.RootCubit());
