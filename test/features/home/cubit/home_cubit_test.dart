@@ -272,7 +272,7 @@ void main() async {
 
   group('randomizeTextLayout', () {
     test(
-      'layout is randomized',
+      'layout is randomized within range',
       () {
         sut.emit(const HomeState(status: Status.loading));
         sut.pendingState = HomeState(
@@ -280,13 +280,15 @@ void main() async {
           quoteModel: QuoteModel(
             quote: 'quote',
             fontWeightIndex: 1,
-            textAlignmentIndex: 1,
-            mainAxisAlignmentIndex: 1,
-            crossAxisAlignmentIndex: 1,
+            textAlignmentIndex: 4,
+            mainAxisAlignmentIndex: 4,
+            crossAxisAlignmentIndex: 4,
           ),
         );
+        
         sut.randomizeTextLayout();
         QuoteModel? quoteModel = sut.pendingState.quoteModel;
+
         expect(
           quoteModel?.fontWeightIndex,
           inInclusiveRange(2, 9),
