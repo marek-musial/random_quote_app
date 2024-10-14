@@ -10,7 +10,7 @@ part 'root_cubit.g.dart';
 
 @injectable
 class RootCubit extends HydratedCubit<RootState> {
-  RootCubit(this.logger) : super(const RootState());
+  RootCubit() : super(const RootState());
 
   Logger logger = Logger();
 
@@ -44,7 +44,7 @@ class RootCubit extends HydratedCubit<RootState> {
       final jsonState = RootState.fromJson(json);
       return jsonState;
     } on TypeError catch (e) {
-      logger.logError('Error on RootState fromJson: $e');
+      logger.log('Error on RootState fromJson: $e');
       return null;
     }
   }
