@@ -48,4 +48,26 @@ void main() async {
       ],
     );
   });
+
+  group('setThemeColor', () {
+    late Color themeColor;
+    setUp(() {
+      themeColor = const Color.fromARGB(255, 150, 50, 100);
+    });
+    blocTest(
+      'description',
+      build: () => sut,
+      seed: () => RootState(
+        themeColorValue: const Color.fromARGB(255, 100, 150, 150).value,
+        isThemeBright: true,
+      ),
+      act: (cubit) => cubit.setThemeColor(themeColor),
+      expect: () => [
+        RootState(
+          themeColorValue: themeColor.value,
+          isThemeBright: true,
+        ),
+      ],
+    );
+  });
 }
