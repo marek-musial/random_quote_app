@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart';
 
 class MockStorage extends Mock implements Storage {}
@@ -10,6 +11,8 @@ class MockStorage extends Mock implements Storage {}
 class MockRootCubit extends Mock implements RootCubit {}
 
 class MockRootState extends Mock implements RootState {}
+
+class MockLogger extends Mock implements Logger {}
 
 void main() async {
   late Storage storage;
@@ -68,6 +71,41 @@ void main() async {
           isThemeBright: true,
         ),
       ],
+    );
+  });
+
+  group('fromJson', () {
+    test('returns a RootState from json', () {
+      Map<String, dynamic> json = {
+        'themeColorValue': 1,
+        'isThemeBright': true,
+      };
+
+      RootState? stateFromJson = sut.fromJson(json);
+
+      expect(
+        stateFromJson,
+        const RootState(
+          themeColorValue: 1,
+          isThemeBright: true,
+        ),
+      );
+    });
+
+    test(
+      'on error throws error, then does nothing',
+      () {
+        Map<String, dynamic> invalidJson = {
+          "themeColorValue": "invalid_value",
+        };
+        sut.logger = logger;
+        RootState? stateFromJson;
+
+        stateFromJson = sut.fromJson(invalidJson);
+
+        expect(stateFromJson, null);
+        verify(() => logger.log(any())).called(1);
+      },
     );
   });
 }
