@@ -4,7 +4,9 @@ import 'package:injectable/injectable.dart';
 
 @injectable
 class Logger {
+  Function loggingMethod = dev.log;
+
   void log(String message) {
-    dev.log(message);
+    loggingMethod(message);
   }
 }
