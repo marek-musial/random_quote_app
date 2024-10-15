@@ -44,4 +44,4 @@ app.*.map.json
 todo.todo
 .env
 lib/env/env.g.dart
-lib/coverage
+/coverage
