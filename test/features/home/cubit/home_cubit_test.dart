@@ -630,6 +630,71 @@ void main() async {
     );
   });
 
+  group('fromJson', () {
+    test(
+      'succesfully deserializes a json',
+      () {
+        final imageModelMap = {
+          'ImageModelUrl': 'imageUrl',
+          'ImageModelAuthor': 'author',
+        };
+        final quoteModelMap = {
+          'QuoteModelUrl': 'quote',
+        };
+        final json = {
+          'imageModel': imageModelMap,
+          'quoteModel': quoteModelMap,
+        };
+
+        final HomeState? stateFromJson = sut.fromJson(json);
+
+        expect(
+          stateFromJson?.status,
+          Status.decoding,
+        );
+        expect(
+          stateFromJson?.imageModel,
+          isA<ImageModel>()
+              .having(
+                (imageModel) => imageModel.author,
+                'author',
+                'author',
+              )
+              .having(
+                (imageModel) => imageModel.imageUrl,
+                'imageUrl',
+                'imageUrl',
+              ),
+        );
+        expect(
+          stateFromJson?.quoteModel,
+          isA<QuoteModel>().having(
+            (quoteModel) => quoteModel.quote,
+            'quote',
+            'quote',
+          ),
+        );
+      },
+    );
+
+    test(
+      'on error returns null',
+      () {
+        final json = {
+          'imageModel': 'wrongData',
+          'quoteModel': 'wrongData',
+        };
+
+        final HomeState? stateFromJson = sut.fromJson(json);
+
+        expect(
+          stateFromJson,
+          null,
+        );
+      },
+    );
+  });
+
   group('capturePng', () {
     late MockGalService mockGalService;
     late MockRenderRepaintBoundary mockRenderRepaintBoundary;
