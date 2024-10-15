@@ -124,7 +124,7 @@ void main() async {
       );
 
       blocTest<HomeCubit, HomeState>(
-        'emits Status.loading then Status.error with error message',
+        'emits Status.loading then Status.error with error message and logs the error',
         build: () => sut,
         act: (cubit) => cubit.getItemModels(),
         expect: () => [
@@ -134,6 +134,7 @@ void main() async {
             errorMessage: 'Exception: Error fetching image',
           ),
         ],
+        verify: (cubit) => cubit.logger.log,
       );
     });
 
@@ -149,13 +150,14 @@ void main() async {
         });
 
         blocTest<HomeCubit, HomeState>(
-          'emits Status.loading then Status.errorwith error message',
+          'emits Status.loading then Status.errorwith error message and logs the error',
           build: () => sut,
           act: (cubit) => cubit.getItemModels(),
           expect: () => [
             const HomeState(status: Status.loading),
             const HomeState(status: Status.error, errorMessage: 'Exception: Error fetching quote'),
           ],
+          verify: (cubit) => cubit.logger.log,
         );
       },
     );
@@ -213,7 +215,7 @@ void main() async {
     );
 
     blocTest<HomeCubit, HomeState>(
-      'emits error state when image loading fails',
+      'emits error state when image loading fails and logs the error',
       build: () => sut,
       act: (cubit) async {
         when(
@@ -237,9 +239,10 @@ void main() async {
               'Failed to load image: Exception: Error loading image',
             ),
       ],
+      verify: (cubit) => cubit.logger.log,
     );
     blocTest<HomeCubit, HomeState>(
-      'emits error state when imageModel is null',
+      'emits error state when imageModel is null and logs the error',
       build: () => sut,
       seed: () {
         sut.pendingState = const HomeState(
@@ -267,6 +270,7 @@ void main() async {
               'An error occured while getting the image',
             ),
       ],
+      verify: (cubit) => cubit.logger.log,
     );
   });
 
@@ -393,7 +397,7 @@ void main() async {
     );
 
     blocTest(
-      'emits an error state when the image passed for calculation is null',
+      'emits an error state when the image passed for calculation is null and logs the error',
       build: () => sut,
       seed: () => HomeState(
         status: Status.loading,
@@ -417,6 +421,7 @@ void main() async {
               'scale factor calculation error',
             ),
       ],
+      verify: (cubit) => cubit.logger.log,
     );
   });
 
@@ -474,7 +479,7 @@ void main() async {
     );
 
     blocTest(
-      'emits an error state when color generator service fails',
+      'emits an error state when color generator service fails and logs the error',
       build: () => sut,
       seed: () {
         imageProvider = mockImageProvider;
@@ -504,10 +509,11 @@ void main() async {
               'Exception: Error generating colors',
             ),
       ],
+      verify: (cubit) => cubit.logger.log,
     );
 
     blocTest(
-      'emits an error state when an argument passed to color generator is null',
+      'emits an error state when an argument passed to color generator is null and logs the error',
       build: () => sut,
       seed: () {
         imageProvider = null;
@@ -529,6 +535,7 @@ void main() async {
               'Error while generating color',
             ),
       ],
+      verify: (cubit) => cubit.logger.log,
     );
   });
 
@@ -575,7 +582,7 @@ void main() async {
 
   group('start', () {
     test(
-      'on Status.initial reset old pendingStatus, then run getItemModels and loadImage',
+      'on Status.initial reset old pendingStatus, then run getItemModels and loadImage regardless of results',
       () {
         sut.emit(
           const HomeState(status: Status.initial),
@@ -727,7 +734,7 @@ void main() async {
     );
 
     blocTest(
-      'emits error state when capturing png fails',
+      'emits error state when capturing png fails and logs the error',
       build: () => sut,
       act: (cubit) async {
         when(
@@ -751,6 +758,7 @@ void main() async {
               'Exception: Error on capturing image',
             ),
       ],
+      verify: (cubit) => cubit.logger.log,
     );
   });
 }
