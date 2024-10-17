@@ -107,7 +107,7 @@ class HomePage extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: const Text('Another process in progress, please wait'),
-                        backgroundColor: Theme.of(context).colorScheme.error,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                       ),
                     );
                     break;
