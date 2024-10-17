@@ -48,7 +48,7 @@ main() {
     );
 
     test(
-      'gets image model data from the data source',
+      'on error when getting data, gets a image model data from another data source in the list',
       () async {
         imageRepository.dataSources = [
           mockImageDataSource1,
