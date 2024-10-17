@@ -19,21 +19,22 @@ final List<QuoteDataSource> quoteDataSources = [
 @injectable
 class QuoteRepository {
   QuoteRepository();
+  List<QuoteDataSource> dataSources = quoteDataSources;
 
   Future<QuoteModel?> getQuoteModel() async {
-    final int chosenIndex = Random().nextInt(quoteDataSources.length);
+    final int chosenIndex = Random().nextInt(dataSources.length);
     try {
-      final randomDataSource = quoteDataSources[chosenIndex];
+      final randomDataSource = dataSources[chosenIndex];
       return await randomDataSource.getQuoteData();
     } catch (e) {
       dev.log('[Time: ${DateTime.now().toString()}] $e');
       int otherIndex;
-      if (chosenIndex < quoteDataSources.length - 1) {
+      if (chosenIndex < dataSources.length - 1) {
         otherIndex = chosenIndex + 1;
       } else {
         otherIndex = chosenIndex - 1;
       }
-      final randomDataSource = quoteDataSources[otherIndex];
+      final randomDataSource = dataSources[otherIndex];
       return await randomDataSource.getQuoteData();
     }
   }
