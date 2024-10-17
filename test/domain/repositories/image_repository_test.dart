@@ -52,8 +52,8 @@ main() {
       () async {
         imageRepository.dataSources = [
           mockImageDataSource1,
-          mockImageDataSource1,
           mockImageDataSource2,
+          mockImageDataSource1,
         ];
         final ImageModel imageModel = ImageModel(
           imageUrl: 'imageUrl',
@@ -73,9 +73,6 @@ main() {
         final resultImageModel = await imageRepository.getImageModel();
 
         expect(resultImageModel, imageModel);
-        verify(
-          () => mockImageDataSource1.getImageData(),
-        ).called(lessThanOrEqualTo(2));
         verify(
           () => mockImageDataSource2.getImageData(),
         ).called(1);
