@@ -17,21 +17,22 @@ final List<ImageDataSource> imageDataSources = [
 @injectable
 class ImageRepository {
   ImageRepository();
+  List<ImageDataSource> dataSources = imageDataSources;
 
   Future<ImageModel?> getImageModel() async {
-    final int chosenIndex = Random().nextInt(imageDataSources.length);
+    final int chosenIndex = Random().nextInt(dataSources.length);
     try {
-      final randomDataSource = imageDataSources[chosenIndex];
+      final randomDataSource = dataSources[chosenIndex];
       return await randomDataSource.getImageData();
     } catch (e) {
       dev.log('[Time: ${DateTime.now().toString()}] $e');
       int otherIndex;
-      if (chosenIndex < imageDataSources.length - 1) {
+      if (chosenIndex < dataSources.length - 1) {
         otherIndex = chosenIndex + 1;
       } else {
         otherIndex = chosenIndex - 1;
       }
-      final randomDataSource = imageDataSources[otherIndex];
+      final randomDataSource = dataSources[otherIndex];
       return await randomDataSource.getImageData();
     }
   }
