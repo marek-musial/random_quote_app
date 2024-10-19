@@ -76,7 +76,7 @@ class PaletteGeneratorService {
   }
 }
 
-class GalService {
+class ImageCaptureService {
   Future<void> capturePng(RenderRepaintBoundary boundary) async {
     final ui.Image image = await boundary.toImage();
     final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -102,7 +102,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
   final QuoteRepository _quoteRepository;
   ImageLoader imageLoader = ImageLoader();
   PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService();
-  GalService galService = GalService();
+  ImageCaptureService imageCaptureService = ImageCaptureService();
 
   HomeState pendingState = const HomeState(status: Status.initial);
 
@@ -366,16 +366,16 @@ class HomeCubit extends HydratedCubit<HomeState> {
   Future<void> capturePng(RenderRepaintBoundary boundary) async {
     logger.log('Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}');
     try {
-      await galService.capturePng(boundary);
+      await imageCaptureService.capturePng(boundary);
     } on Exception catch (e) {
-      String galErrorMessage = e.toString();
+      String errorMessage = e.toString();
       emit(
         HomeState(
           status: Status.error,
-          errorMessage: galErrorMessage,
+          errorMessage: errorMessage,
         ),
       );
-      logger.log(galErrorMessage);
+      logger.log(errorMessage);
     }
   }
 }

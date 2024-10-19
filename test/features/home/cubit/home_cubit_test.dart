@@ -31,7 +31,7 @@ class FakeSize extends Fake implements Size {}
 
 class FakeRect extends Fake implements Rect {}
 
-class MockGalService extends Mock implements GalService {}
+class MockImageCaptureService extends Mock implements ImageCaptureService {}
 
 class MockRenderRepaintBoundary extends Mock implements RenderRepaintBoundary {
   @override
@@ -289,7 +289,7 @@ void main() async {
             crossAxisAlignmentIndex: 4,
           ),
         );
-        
+
         sut.randomizeTextLayout();
         QuoteModel? quoteModel = sut.pendingState.quoteModel;
 
@@ -703,15 +703,15 @@ void main() async {
   });
 
   group('capturePng', () {
-    late MockGalService mockGalService;
+    late MockImageCaptureService mockImageCaptureService;
     late MockRenderRepaintBoundary mockRenderRepaintBoundary;
     registerFallbackValue(RenderRepaintBoundary());
     setUp(
       () {
-        mockGalService = MockGalService();
+        mockImageCaptureService = MockImageCaptureService();
         mockRenderRepaintBoundary = MockRenderRepaintBoundary();
         mockImage = MockImage();
-        sut.galService = mockGalService;
+        sut.imageCaptureService = mockImageCaptureService;
         when(
           () => mockRenderRepaintBoundary.size,
         ).thenReturn(
@@ -721,14 +721,14 @@ void main() async {
     );
 
     test(
-      'succesfully runs galService.capturePng',
+      'succesfully runs imageCaptureService.capturePng',
       () async {
-        when(() => sut.galService.capturePng(any())).thenAnswer((_) async {});
+        when(() => sut.imageCaptureService.capturePng(any())).thenAnswer((_) async {});
 
         await sut.capturePng(mockRenderRepaintBoundary);
 
         verify(
-          () => sut.galService.capturePng(any()),
+          () => sut.imageCaptureService.capturePng(any()),
         );
       },
     );
@@ -738,7 +738,7 @@ void main() async {
       build: () => sut,
       act: (cubit) async {
         when(
-          () => mockGalService.capturePng(any()),
+          () => mockImageCaptureService.capturePng(any()),
         ).thenThrow(
           Exception('Error on capturing image'),
         );
