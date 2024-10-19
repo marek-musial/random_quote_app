@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -9,6 +10,7 @@ import 'package:gal/gal.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
+import 'package:random_quote_app/core/directories.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
@@ -18,6 +20,8 @@ import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 
 import 'package:palette_generator/palette_generator.dart';
 import 'dart:ui' as ui;
+
+import 'package:share_plus/share_plus.dart';
 
 part 'home_state.dart';
 part 'home_cubit.freezed.dart';
