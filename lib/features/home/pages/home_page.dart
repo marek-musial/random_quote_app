@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/theme/constraints.dart';
@@ -69,6 +70,9 @@ class HomePage extends StatelessWidget {
                               ),
                               clipBehavior: Clip.hardEdge,
                               child: InkWell(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(imageConstraints.maxWidth / 20),
+                                ),
                                 child: RepaintBoundary(
                                   key: widgetToImageKey,
                                   child: Stack(
