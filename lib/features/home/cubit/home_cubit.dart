@@ -88,6 +88,34 @@ class ImageCaptureService {
     );
     homeCubitLogger.log('Saved image width: ${image.width}, saved image height: ${image.height}');
   }
+
+  Future<void> sharePng(RenderRepaintBoundary boundary) async {
+    final ui.Image image = await boundary.toImage();
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List pngBytes = byteData!.buffer.asUint8List();
+    String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
+    final String imageTempUri = '$tempDirectoryPath/image_$timestamp.png';
+    final File imageFile = await File(
+      imageTempUri,
+    ).create();
+    imageFile.writeAsBytesSync(pngBytes);
+    final result = await Share.shareXFiles(
+      [XFile(imageTempUri)],
+    );
+    if (result.status == ShareResultStatus.success) {
+      homeCubitLogger.log(
+        'Shared image width: ${image.width}, saved image height: ${image.height}',
+      );
+    } else if (result.status == ShareResultStatus.dismissed) {
+      homeCubitLogger.log(
+        'Image sharing dismissed',
+      );
+    } else {
+      homeCubitLogger.log(
+        'An error occured with share result status ${result.status.toString()}',
+      );
+    }
+  }
 }
 
 @injectable
