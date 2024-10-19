@@ -410,4 +410,22 @@ class HomeCubit extends HydratedCubit<HomeState> {
       logger.log(errorMessage);
     }
   }
+
+  Future<void> sharePng(RenderRepaintBoundary boundary) async {
+    logger.log(
+      'Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}',
+    );
+    try {
+      await imageCaptureService.sharePng(boundary);
+    } on Exception catch (e) {
+      String errorMessage = e.toString();
+      emit(
+        HomeState(
+          status: Status.error,
+          errorMessage: errorMessage,
+        ),
+      );
+      logger.log(errorMessage);
+    }
+  }
 }
