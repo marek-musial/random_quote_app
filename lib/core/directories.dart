@@ -6,7 +6,7 @@ import 'package:random_quote_app/core/logger.dart';
 String? tempDirectoryPath;
 final Logger _directoryLogger = Logger();
 
-void initializeTempDirectory() async {
+Future<void> initializeTempDirectory() async {
   final Directory tempDirectory = await getTemporaryDirectory();
   tempDirectoryPath = tempDirectory.path;
   _directoryLogger.log('Temp directory initialized');
