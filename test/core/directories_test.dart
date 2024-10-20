@@ -42,9 +42,15 @@ void main() {
       () async {
         tempDirectory = await Directory.systemTemp.createTemp('test_temp_dir');
         tempDirectoryPath = tempDirectory.path;
-        File(path.join(tempDirectoryPath, 'test_file.txt')).createSync();
-        Directory(path.join(tempDirectoryPath, 'test_sub_dir')).createSync();
-        File(path.join(tempDirectoryPath, 'test_sub_dir', 'nested_file.txt')).createSync();
+        File(
+          path.join(tempDirectoryPath, 'test_file.txt'),
+        ).createSync();
+        Directory(
+          path.join(tempDirectoryPath, 'test_sub_dir'),
+        ).createSync();
+        File(
+          path.join(tempDirectoryPath, 'test_sub_dir', 'nested_file.txt'),
+        ).createSync();
       },
     );
 
@@ -61,29 +67,19 @@ void main() {
       () async {
         expect(
           File(
-            path.join(
-              tempDirectoryPath,
-              'test_file.txt',
-            ),
+            path.join(tempDirectoryPath, 'test_file.txt'),
           ).existsSync(),
           isTrue,
         );
         expect(
           Directory(
-            path.join(
-              tempDirectoryPath,
-              'test_sub_dir',
-            ),
+            path.join(tempDirectoryPath, 'test_sub_dir'),
           ).existsSync(),
           isTrue,
         );
         expect(
           File(
-            path.join(
-              tempDirectoryPath,
-              'test_sub_dir',
-              'nested_file.txt',
-            ),
+            path.join(tempDirectoryPath, 'test_sub_dir', 'nested_file.txt'),
           ).existsSync(),
           isTrue,
         );
@@ -96,18 +92,12 @@ void main() {
         );
         expect(
             File(
-              path.join(
-                tempDirectoryPath,
-                'test_file.txt',
-              ),
+              path.join(tempDirectoryPath, 'test_file.txt'),
             ).existsSync(),
             isFalse);
         expect(
           Directory(
-            path.join(
-              tempDirectoryPath,
-              'test_sub_dir',
-            ),
+            path.join(tempDirectoryPath, 'test_sub_dir'),
           ).existsSync(),
           isFalse,
         );
