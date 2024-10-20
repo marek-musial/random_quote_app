@@ -32,7 +32,7 @@ class QuoteRepository {
       if (chosenIndex < dataSources.length - 1) {
         otherIndex = chosenIndex + 1;
       } else {
-        otherIndex = chosenIndex - 1;
+        otherIndex = 0;
       }
       final randomDataSource = dataSources[otherIndex];
       return await randomDataSource.getQuoteData();
