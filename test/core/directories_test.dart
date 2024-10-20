@@ -2,11 +2,16 @@ import 'dart:io' show Directory, File;
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:random_quote_app/core/directories.dart';
 import 'package:path/path.dart' as path;
+import 'package:random_quote_app/core/logger.dart';
+
+class MockLogger extends Mock implements Logger {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  globalLogger = MockLogger();
 
   group('initializeTempDirectory', () {
     setUp(
@@ -30,6 +35,9 @@ void main() {
 
         expect(uninitializedDir, null);
         expect(initializedDir, 'mock/path');
+        verify(
+          () => globalLogger.log(any()),
+        ).called(1);
       },
     );
   });
@@ -101,6 +109,9 @@ void main() {
           ).existsSync(),
           isFalse,
         );
+        verify(
+          () => globalLogger.log('Temp directory cleaned'),
+        ).called(1);
       },
     );
   });
