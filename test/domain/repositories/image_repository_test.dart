@@ -12,12 +12,27 @@ main() {
   late ImageRepository imageRepository;
   late MockImageDataSource mockImageDataSource1;
   late MockImageDataSource mockImageDataSource2;
+  final ImageModel imageModel = ImageModel(
+    imageUrl: 'imageUrl',
+    author: 'author',
+  );
 
   group('getImageModel', () {
     setUp(() {
       mockImageDataSource1 = MockImageDataSource();
       mockImageDataSource2 = MockImageDataSource();
       imageRepository = ImageRepository();
+
+      when(
+        () => mockImageDataSource1.getImageData(),
+      ).thenAnswer(
+        (_) async => imageModel,
+      );
+      when(
+        () => mockImageDataSource2.getImageData(),
+      ).thenThrow(
+        (_) async => Exception(''),
+      );
     });
 
     test(
@@ -28,10 +43,7 @@ main() {
           mockImageDataSource1,
           mockImageDataSource1,
         ];
-        final ImageModel imageModel = ImageModel(
-          imageUrl: 'imageUrl',
-          author: 'author',
-        );
+
         when(
           () => mockImageDataSource1.getImageData(),
         ).thenAnswer(
@@ -48,34 +60,49 @@ main() {
     );
 
     test(
-      'on error when getting data, gets a image model data from another data source in the list',
+      'on error when getting data, gets a image model data from another data source in the list until success',
       () async {
         imageRepository.dataSources = [
-          mockImageDataSource1,
           mockImageDataSource2,
           mockImageDataSource1,
+          mockImageDataSource2,
+          mockImageDataSource2,
         ];
-        final ImageModel imageModel = ImageModel(
-          imageUrl: 'imageUrl',
-          author: 'author',
-        );
-        when(
-          () => mockImageDataSource1.getImageData(),
-        ).thenThrow(
-          (_) async => Exception(''),
-        );
-        when(
-          () => mockImageDataSource2.getImageData(),
-        ).thenAnswer(
-          (_) async => imageModel,
-        );
+
+        imageRepository.chosenIndex = 2;
 
         final resultImageModel = await imageRepository.getImageModel();
 
         expect(resultImageModel, imageModel);
         verify(
-          () => mockImageDataSource2.getImageData(),
+          () => mockImageDataSource1.getImageData(),
         ).called(1);
+        verify(
+          () => mockImageDataSource2.getImageData(),
+        ).called(
+          imageRepository.dataSources.length - 1,
+        );
+      },
+    );
+
+    test(
+      'on error on every data call in the list throws an error',
+      () async {
+        imageRepository.dataSources = [
+          mockImageDataSource2,
+          mockImageDataSource2,
+          mockImageDataSource2,
+        ];
+
+        expect(
+          imageRepository.getImageModel,
+          throwsException,
+        );
+        verify(
+          () => mockImageDataSource2.getImageData(),
+        ).called(
+          imageRepository.dataSources.length,
+        );
       },
     );
   });
