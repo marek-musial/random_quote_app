@@ -93,7 +93,7 @@ void main() async {
     });
 
     test(
-      'on error throws error, then does nothing',
+      'on error throws and logs the error, then does nothing',
       () {
         Map<String, dynamic> invalidJson = {
           "themeColorValue": "invalid_value",
@@ -103,7 +103,15 @@ void main() async {
         stateFromJson = sut.fromJson(invalidJson);
 
         expect(stateFromJson, null);
-        verify(() => globalLogger.log(any())).called(1);
+        verify(
+          () => globalLogger.log(
+            any(
+              that: contains(
+                'Error on RootState fromJson:',
+              ),
+            ),
+          ),
+        ).called(1);
       },
     );
   });
