@@ -4,12 +4,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:random_quote_app/core/logger.dart';
 
 String? tempDirectoryPath;
-final Logger _directoryLogger = Logger();
 
 Future<void> initializeTempDirectory() async {
   final Directory tempDirectory = await getTemporaryDirectory();
   tempDirectoryPath = tempDirectory.path;
-  _directoryLogger.log('Temp directory initialized');
+  globalLogger.log('Temp directory initialized');
 }
 
 void cleanDirectory(String? path) {
@@ -26,8 +25,8 @@ void cleanDirectory(String? path) {
         },
       );
     }
-    _directoryLogger.log('Temp directory cleaned');
+    globalLogger.log('Temp directory cleaned');
   } catch (e) {
-    _directoryLogger.log(e.toString());
+    globalLogger.log(e.toString());
   }
 }

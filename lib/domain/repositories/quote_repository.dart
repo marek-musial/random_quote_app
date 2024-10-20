@@ -1,7 +1,7 @@
 import 'dart:math';
-import 'dart:developer' as dev;
 
 import 'package:injectable/injectable.dart';
+import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/advice_quote_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/affirmations_quote_remote_data_source.dart';
@@ -45,7 +45,7 @@ class QuoteRepository {
         final randomDataSource = dataSources[chosenIndex];
         return await randomDataSource.getQuoteData();
       } catch (e) {
-        dev.log('[Time: ${DateTime.now().toString()}] $e');
+        globalLogger.log('$e');
         if (chosenIndex < dataSources.length - 1) {
           chosenIndex++;
         } else {

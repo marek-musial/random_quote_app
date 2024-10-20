@@ -1,7 +1,7 @@
 import 'dart:math';
-import 'dart:developer' as dev;
 
 import 'package:injectable/injectable.dart';
+import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/image_remote_data_sources/cataas_image_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/image_remote_data_sources/pexels_image_remote_data_source.dart';
@@ -43,7 +43,7 @@ class ImageRepository {
         final randomDataSource = dataSources[chosenIndex];
         return await randomDataSource.getImageData();
       } catch (e) {
-        dev.log('[Time: ${DateTime.now().toString()}] $e');
+        globalLogger.log('$e');
         if (chosenIndex < dataSources.length - 1) {
           chosenIndex++;
         } else {

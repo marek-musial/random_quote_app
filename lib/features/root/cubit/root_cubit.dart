@@ -12,8 +12,6 @@ part 'root_cubit.g.dart';
 class RootCubit extends HydratedCubit<RootState> {
   RootCubit() : super(const RootState());
 
-  Logger logger = Logger();
-
   void toggleThemeBrightness() {
     emit(
       state.copyWith(
@@ -44,7 +42,7 @@ class RootCubit extends HydratedCubit<RootState> {
       final jsonState = RootState.fromJson(json);
       return jsonState;
     } on TypeError catch (e) {
-      logger.log('Error on RootState fromJson: $e');
+      globalLogger.log('Error on RootState fromJson: $e');
       return null;
     }
   }
