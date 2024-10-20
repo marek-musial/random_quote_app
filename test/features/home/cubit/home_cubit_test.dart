@@ -761,4 +761,64 @@ void main() async {
       verify: (cubit) => cubit.logger.log,
     );
   });
+  
+  group('sharePng', () {
+    late MockImageCaptureService mockImageCaptureService;
+    late MockRenderRepaintBoundary mockRenderRepaintBoundary;
+    registerFallbackValue(RenderRepaintBoundary());
+    setUp(
+      () {
+        mockImageCaptureService = MockImageCaptureService();
+        mockRenderRepaintBoundary = MockRenderRepaintBoundary();
+        mockImage = MockImage();
+        sut.imageCaptureService = mockImageCaptureService;
+        when(
+          () => mockRenderRepaintBoundary.size,
+        ).thenReturn(
+          const Size(100, 200),
+        );
+      },
+    );
+
+    test(
+      'succesfully runs imageCaptureService.sharePng',
+      () async {
+        when(() => sut.imageCaptureService.sharePng(any())).thenAnswer((_) async {});
+
+        await sut.sharePng(mockRenderRepaintBoundary);
+
+        verify(
+          () => sut.imageCaptureService.sharePng(any()),
+        );
+      },
+    );
+
+    blocTest(
+      'emits error state when sharing png fails and logs the error',
+      build: () => sut,
+      act: (cubit) async {
+        when(
+          () => mockImageCaptureService.sharePng(any()),
+        ).thenThrow(
+          Exception('Error on sharing image'),
+        );
+
+        await cubit.sharePng(mockRenderRepaintBoundary);
+      },
+      expect: () => [
+        isA<HomeState>()
+            .having(
+              (state) => state.status,
+              'status',
+              Status.error,
+            )
+            .having(
+              (state) => state.errorMessage,
+              'errorMessage',
+              'Exception: Error on sharing image',
+            ),
+      ],
+      verify: (cubit) => cubit.logger.log,
+    );
+  });
 }
