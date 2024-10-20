@@ -7,6 +7,6 @@ class Logger {
   Function loggingMethod = dev.log;
 
   void log(String message) {
-    loggingMethod(message);
+    loggingMethod('[Time: ${DateTime.now().toString()}] $message');
   }
 }
