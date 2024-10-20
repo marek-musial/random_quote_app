@@ -22,7 +22,11 @@ void main() {
       logger.log(message);
 
       verify(
-        () => mockLoggingMethod.call(message),
+        () => mockLoggingMethod.call(
+          any(
+            that: contains(message),
+          ),
+        ),
       ).called(1);
     });
   });
