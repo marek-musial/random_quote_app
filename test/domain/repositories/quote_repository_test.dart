@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
@@ -8,7 +9,10 @@ class MockQuoteDataSource extends Mock implements QuoteDataSource {
   Future<QuoteModel?> getQuoteModel();
 }
 
+class MockLogger extends Mock implements Logger {}
+
 main() {
+  globalLogger = MockLogger();
   late QuoteRepository quoteRepository;
   late MockQuoteDataSource mockQuoteDataSource1;
   late MockQuoteDataSource mockQuoteDataSource2;
@@ -63,7 +67,7 @@ main() {
     );
 
     test(
-      'on error when getting data, gets a quote model data from another data source in the list until success',
+      'on error when getting data, gets a quote model data from another data source in the list until success, logs every failed attempt',
       () async {
         quoteRepository.dataSources = [
           mockQuoteDataSource2,
@@ -83,11 +87,16 @@ main() {
         verify(
           () => mockQuoteDataSource2.getQuoteData(),
         ).called(quoteRepository.dataSources.length - 1);
+        verify(
+          () => globalLogger.log(any()),
+        ).called(
+          quoteRepository.dataSources.length - 1,
+        );
       },
     );
 
     test(
-      'on error on every data call in the list throws an error',
+      'on error on every data call in the list throws an error, logs every failed attempt',
       () async {
         quoteRepository.dataSources = [
           mockQuoteDataSource2,
@@ -101,6 +110,11 @@ main() {
         );
         verify(
           () => mockQuoteDataSource2.getQuoteData(),
+        ).called(
+          quoteRepository.dataSources.length,
+        );
+        verify(
+          () => globalLogger.log(any()),
         ).called(
           quoteRepository.dataSources.length,
         );
