@@ -195,7 +195,7 @@ void main() async {
     );
 
     blocTest<HomeCubit, HomeState>(
-      'emits state with imageModel.rawImage when image loads successfully',
+      'emits state with imageModel.rawImage when image loads successfully, logs image size',
       build: () => sut,
       act: (cubit) async {
         when(
@@ -222,6 +222,9 @@ void main() async {
               Status.loading,
             ),
       ],
+      verify: (cubit) => globalLogger.log(
+        'Width: ${mockImage.width}, height: ${mockImage.height}',
+      ),
     );
 
     blocTest<HomeCubit, HomeState>(
@@ -286,7 +289,7 @@ void main() async {
 
   group('randomizeTextLayout', () {
     test(
-      'layout is randomized within range',
+      'layout is randomized within range, logs success message',
       () {
         sut.emit(const HomeState(status: Status.loading));
         sut.pendingState = HomeState(
@@ -319,11 +322,16 @@ void main() async {
           quoteModel?.crossAxisAlignmentIndex,
           inInclusiveRange(0, 2),
         );
+        verify(
+          () => globalLogger.log(
+            'layout randomized',
+          ),
+        );
       },
     );
 
     test(
-      'layout is not randomized due to decoding status',
+      'layout is not randomized due to decoding status, logs a message',
       () {
         sut.emit(const HomeState(status: Status.decoding));
         sut.pendingState = HomeState(
@@ -342,6 +350,11 @@ void main() async {
         expect(quoteModel?.textAlignmentIndex, 1);
         expect(quoteModel?.mainAxisAlignmentIndex, 1);
         expect(quoteModel?.crossAxisAlignmentIndex, 1);
+        verify(
+          () => globalLogger.log(
+            'layout not randomized',
+          ),
+        );
       },
     );
   });
@@ -384,7 +397,7 @@ void main() async {
     });
 
     test(
-      'calculates scaleFactor correctly',
+      'calculates scaleFactor correctly, logs the scaleFactor',
       () {
         sut.pendingState = HomeState(
           status: Status.loading,
@@ -405,6 +418,11 @@ void main() async {
         sut.calculateScaleFactor(const Size(200, 100));
 
         expect(sut.pendingState.imageModel?.scaleFactor, .5);
+        verify(
+          () => globalLogger.log(
+            'scaleFactor: ${sut.pendingState.imageModel?.scaleFactor}',
+          ),
+        );
       },
     );
 
@@ -467,7 +485,7 @@ void main() async {
     );
 
     test(
-      'generates color correctly',
+      'generates color correctly, logs the color value and success message',
       () async {
         imageProvider = mockImageProvider;
 
@@ -486,6 +504,16 @@ void main() async {
         expect(
           sut.pendingState.quoteModel?.textColor,
           const ui.Color.fromARGB(255, 255, 255, 255),
+        );
+        verifyInOrder(
+          [
+            () => globalLogger.log(
+                  'textColor = ${sut.pendingState.quoteModel?.textColor}',
+                ),
+            () => globalLogger.log(
+                  'palette generated!',
+                ),
+          ],
         );
       },
     );
@@ -583,12 +611,15 @@ void main() async {
     );
 
     blocTest(
-      'emits the pending state with success status',
+      'emits the pending state with success status, logs a success message',
       build: () => sut,
       act: (cubit) => sut.emitSuccess(),
       expect: () => [
         sut.pendingState.copyWith(status: Status.success),
       ],
+      verify: (cubit) => globalLogger.log(
+        'success',
+      ),
     );
   });
 
@@ -697,7 +728,7 @@ void main() async {
     );
 
     test(
-      'on error returns null',
+      'on error logs the error and returns null',
       () {
         final json = {
           'imageModel': 'wrongData',
@@ -709,6 +740,15 @@ void main() async {
         expect(
           stateFromJson,
           null,
+        );
+        verify(
+          () => globalLogger.log(
+            any(
+              that: contains(
+                'Error on HomeState fromJson:',
+              ),
+            ),
+          ),
         );
       },
     );
@@ -733,7 +773,7 @@ void main() async {
     );
 
     test(
-      'succesfully runs imageCaptureService.capturePng',
+      'succesfully runs imageCaptureService.capturePng, logs boundary size',
       () async {
         when(() => sut.imageCaptureService.capturePng(any())).thenAnswer((_) async {});
 
@@ -741,6 +781,11 @@ void main() async {
 
         verify(
           () => sut.imageCaptureService.capturePng(any()),
+        );
+        verify(
+          () => globalLogger.log(
+            'Boundary width: ${mockRenderRepaintBoundary.size.width}, boundary height: ${mockRenderRepaintBoundary.size.height}',
+          ),
         );
       },
     );
@@ -793,7 +838,7 @@ void main() async {
     );
 
     test(
-      'succesfully runs imageCaptureService.sharePng',
+      'succesfully runs imageCaptureService.sharePng, logs boundary size',
       () async {
         when(() => sut.imageCaptureService.sharePng(any())).thenAnswer((_) async {});
 
@@ -801,6 +846,11 @@ void main() async {
 
         verify(
           () => sut.imageCaptureService.sharePng(any()),
+        );
+        verify(
+          () => globalLogger.log(
+            'Boundary width: ${mockRenderRepaintBoundary.size.width}, boundary height: ${mockRenderRepaintBoundary.size.height}',
+          ),
         );
       },
     );
