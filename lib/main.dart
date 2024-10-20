@@ -10,7 +10,7 @@ void main() async {
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getApplicationDocumentsDirectory(),
   );
-  initializeTempDirectory();
+  await initializeTempDirectory();
   configureDependencies();
   runApp(const MyApp());
 }
