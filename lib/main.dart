@@ -11,6 +11,7 @@ void main() async {
     storageDirectory: await getApplicationDocumentsDirectory(),
   );
   await initializeTempDirectory();
+  cleanDirectory(tempDirectoryPath);
   configureDependencies();
   runApp(const MyApp());
 }
