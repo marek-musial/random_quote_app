@@ -20,22 +20,41 @@ final List<QuoteDataSource> quoteDataSources = [
 class QuoteRepository {
   QuoteRepository();
   List<QuoteDataSource> dataSources = quoteDataSources;
+  late int chosenIndex = Random().nextInt(dataSources.length);
 
   Future<QuoteModel?> getQuoteModel() async {
-    final int chosenIndex = Random().nextInt(dataSources.length);
+    int retries = dataSources.length;
     try {
-      final randomDataSource = dataSources[chosenIndex];
-      return await randomDataSource.getQuoteData();
+      return await retry(
+        chosenIndex: chosenIndex,
+        numberOfRetries: retries,
+      );
     } catch (e) {
-      dev.log('[Time: ${DateTime.now().toString()}] $e');
-      int otherIndex;
-      if (chosenIndex < dataSources.length - 1) {
-        otherIndex = chosenIndex + 1;
-      } else {
-        otherIndex = 0;
+      throw Exception(e);
+    }
+  }
+
+  Future retry<T>({
+    required int chosenIndex,
+    required int numberOfRetries,
+  }) async {
+    int retries = numberOfRetries;
+
+    while (retries-- > 0) {
+      try {
+        final randomDataSource = dataSources[chosenIndex];
+        return await randomDataSource.getQuoteData();
+      } catch (e) {
+        dev.log('[Time: ${DateTime.now().toString()}] $e');
+        if (chosenIndex < dataSources.length - 1) {
+          chosenIndex++;
+        } else {
+          chosenIndex = 0;
+        }
       }
-      final randomDataSource = dataSources[otherIndex];
-      return await randomDataSource.getQuoteData();
+    }
+    {
+      throw Exception('Error while getting quote');
     }
   }
 }
