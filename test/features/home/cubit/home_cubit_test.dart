@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:random_quote_app/core/enums.dart';
+import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
@@ -40,6 +41,8 @@ class MockRenderRepaintBoundary extends Mock implements RenderRepaintBoundary {
   }
 }
 
+class MockLogger extends Mock implements Logger {}
+
 void main() async {
   late Storage storage;
   late HomeCubit sut;
@@ -47,6 +50,7 @@ void main() async {
   late MockQuoteRepository quoteRepository;
   late MockImage mockImage;
   late MockImageLoader mockImageLoader;
+  globalLogger = MockLogger();
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -134,7 +138,7 @@ void main() async {
             errorMessage: 'Exception: Error fetching image',
           ),
         ],
-        verify: (cubit) => cubit.logger.log,
+        verify: (cubit) => globalLogger.log,
       );
     });
 
@@ -157,7 +161,7 @@ void main() async {
             const HomeState(status: Status.loading),
             const HomeState(status: Status.error, errorMessage: 'Exception: Error fetching quote'),
           ],
-          verify: (cubit) => cubit.logger.log,
+          verify: (cubit) => globalLogger.log,
         );
       },
     );
@@ -239,7 +243,7 @@ void main() async {
               'Failed to load image: Exception: Error loading image',
             ),
       ],
-      verify: (cubit) => cubit.logger.log,
+      verify: (cubit) => globalLogger.log,
     );
     blocTest<HomeCubit, HomeState>(
       'emits error state when imageModel is null and logs the error',
@@ -270,7 +274,7 @@ void main() async {
               'An error occured while getting the image',
             ),
       ],
-      verify: (cubit) => cubit.logger.log,
+      verify: (cubit) => globalLogger.log,
     );
   });
 
@@ -421,7 +425,7 @@ void main() async {
               'scale factor calculation error',
             ),
       ],
-      verify: (cubit) => cubit.logger.log,
+      verify: (cubit) => globalLogger.log,
     );
   });
 
@@ -509,7 +513,7 @@ void main() async {
               'Exception: Error generating colors',
             ),
       ],
-      verify: (cubit) => cubit.logger.log,
+      verify: (cubit) => globalLogger.log,
     );
 
     blocTest(
@@ -535,7 +539,7 @@ void main() async {
               'Error while generating color',
             ),
       ],
-      verify: (cubit) => cubit.logger.log,
+      verify: (cubit) => globalLogger.log,
     );
   });
 
@@ -758,10 +762,10 @@ void main() async {
               'Exception: Error on capturing image',
             ),
       ],
-      verify: (cubit) => cubit.logger.log,
+      verify: (cubit) => globalLogger.log,
     );
   });
-  
+
   group('sharePng', () {
     late MockImageCaptureService mockImageCaptureService;
     late MockRenderRepaintBoundary mockRenderRepaintBoundary;
@@ -818,7 +822,7 @@ void main() async {
               'Exception: Error on sharing image',
             ),
       ],
-      verify: (cubit) => cubit.logger.log,
+      verify: (cubit) => globalLogger.log,
     );
   });
 }

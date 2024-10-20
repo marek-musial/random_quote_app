@@ -28,7 +28,6 @@ part 'home_cubit.freezed.dart';
 part 'home_cubit.g.dart';
 
 ImageProvider? imageProvider;
-Logger homeCubitLogger = Logger();
 
 class ImageLoader {
   Future<ui.Image> loadImage(String url) async {
@@ -90,7 +89,7 @@ class ImageCaptureService {
       pngBytes,
       name: 'image_$timestamp',
     );
-    homeCubitLogger.log('Saved image width: ${image.width}, saved image height: ${image.height}');
+    globalLogger.log('Saved image width: ${image.width}, saved image height: ${image.height}');
   }
 
   Future<void> sharePng(RenderRepaintBoundary boundary) async {
@@ -107,15 +106,15 @@ class ImageCaptureService {
       [XFile(imageTempUri)],
     );
     if (result.status == ShareResultStatus.success) {
-      homeCubitLogger.log(
+      globalLogger.log(
         'Shared image width: ${image.width}, saved image height: ${image.height}',
       );
     } else if (result.status == ShareResultStatus.dismissed) {
-      homeCubitLogger.log(
+      globalLogger.log(
         'Image sharing dismissed',
       );
     } else {
-      homeCubitLogger.log(
+      globalLogger.log(
         'An error occured with share result status ${result.status.toString()}',
       );
     }
@@ -129,7 +128,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     this._quoteRepository,
   ) : super(const HomeState());
 
-  Logger logger = homeCubitLogger;
+  Logger logger = globalLogger;
   final ImageRepository _imageRepository;
   final QuoteRepository _quoteRepository;
   ImageLoader imageLoader = ImageLoader();

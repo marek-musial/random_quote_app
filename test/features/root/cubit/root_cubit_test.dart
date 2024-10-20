@@ -17,7 +17,7 @@ class MockLogger extends Mock implements Logger {}
 void main() async {
   late Storage storage;
   late RootCubit sut;
-  late MockLogger logger = MockLogger();
+  globalLogger = MockLogger();
 
   void initHydratedStorage() {
     storage = MockStorage();
@@ -98,13 +98,12 @@ void main() async {
         Map<String, dynamic> invalidJson = {
           "themeColorValue": "invalid_value",
         };
-        sut.logger = logger;
         RootState? stateFromJson;
 
         stateFromJson = sut.fromJson(invalidJson);
 
         expect(stateFromJson, null);
-        verify(() => logger.log(any())).called(1);
+        verify(() => globalLogger.log(any())).called(1);
       },
     );
   });
