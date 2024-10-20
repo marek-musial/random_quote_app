@@ -12,12 +12,27 @@ main() {
   late QuoteRepository quoteRepository;
   late MockQuoteDataSource mockQuoteDataSource1;
   late MockQuoteDataSource mockQuoteDataSource2;
+  QuoteModel quoteModel = QuoteModel(
+    quote: 'quoteUrl',
+    author: 'author',
+  );
 
   group('getQuoteModel', () {
     setUp(() {
       mockQuoteDataSource1 = MockQuoteDataSource();
       mockQuoteDataSource2 = MockQuoteDataSource();
       quoteRepository = QuoteRepository();
+
+      when(
+        () => mockQuoteDataSource1.getQuoteData(),
+      ).thenAnswer(
+        (_) async => quoteModel,
+      );
+      when(
+        () => mockQuoteDataSource2.getQuoteData(),
+      ).thenThrow(
+        (_) async => Exception(''),
+      );
     });
 
     test(
@@ -48,34 +63,47 @@ main() {
     );
 
     test(
-      'on error when getting data, gets a quote model data from another data source in the list',
+      'on error when getting data, gets a quote model data from another data source in the list until success',
       () async {
         quoteRepository.dataSources = [
-          mockQuoteDataSource1,
           mockQuoteDataSource2,
           mockQuoteDataSource1,
+          mockQuoteDataSource2,
+          mockQuoteDataSource2,
         ];
-        final QuoteModel quoteModel = QuoteModel(
-          quote: 'quoteUrl',
-          author: 'author',
-        );
-        when(
-          () => mockQuoteDataSource1.getQuoteData(),
-        ).thenThrow(
-          (_) async => Exception(''),
-        );
-        when(
-          () => mockQuoteDataSource2.getQuoteData(),
-        ).thenAnswer(
-          (_) async => quoteModel,
-        );
+
+        quoteRepository.chosenIndex = 2;
 
         final resultQuoteModel = await quoteRepository.getQuoteModel();
 
         expect(resultQuoteModel, quoteModel);
         verify(
-          () => mockQuoteDataSource2.getQuoteData(),
+          () => mockQuoteDataSource1.getQuoteData(),
         ).called(1);
+        verify(
+          () => mockQuoteDataSource2.getQuoteData(),
+        ).called(quoteRepository.dataSources.length - 1);
+      },
+    );
+
+    test(
+      'on error on every data call in the list throws an error',
+      () async {
+        quoteRepository.dataSources = [
+          mockQuoteDataSource2,
+          mockQuoteDataSource2,
+          mockQuoteDataSource2,
+        ];
+
+        expect(
+          quoteRepository.getQuoteModel,
+          throwsException,
+        );
+        verify(
+          () => mockQuoteDataSource2.getQuoteData(),
+        ).called(
+          quoteRepository.dataSources.length,
+        );
       },
     );
   });
