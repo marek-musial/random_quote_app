@@ -114,5 +114,20 @@ void main() {
         ).called(1);
       },
     );
+
+    test(
+      'logs an error message on error',
+      () {
+        cleanDirectory('');
+
+        verify(
+          () => globalLogger.log(
+            any(
+              that: contains('PathAccessException:'),
+            ),
+          ),
+        ).called(1);
+      },
+    );
   });
 }
