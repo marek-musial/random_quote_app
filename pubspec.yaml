@@ -69,6 +69,7 @@ dev_dependencies:
   retrofit_generator: ^9.1.2
   injectable_generator: ^2.6.2
   bloc_test: ^9.1.7
+  path: ^1.9.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
