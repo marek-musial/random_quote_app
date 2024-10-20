@@ -18,22 +18,41 @@ final List<ImageDataSource> imageDataSources = [
 class ImageRepository {
   ImageRepository();
   List<ImageDataSource> dataSources = imageDataSources;
+  late int chosenIndex = Random().nextInt(dataSources.length);
 
   Future<ImageModel?> getImageModel() async {
-    final int chosenIndex = Random().nextInt(dataSources.length);
+    int retries = dataSources.length;
     try {
-      final randomDataSource = dataSources[chosenIndex];
-      return await randomDataSource.getImageData();
+      return await retry(
+        chosenIndex: chosenIndex,
+        numberOfRetries: retries,
+      );
     } catch (e) {
-      dev.log('[Time: ${DateTime.now().toString()}] $e');
-      int otherIndex;
-      if (chosenIndex < dataSources.length - 1) {
-        otherIndex = chosenIndex + 1;
-      } else {
-        otherIndex = 0;
+      throw Exception(e);
+    }
+  }
+
+  Future retry<T>({
+    required int chosenIndex,
+    required int numberOfRetries,
+  }) async {
+    int retries = numberOfRetries;
+
+    while (retries-- > 0) {
+      try {
+        final randomDataSource = dataSources[chosenIndex];
+        return await randomDataSource.getImageData();
+      } catch (e) {
+        dev.log('[Time: ${DateTime.now().toString()}] $e');
+        if (chosenIndex < dataSources.length - 1) {
+          chosenIndex++;
+        } else {
+          chosenIndex = 0;
+        }
       }
-      final randomDataSource = dataSources[otherIndex];
-      return await randomDataSource.getImageData();
+    }
+    {
+      throw Exception('Error while getting image');
     }
   }
 }
