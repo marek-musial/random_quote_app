@@ -89,7 +89,9 @@ class ImageCaptureService {
       pngBytes,
       name: 'image_$timestamp',
     );
-    globalLogger.log('Saved image width: ${image.width}, saved image height: ${image.height}');
+    globalLogger.log(
+      'Saved image width: ${image.width}, saved image height: ${image.height}',
+    );
   }
 
   Future<void> sharePng(RenderRepaintBoundary boundary) async {
@@ -395,7 +397,9 @@ class HomeCubit extends HydratedCubit<HomeState> {
   }
 
   Future<void> capturePng(RenderRepaintBoundary boundary) async {
-    logger.log('Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}');
+    logger.log(
+      'Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}',
+    );
     try {
       await imageCaptureService.capturePng(boundary);
     } on Exception catch (e) {
