@@ -146,7 +146,9 @@ void main() async {
       'failure on getting quote model',
       () {
         setUp(() {
-          when(() => quoteRepository.getQuoteModel()).thenThrow(
+          when(
+            () => quoteRepository.getQuoteModel(),
+          ).thenThrow(
             Exception(
               'Error fetching quote',
             ),
@@ -159,7 +161,10 @@ void main() async {
           act: (cubit) => cubit.getItemModels(),
           expect: () => [
             const HomeState(status: Status.loading),
-            const HomeState(status: Status.error, errorMessage: 'Exception: Error fetching quote'),
+            const HomeState(
+              status: Status.error,
+              errorMessage: 'Exception: Error fetching quote',
+            ),
           ],
           verify: (cubit) => globalLogger.log,
         );
@@ -201,6 +206,7 @@ void main() async {
         when(() => mockImage.width).thenReturn(100);
         when(() => mockImage.height).thenReturn(200);
         cubit.imageLoader = mockImageLoader;
+
         await cubit.loadImage();
       },
       expect: () => [
@@ -395,7 +401,9 @@ void main() async {
           () => mockImage.width,
         ).thenReturn(100);
         when(() => mockImage.height).thenReturn(200);
+
         sut.calculateScaleFactor(const Size(200, 100));
+
         expect(sut.pendingState.imageModel?.scaleFactor, .5);
       },
     );
