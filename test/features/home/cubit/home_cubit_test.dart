@@ -592,9 +592,9 @@ void main() async {
 
         verifyInOrder(
           [
-            () => sut.resetPendingState(),
-            () => sut.getItemModels(),
-            () => sut.loadImage(),
+            () => sut.resetPendingState,
+            () => sut.getItemModels,
+            () => sut.loadImage,
           ],
         );
       },
