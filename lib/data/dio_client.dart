@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/core/injection_container.dart';
