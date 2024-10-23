@@ -18,10 +18,14 @@ final List<ImageDataSource> imageDataSources = [
 class ImageRepository {
   ImageRepository();
   List<ImageDataSource> dataSources = imageDataSources;
-  late int chosenIndex = Random().nextInt(dataSources.length);
+  late int chosenIndex;
+  int chooseIndex() {
+    return Random().nextInt(dataSources.length);
+  }
 
   Future<ImageModel?> getImageModel() async {
     int retries = dataSources.length;
+    chosenIndex = chooseIndex();
     try {
       return await retry(
         chosenIndex: chosenIndex,
@@ -32,7 +36,7 @@ class ImageRepository {
     }
   }
 
-  Future retry<T>({
+  Future<ImageModel?> retry<T>({
     required int chosenIndex,
     required int numberOfRetries,
   }) async {
