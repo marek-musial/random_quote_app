@@ -20,10 +20,14 @@ final List<QuoteDataSource> quoteDataSources = [
 class QuoteRepository {
   QuoteRepository();
   List<QuoteDataSource> dataSources = quoteDataSources;
-  late int chosenIndex = Random().nextInt(dataSources.length);
+  late int chosenIndex;
+  int chooseIndex() {
+    return Random().nextInt(dataSources.length);
+  }
 
   Future<QuoteModel?> getQuoteModel() async {
     int retries = dataSources.length;
+    chosenIndex = chooseIndex();
     try {
       return await retry(
         chosenIndex: chosenIndex,
@@ -34,7 +38,7 @@ class QuoteRepository {
     }
   }
 
-  Future retry<T>({
+  Future<QuoteModel?> retry<T>({
     required int chosenIndex,
     required int numberOfRetries,
   }) async {
