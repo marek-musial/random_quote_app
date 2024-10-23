@@ -9,11 +9,38 @@ class MockImageDataSource extends Mock implements ImageDataSource {
   Future<ImageModel?> getImageModel();
 }
 
+class MockImageRepository extends Mock implements ImageRepository {
+  @override
+  Future<ImageModel?> retry<T>({
+    required int chosenIndex,
+    required int numberOfRetries,
+  }) async {
+    int retries = numberOfRetries;
+
+    while (retries-- > 0) {
+      try {
+        final randomDataSource = dataSources[chosenIndex];
+        return await randomDataSource.getImageData();
+      } catch (e) {
+        globalLogger.log('$e');
+        if (chosenIndex < dataSources.length - 1) {
+          chosenIndex++;
+        } else {
+          chosenIndex = 0;
+        }
+      }
+    }
+    {
+      throw Exception('Error while getting quote');
+    }
+  }
+}
+
 class MockLogger extends Mock implements Logger {}
 
 main() {
   globalLogger = MockLogger();
-  late ImageRepository imageRepository;
+  late MockImageRepository mockImageRepository;
   late MockImageDataSource mockImageDataSource1;
   late MockImageDataSource mockImageDataSource2;
   final ImageModel imageModel = ImageModel(
@@ -22,41 +49,67 @@ main() {
   );
 
   group('getImageModel', () {
-    setUp(() {
-      mockImageDataSource1 = MockImageDataSource();
-      mockImageDataSource2 = MockImageDataSource();
-      imageRepository = ImageRepository();
-
-      when(
-        () => mockImageDataSource1.getImageData(),
-      ).thenAnswer(
-        (_) async => imageModel,
-      );
-      when(
-        () => mockImageDataSource2.getImageData(),
-      ).thenThrow(
-        (_) async => Exception(''),
-      );
-    });
-
-    test(
-      'gets image model data from the data source',
-      () async {
-        imageRepository.dataSources = [
-          mockImageDataSource1,
-          mockImageDataSource1,
-          mockImageDataSource1,
-        ];
+    setUp(
+      () {
+        mockImageDataSource1 = MockImageDataSource();
+        mockImageDataSource2 = MockImageDataSource();
+        mockImageRepository = MockImageRepository();
 
         when(
           () => mockImageDataSource1.getImageData(),
         ).thenAnswer(
           (_) async => imageModel,
         );
+        when(
+          () => mockImageDataSource2.getImageData(),
+        ).thenThrow(
+          (_) async => Exception(''),
+        );
+      },
+    );
 
-        final resultImageModel = await imageRepository.getImageModel();
+    test(
+      'gets image model data from the data source',
+      () async {
+        when(
+          () => mockImageRepository.dataSources,
+        ).thenReturn(
+          [
+            mockImageDataSource1,
+            mockImageDataSource1,
+            mockImageDataSource1,
+          ],
+        );
+        when(
+          () => mockImageRepository.chooseIndex(),
+        ).thenReturn(2);
+        when(
+          () => mockImageRepository.getImageModel(),
+        ).thenAnswer(
+          (_) async {
+            return mockImageRepository.retry(
+              chosenIndex: mockImageRepository.chooseIndex(),
+              numberOfRetries: 3,
+            );
+          },
+        );
 
-        expect(resultImageModel, imageModel);
+        final resultImageModel = await mockImageRepository.getImageModel();
+
+        expect(
+          resultImageModel,
+          isA<ImageModel>()
+              .having(
+                (imageModel) => imageModel.imageUrl,
+                'imageUrl',
+                'imageUrl',
+              )
+              .having(
+                (imageModel) => imageModel.author,
+                'author',
+                'author',
+              ),
+        );
         verify(
           () => mockImageDataSource1.getImageData(),
         ).called(1);
@@ -66,16 +119,33 @@ main() {
     test(
       'on error when getting data, gets a image model data from another data source in the list until success, logs every failed attempt',
       () async {
-        imageRepository.dataSources = [
-          mockImageDataSource2,
-          mockImageDataSource1,
-          mockImageDataSource2,
-          mockImageDataSource2,
-        ];
+        when(
+          () => mockImageRepository.dataSources,
+        ).thenReturn(
+          [
+            mockImageDataSource2,
+            mockImageDataSource1,
+            mockImageDataSource2,
+            mockImageDataSource2,
+          ],
+        );
 
-        imageRepository.chosenIndex = 2;
+        when(
+          () => mockImageRepository.chooseIndex(),
+        ).thenReturn(2);
 
-        final resultImageModel = await imageRepository.getImageModel();
+        when(
+          () => mockImageRepository.getImageModel(),
+        ).thenAnswer(
+          (_) async {
+            return mockImageRepository.retry(
+              chosenIndex: mockImageRepository.chooseIndex(),
+              numberOfRetries: 4,
+            );
+          },
+        );
+
+        final resultImageModel = await mockImageRepository.getImageModel();
 
         expect(resultImageModel, imageModel);
         verify(
@@ -84,12 +154,12 @@ main() {
         verify(
           () => mockImageDataSource2.getImageData(),
         ).called(
-          imageRepository.dataSources.length - 1,
+          mockImageRepository.dataSources.length - 1,
         );
         verify(
           () => globalLogger.log(any()),
         ).called(
-          imageRepository.dataSources.length - 1,
+          mockImageRepository.dataSources.length - 1,
         );
       },
     );
@@ -97,25 +167,44 @@ main() {
     test(
       'on error on every data call in the list throws an error, logs every failed attempt',
       () async {
-        imageRepository.dataSources = [
-          mockImageDataSource2,
-          mockImageDataSource2,
-          mockImageDataSource2,
-        ];
+        when(
+          () => mockImageRepository.dataSources,
+        ).thenReturn(
+          [
+            mockImageDataSource2,
+            mockImageDataSource2,
+            mockImageDataSource2,
+          ],
+        );
+        
+        when(
+          () => mockImageRepository.chooseIndex(),
+        ).thenReturn(2);
+
+        when(
+          () => mockImageRepository.getImageModel(),
+        ).thenAnswer(
+          (_) async {
+            return mockImageRepository.retry(
+              chosenIndex: mockImageRepository.chooseIndex(),
+              numberOfRetries: 3,
+            );
+          },
+        );
 
         expect(
-          imageRepository.getImageModel,
+          mockImageRepository.getImageModel,
           throwsException,
         );
         verify(
           () => mockImageDataSource2.getImageData(),
         ).called(
-          imageRepository.dataSources.length,
+          mockImageRepository.dataSources.length,
         );
         verify(
           () => globalLogger.log(any()),
         ).called(
-          imageRepository.dataSources.length,
+          mockImageRepository.dataSources.length,
         );
       },
     );
