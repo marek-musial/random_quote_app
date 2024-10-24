@@ -18,6 +18,18 @@ void main() {
     },
   );
 
+  group('randomPage', () {
+    test(
+      'return random int within range',
+      () {
+        expect(
+          randomPage,
+          inInclusiveRange(1, 8000),
+        );
+      },
+    );
+  });
+
   group('getImageData', () {
     test(
       'should return ImageModel when getImageData is successful',
