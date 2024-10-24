@@ -67,12 +67,14 @@ class PexelsImageRemoteDataSource implements ImageDataSource {
   @override
   final link = 'https://www.pexels.com/api/';
 
+  late PexelsImageRemoteRetrofitDataSource dataSource = //R
+      PexelsImageRemoteRetrofitDataSource(dioClient.dio);
+
   @override
   Future<ImageModel?> getImageData() async {
     try {
       const int perPage = 1;
       final randomPage = Random().nextInt(8000);
-      final dataSource = PexelsImageRemoteRetrofitDataSource(dioClient.dio);
       final imageData = await dataSource.getImageData(
         page: randomPage,
         perPage: perPage,

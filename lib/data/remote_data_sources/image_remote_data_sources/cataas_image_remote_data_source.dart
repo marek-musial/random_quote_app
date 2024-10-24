@@ -38,10 +38,12 @@ class CataasImageRemoteDataSource implements ImageDataSource {
   @override
   final link = 'https://cataas.com/';
 
+  late CataasImageRemoteRetrofitDataSource dataSource = //R
+      CataasImageRemoteRetrofitDataSource(dioClient.dio);
+
   @override
   Future<ImageModel?> getImageData() async {
     try {
-      final dataSource = CataasImageRemoteRetrofitDataSource(dioClient.dio);
       final imageData = await dataSource.getImageData();
       final imageId = imageData.id;
       final imageModel = ImageModel(

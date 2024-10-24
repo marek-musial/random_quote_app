@@ -48,11 +48,13 @@ class AdviceQuoteRemoteDataSource implements QuoteDataSource {
   final blurb = 'Generate random advice slips.\nCreated by Tom Kiss.';
   @override
   final link = 'https://api.adviceslip.com/';
+  
+  late AdviceQuoteRemoteRetrofitDataSource dataSource = //R
+      AdviceQuoteRemoteRetrofitDataSource(dioClient.dio);
 
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
-      final dataSource = AdviceQuoteRemoteRetrofitDataSource(dioClient.dio);
       final jsonString = await dataSource.getQuoteData();
       final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
       final response = AdviceResponse.fromJson(jsonMap);

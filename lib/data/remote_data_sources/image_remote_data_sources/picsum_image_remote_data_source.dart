@@ -44,11 +44,13 @@ class PicsumImageRemoteDataSource implements ImageDataSource {
   @override
   final link = 'https://picsum.photos/';
 
+  late PicsumImageRemoteRetrofitDataSource dataSource = //R
+      PicsumImageRemoteRetrofitDataSource(dioClient.dio);
+
   @override
   Future<ImageModel?> getImageData() async {
     final randomPage = Random().nextInt(10) + 1;
     try {
-      final dataSource = PicsumImageRemoteRetrofitDataSource(dioClient.dio);
       final imageData = await dataSource.getImageData(page: randomPage, limit: 100);
       final photo = imageData[Random().nextInt(imageData.length)];
       final imageModel = ImageModel(

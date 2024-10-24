@@ -38,10 +38,12 @@ class KanyeQuoteRemoteDataSource implements QuoteDataSource {
   @override
   final link = 'https://kanye.rest/';
 
+  late KanyeQuoteRemoteRetrofitDataSource dataSource = //R
+      KanyeQuoteRemoteRetrofitDataSource(dioClient.dio);
+
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
-      final dataSource = KanyeQuoteRemoteRetrofitDataSource(dioClient.dio);
       final response = await dataSource.getQuoteData();
       final quoteModel = QuoteModel(
         quote: response.quote,
