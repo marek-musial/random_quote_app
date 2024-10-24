@@ -38,25 +38,13 @@ class AffirmationsQuoteRemoteDataSource implements QuoteDataSource {
   @override
   final link = 'https://www.affirmations.dev/';
 
+  late AffirmationsQuoteRemoteRetrofitDataSource dataSource = //R
+      AffirmationsQuoteRemoteRetrofitDataSource(dioClient.dio);
+
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
-      final dataSource = AffirmationsQuoteRemoteRetrofitDataSource(dioClient.dio);
       final response = await dataSource.getQuoteData();
-      // final response = await dioClient.dio.get<Map<String, dynamic>>(
-      //   'https://www.affirmations.dev/',
-      // );
-
-      // final json = response.data;
-
-      // if (json == null) {
-      //   return null;
-      // }
-
-      // final quoteModel = QuoteModel(
-      //   quote: json['affirmation'],
-      //   author: null,
-      // );
       final quoteModel = QuoteModel(
         quote: response.affirmation,
         author: null,

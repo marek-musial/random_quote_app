@@ -39,25 +39,13 @@ class QuotableQuoteRemoteDataSource implements QuoteDataSource {
   @override
   final link = 'https://api.quotable.io';
 
+  late QuotableQuoteRemoteRetrofitDataSource dataSource = //R
+      QuotableQuoteRemoteRetrofitDataSource(dioClient.dio);
+
   @override
   Future<QuoteModel?> getQuoteData() async {
     try {
-      final dataSource = QuotableQuoteRemoteRetrofitDataSource(dioClient.dio);
       final response = await dataSource.getQuoteData();
-      // final response = await dioClient.dio.get<List<dynamic>>(
-      //   'https://api.quotable.io/quotes/random',
-      // );
-
-      // final jsons = response.data;
-      // if (jsons == null || jsons.isEmpty) {
-      //   return null;
-      // }
-      // final Map<String, dynamic> json = jsons[0];
-
-      // final quoteModel = QuoteModel(
-      //   quote: json['content'],
-      //   author: json['author'],
-      // );
       final quoteModel = QuoteModel(
         quote: response.first.content,
         author: response.first.author,
