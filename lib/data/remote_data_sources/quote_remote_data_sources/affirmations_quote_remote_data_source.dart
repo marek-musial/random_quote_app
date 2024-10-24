@@ -38,8 +38,10 @@ class AffirmationsQuoteRemoteDataSource implements QuoteDataSource {
   @override
   final link = 'https://www.affirmations.dev/';
 
+// coverage:ignore-start
   late AffirmationsQuoteRemoteRetrofitDataSource dataSource = //R
       AffirmationsQuoteRemoteRetrofitDataSource(dioClient.dio);
+// coverage:ignore-end
 
   @override
   Future<QuoteModel?> getQuoteData() async {

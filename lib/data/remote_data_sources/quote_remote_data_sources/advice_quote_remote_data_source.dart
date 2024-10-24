@@ -49,8 +49,10 @@ class AdviceQuoteRemoteDataSource implements QuoteDataSource {
   @override
   final link = 'https://api.adviceslip.com/';
   
+// coverage:ignore-start
   late AdviceQuoteRemoteRetrofitDataSource dataSource = //R
       AdviceQuoteRemoteRetrofitDataSource(dioClient.dio);
+// coverage:ignore-end
 
   @override
   Future<QuoteModel?> getQuoteData() async {

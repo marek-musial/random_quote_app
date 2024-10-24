@@ -38,8 +38,10 @@ class CataasImageRemoteDataSource implements ImageDataSource {
   @override
   final link = 'https://cataas.com/';
 
+// coverage:ignore-start
   late CataasImageRemoteRetrofitDataSource dataSource = //R
       CataasImageRemoteRetrofitDataSource(dioClient.dio);
+// coverage:ignore-end
 
   @override
   Future<ImageModel?> getImageData() async {

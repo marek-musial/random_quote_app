@@ -67,8 +67,10 @@ class PexelsImageRemoteDataSource implements ImageDataSource {
   @override
   final link = 'https://www.pexels.com/api/';
 
+// coverage:ignore-start
   late PexelsImageRemoteRetrofitDataSource dataSource = //R
       PexelsImageRemoteRetrofitDataSource(dioClient.dio);
+// coverage:ignore-end
 
   @override
   Future<ImageModel?> getImageData() async {

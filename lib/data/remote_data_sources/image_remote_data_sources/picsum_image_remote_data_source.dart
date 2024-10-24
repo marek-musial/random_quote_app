@@ -44,8 +44,10 @@ class PicsumImageRemoteDataSource implements ImageDataSource {
   @override
   final link = 'https://picsum.photos/';
 
+// coverage:ignore-start
   late PicsumImageRemoteRetrofitDataSource dataSource = //R
       PicsumImageRemoteRetrofitDataSource(dioClient.dio);
+// coverage:ignore-end
 
   @override
   Future<ImageModel?> getImageData() async {

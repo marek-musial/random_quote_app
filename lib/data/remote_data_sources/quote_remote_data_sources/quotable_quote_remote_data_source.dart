@@ -39,8 +39,10 @@ class QuotableQuoteRemoteDataSource implements QuoteDataSource {
   @override
   final link = 'https://api.quotable.io';
 
+// coverage:ignore-start
   late QuotableQuoteRemoteRetrofitDataSource dataSource = //R
       QuotableQuoteRemoteRetrofitDataSource(dioClient.dio);
+// coverage:ignore-end
 
   @override
   Future<QuoteModel?> getQuoteData() async {
