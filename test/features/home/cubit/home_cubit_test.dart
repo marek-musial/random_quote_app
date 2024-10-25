@@ -37,7 +37,7 @@ class MockImageCaptureService extends Mock implements ImageCaptureService {}
 class MockRenderRepaintBoundary extends Mock implements RenderRepaintBoundary {
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MockNetworkImage';
+    return 'MockRepaintBoundary';
   }
 }
 
