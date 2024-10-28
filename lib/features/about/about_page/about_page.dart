@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key, required this.title});
@@ -204,6 +206,22 @@ class SocialMediaButton extends StatelessWidget {
   final double? iconSize;
   final String url;
 
+  Future<void> _launchUrl(String link) async {
+    try {
+      final Uri uri = Uri.parse(link);
+      if (!await launchUrl(
+        uri,
+        mode: LaunchMode.platformDefault,
+      )) {
+        globalLogger.log('Could not launch $link');
+        throw Exception('Could not launch $link');
+      }
+    } catch (e) {
+      globalLogger.log('Could not launch $link due to: $e');
+      throw Exception('Could not launch $link due to: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -217,7 +235,7 @@ class SocialMediaButton extends StatelessWidget {
               flex: 2,
               child: IconButton(
                 onPressed: () {
-                  //implement social media url launched from url String
+                  _launchUrl(url);
                 },
                 icon: Icon(
                   iconData,
