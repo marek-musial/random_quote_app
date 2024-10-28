@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
@@ -120,18 +121,24 @@ class AboutPage extends StatelessWidget {
                               SocialMediaButton(
                                 textColor: textColor,
                                 bodySize: bodySize,
+                                iconData: FontAwesomeIcons.xTwitter,
                                 iconSize: screenWidth / 10,
+                                text: 'X',
                               ),
                               SocialMediaButton(
                                 textColor: textColor,
                                 bodySize: bodySize,
+                                iconData: FontAwesomeIcons.instagram,
                                 iconSize: screenWidth / 10,
+                                text: 'Instagram',
                                 url: '',
                               ),
                               SocialMediaButton(
                                 textColor: textColor,
                                 bodySize: bodySize,
+                                iconData: FontAwesomeIcons.googlePlay,
                                 iconSize: screenWidth / 12,
+                                text: 'Google play',
                                 url: '',
                               ),
                             ],
