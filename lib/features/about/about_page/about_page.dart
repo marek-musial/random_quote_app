@@ -158,6 +158,7 @@ class AboutPage extends StatelessWidget {
                     onTap: () {
                       //implement rating
                     },
+                    customBorder: tile.border,
                     child: ListTile(
                       textColor: textColor,
                       tileColor: tileColor,
