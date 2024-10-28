@@ -126,6 +126,7 @@ class AboutPage extends StatelessWidget {
                                 iconData: FontAwesomeIcons.xTwitter,
                                 iconSize: screenWidth / 10,
                                 text: 'X',
+                                url: 'https://x.com/MarekMusialDev',
                               ),
                               SocialMediaButton(
                                 textColor: textColor,
