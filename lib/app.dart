@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
                   useMaterial3: true,
                 ),
                 routes: {
-                  '/': (context) => const HomePage(title: 'Random Quote App'),
+                  '/': (context) => const HomePage(title: 'Quoterpult'),
                   '/about': (context) => const AboutPage(title: 'About page'),
                   '/sources': (context) => const SourcesPage(title: 'Data sources'),
                   '/settings': (context) => const SettingsPage(title: 'Settings'),
