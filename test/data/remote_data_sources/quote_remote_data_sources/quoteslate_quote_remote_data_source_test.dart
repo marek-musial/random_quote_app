@@ -1,20 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quotable_quote_remote_data_source.dart';
+import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quoteslate_quote_remote_data_source.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 
-class MockQuotableQuoteRemoteRetrofitDataSource extends Mock implements QuotableQuoteRemoteRetrofitDataSource {}
+class MockQuoteslateQuoteRemoteRetrofitDataSource extends Mock implements QuoteslateQuoteRemoteRetrofitDataSource {}
 
 void main() {
-  late QuotableQuoteRemoteDataSource quotableDataSource;
-  late MockQuotableQuoteRemoteRetrofitDataSource mockRetrofitDataSource;
+  late QuoteslateQuoteRemoteDataSource quoteslateDataSource;
+  late MockQuoteslateQuoteRemoteRetrofitDataSource mockRetrofitDataSource;
 
   setUp(
     () {
-      mockRetrofitDataSource = MockQuotableQuoteRemoteRetrofitDataSource();
-      quotableDataSource = QuotableQuoteRemoteDataSource();
-      quotableDataSource.dataSource = mockRetrofitDataSource;
+      mockRetrofitDataSource = MockQuoteslateQuoteRemoteRetrofitDataSource();
+      quoteslateDataSource = QuoteslateQuoteRemoteDataSource();
+      quoteslateDataSource.dataSource = mockRetrofitDataSource;
     },
   );
 
@@ -22,9 +22,9 @@ void main() {
     test(
       'should return QuoteModel when getQuoteData is successful',
       () async {
-        final quotableResponse = QuotableResponse.fromJson(
+        final quoteslateResponse = QuoteslateResponse.fromJson(
           <String, dynamic>{
-            'content': 'quote',
+            'quote': 'quote',
             'author': 'author',
           },
         );
@@ -32,10 +32,10 @@ void main() {
         when(
           () => mockRetrofitDataSource.getQuoteData(),
         ).thenAnswer(
-          (_) async => [quotableResponse],
+          (_) async => quoteslateResponse,
         );
 
-        final result = await quotableDataSource.getQuoteData();
+        final result = await quoteslateDataSource.getQuoteData();
 
         expect(
           result,
@@ -74,7 +74,7 @@ void main() {
         ).thenThrow(dioError);
 
         expect(
-          () => quotableDataSource.getQuoteData(),
+          () => quoteslateDataSource.getQuoteData(),
           throwsA(
             isA<Exception>(),
           ),
