@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:random_quote_app/core/config.dart';
 import 'package:random_quote_app/core/injection_container.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 import 'package:random_quote_app/features/home/pages/home_page.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
                   brightness: rootState.isThemeBright ? Brightness.light : Brightness.dark,
                   useMaterial3: true,
                 ),
+                debugShowCheckedModeBanner: Config.debugShowCheckedModeBanner,
                 routes: {
                   '/': (context) => const HomePage(title: 'Quoterpult'),
                   '/about': (context) => const AboutPage(title: 'About page'),
