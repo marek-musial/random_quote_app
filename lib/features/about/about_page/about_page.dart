@@ -102,7 +102,7 @@ class AboutPage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Our social media:',
+                          'Our links:',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: headlineSize,
