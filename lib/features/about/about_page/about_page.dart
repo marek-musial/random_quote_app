@@ -134,7 +134,7 @@ class AboutPage extends StatelessWidget {
                                 iconData: FontAwesomeIcons.instagram,
                                 iconSize: screenWidth / 10,
                                 text: 'Instagram',
-                                url: '',
+                                url: 'https://www.instagram.com/marek.musial.dev/',
                               ),
                               SocialMediaButton(
                                 textColor: textColor,
