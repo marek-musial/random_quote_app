@@ -46,7 +46,7 @@ class AboutPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 children: [
                   Text(
-                    'Quoter',
+                    'Quoterpult',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: textColor,
