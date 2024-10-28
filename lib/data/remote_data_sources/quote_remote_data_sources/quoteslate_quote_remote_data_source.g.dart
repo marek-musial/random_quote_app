@@ -1,23 +1,22 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'quotable_quote_remote_data_source.dart';
+part of 'quoteslate_quote_remote_data_source.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$QuotableResponseImpl _$$QuotableResponseImplFromJson(
+_$QuoteslateResponseImpl _$$QuoteslateResponseImplFromJson(
         Map<String, dynamic> json) =>
-    _$QuotableResponseImpl(
-      content: json['content'] as String,
+    _$QuoteslateResponseImpl(
+      quote: json['quote'] as String,
       author: json['author'] as String?,
     );
 
-Map<String, dynamic> _$$QuotableResponseImplToJson(
-        _$QuotableResponseImpl instance) =>
+Map<String, dynamic> _$$QuoteslateResponseImplToJson(
+        _$QuoteslateResponseImpl instance) =>
     <String, dynamic>{
-      'content': instance.content,
+      'quote': instance.quote,
       'author': instance.author,
     };
 
@@ -27,14 +26,14 @@ Map<String, dynamic> _$$QuotableResponseImplToJson(
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _QuotableQuoteRemoteRetrofitDataSource
-    implements QuotableQuoteRemoteRetrofitDataSource {
-  _QuotableQuoteRemoteRetrofitDataSource(
+class _QuoteslateQuoteRemoteRetrofitDataSource
+    implements QuoteslateQuoteRemoteRetrofitDataSource {
+  _QuoteslateQuoteRemoteRetrofitDataSource(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://api.quotable.io/quotes';
+    baseUrl ??= 'https://quoteslate.vercel.app';
   }
 
   final Dio _dio;
@@ -44,19 +43,19 @@ class _QuotableQuoteRemoteRetrofitDataSource
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<QuotableResponse>> getQuoteData() async {
+  Future<QuoteslateResponse> getQuoteData() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<QuotableResponse>>(Options(
+    final _options = _setStreamType<QuoteslateResponse>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/random',
+          '/api/quotes/random',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -65,13 +64,10 @@ class _QuotableQuoteRemoteRetrofitDataSource
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<QuotableResponse> _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late QuoteslateResponse _value;
     try {
-      _value = _result.data!
-          .map((dynamic i) =>
-              QuotableResponse.fromJson(i as Map<String, dynamic>))
-          .toList();
+      _value = QuoteslateResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

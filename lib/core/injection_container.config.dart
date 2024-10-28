@@ -26,8 +26,8 @@ import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sour
     as _i187;
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/kanye_quote_remote_data_source.dart'
     as _i1048;
-import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quotable_quote_remote_data_source.dart'
-    as _i201;
+import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quoteslate_quote_remote_data_source.dart'
+    as _i152;
 import 'package:random_quote_app/domain/repositories/image_repository.dart'
     as _i501;
 import 'package:random_quote_app/domain/repositories/quote_repository.dart'
@@ -64,8 +64,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i187.AffirmationsQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.factory<_i1048.KanyeQuoteRemoteRetrofitDataSource>(
         () => _i1048.KanyeQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
-    gh.factory<_i201.QuotableQuoteRemoteRetrofitDataSource>(
-        () => _i201.QuotableQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
+    gh.factory<_i152.QuoteslateQuoteRemoteRetrofitDataSource>(
+        () => _i152.QuoteslateQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.singleton<_i427.DioClient>(() => _i427.DioClient(gh<_i361.Dio>()));
     gh.factory<_i532.HomeCubit>(() => _i532.HomeCubit(
           gh<_i501.ImageRepository>(),
