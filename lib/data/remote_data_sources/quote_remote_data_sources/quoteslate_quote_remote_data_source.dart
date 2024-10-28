@@ -35,7 +35,7 @@ class QuoteslateQuoteRemoteDataSource implements QuoteDataSource {
   @override
   final title = 'Quoteslate';
   @override
-  final blurb = 'QuoteSlate is a powerful API that provides access to a vast collection of inspirational quotes. With support for filtering by author, length, and tags, you can easily find the perfect quote for your needs.';
+  final blurb = 'QuoteSlate is a powerful API that provides access to a vast collection of inspirational quotes.';
   @override
   final link = 'https://quoteslate.vercel.app/';
 
