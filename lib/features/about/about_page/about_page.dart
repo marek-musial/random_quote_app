@@ -120,29 +120,18 @@ class AboutPage extends StatelessWidget {
                               SocialMediaButton(
                                 textColor: textColor,
                                 bodySize: bodySize,
-                                iconData: Icons.facebook,
-                                text: 'App page',
+                                iconSize: screenWidth / 10,
+                              ),
+                              SocialMediaButton(
+                                textColor: textColor,
+                                bodySize: bodySize,
+                                iconSize: screenWidth / 10,
                                 url: '',
                               ),
                               SocialMediaButton(
                                 textColor: textColor,
                                 bodySize: bodySize,
-                                iconData: Icons.person,
-                                text: 'Dev page',
-                                url: '',
-                              ),
-                              SocialMediaButton(
-                                textColor: textColor,
-                                bodySize: bodySize,
-                                iconData: Icons.one_x_mobiledata,
-                                text: 'App page',
-                                url: '',
-                              ),
-                              SocialMediaButton(
-                                textColor: textColor,
-                                bodySize: bodySize,
-                                iconData: Icons.play_arrow,
-                                text: 'App store',
+                                iconSize: screenWidth / 12,
                                 url: '',
                               ),
                             ],
@@ -197,6 +186,7 @@ class SocialMediaButton extends StatelessWidget {
     required this.bodySize,
     required this.text,
     required this.iconData,
+    required this.iconSize,
     required this.url,
   });
 
@@ -204,6 +194,7 @@ class SocialMediaButton extends StatelessWidget {
   final double? bodySize;
   final String? text;
   final IconData iconData;
+  final double? iconSize;
   final String url;
 
   @override
@@ -226,7 +217,7 @@ class SocialMediaButton extends StatelessWidget {
                   color: textColor,
                 ),
                 padding: EdgeInsets.zero,
-                iconSize: screenWidth / 7,
+                iconSize: iconSize ?? screenWidth / 7,
               ),
             ),
             Expanded(
