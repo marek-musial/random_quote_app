@@ -94,20 +94,23 @@ class SettingsPage extends StatelessWidget {
                               crossAxisSpacing: screenHeight / 96,
                               shrinkWrap: true,
                               children: [
-                                InkWell(
-                                  onTap: () {
-                                    BlocProvider.of<RootCubit>(context).setThemeColor(null);
-                                  },
-                                  borderRadius: BorderRadius.circular(screenWidth / 10),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white.withOpacity(.3),
-                                    ),
-                                    child: Icon(
-                                      Icons.colorize,
-                                      color: Theme.of(context).colorScheme.primary,
-                                      size: screenWidth / 8,
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      BlocProvider.of<RootCubit>(context).setThemeColor(null);
+                                    },
+                                    borderRadius: BorderRadius.circular(screenWidth / 10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white.withOpacity(.3),
+                                      ),
+                                      child: Icon(
+                                        Icons.colorize,
+                                        color: Theme.of(context).colorScheme.primary,
+                                        size: screenWidth / 8,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -173,17 +176,15 @@ class ColorButton extends StatelessWidget {
       create: (context) {
         return getIt<RootCubit>();
       },
-      child: InkWell(
+      child: Material(
+        color: color,
         borderRadius: BorderRadius.circular(screenWidth / 10),
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(screenWidth / 10),
+          onTap: () {
+            BlocProvider.of<RootCubit>(context).setThemeColor(color);
+          },
         ),
-        onTap: () {
-          BlocProvider.of<RootCubit>(context).setThemeColor(color);
-        },
       ),
     );
   }
