@@ -1,16 +1,32 @@
-# random_quote_app
+# Quoteput
 
-A new Flutter project.
+A wide range of quote images - just one tap away!
 
-## Getting Started
+## Need a quick inspiration?
 
-This project is a starting point for a Flutter application.
+This app utilizes various APIs of random quotes and images, to produce a vast choice of randomized inspiring images with one press of a button.
 
-A few resources to get you started if this is your first Flutter project:
+## How does it work?
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+With a single button press, get a random image and quote combo.
+The outcome may vary from inspirational to entertaining (or even a bit menacing).
+Each time a call is made, a random API is chosen from a list resulting in more unique images.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Examples:
+| :---: | :---: |
+| ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_1.png 'Example-image-1') | ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_2.png 'Example-image-2') |
+| ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_3.png 'Example-image-3') | ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_4.png 'Example-image-4') |
+| ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_5.png 'Example-image-5') | ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_6.png 'Example-image-6') |
+
+## What else can it do?
+
+- Easily **save the image** you like to your phone gallery or **share** it with friends.
+
+- **Change theme brightness and color**, or **choose dynamic color theme** based on currently displayed image colors.
+
+- **Check out all the APIs** currently used in the 'Sources' list.
+
+## My links
+
+- [x.com](https://x.com/MarekMusialDev)
+- [Instagram](https://www.instagram.com/marek.musial.dev/)
