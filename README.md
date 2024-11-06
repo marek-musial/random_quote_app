@@ -13,10 +13,10 @@ The outcome may vary from inspirational to entertaining (or even a bit menacing)
 Each time a call is made, a random API is chosen from a list resulting in more unique images.
 
 ### Examples:
-| :---: | :---: |
-| ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_1.png 'Example-image-1') | ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_2.png 'Example-image-2') |
-| ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_3.png 'Example-image-3') | ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_4.png 'Example-image-4') |
-| ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_5.png 'Example-image-5') | ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_6.png 'Example-image-6') |
+ :---: | :---: 
+ ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_1.png 'Example-image-1') | ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_2.png 'Example-image-2') 
+ ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_3.png 'Example-image-3') | ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_4.png 'Example-image-4') 
+ ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_5.png 'Example-image-5') | ![](https://github.com/marek-musial/random_quote_app/blob/dev-/README_assets/Quoteput_example_png_6.png 'Example-image-6') 
 
 ## What else can it do?
 
