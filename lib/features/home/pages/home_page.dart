@@ -45,7 +45,15 @@ class HomePage extends StatelessWidget {
             appBar: MediaQuery.of(context).orientation == Orientation.portrait
                 ? AppBar(
                     backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                    title: Text(title),
+                    title: Text(
+                      title,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    iconTheme: IconThemeData(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
                   )
                 : null,
             drawer: const AppBarDrawer(index: 0),
