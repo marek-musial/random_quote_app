@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
                 ),
                 debugShowCheckedModeBanner: Config.debugShowCheckedModeBanner,
                 routes: {
-                  '/': (context) => const HomePage(title: 'Quoterpult'),
+                  '/': (context) => const HomePage(title: 'Quoteput'),
                   '/about': (context) => const AboutPage(title: 'About page'),
                   '/sources': (context) => const SourcesPage(title: 'Data sources'),
                   '/settings': (context) => const SettingsPage(title: 'Settings'),
