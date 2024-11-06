@@ -3,8 +3,8 @@ import 'package:flutter/gestures.dart';
 
 FlutterView view = PlatformDispatcher.instance.views.first;
 
-double physicalWidth = view.physicalSize.width;
-double physicalHeight = view.physicalSize.height;
+double physicalWidth = view.physicalSize.height > view.physicalSize.width ? view.physicalSize.width : view.physicalSize.height;
+double physicalHeight = view.physicalSize.height > view.physicalSize.width ? view.physicalSize.height : view.physicalSize.width;
 
 double devicePixelRatio = view.devicePixelRatio;
 
