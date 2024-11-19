@@ -2,7 +2,8 @@
     <application
         android:label="random_quote_app"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/quoteput_launcher"
+        android:roundIcon="@mipmap/quoteput_launcher_round"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
