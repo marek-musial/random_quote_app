@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
+import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,170 +29,175 @@ class AboutPage extends StatelessWidget {
           stops: const [.75, 1],
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: MediaQuery.of(context).orientation == Orientation.portrait
-            ? AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                title: Text(
-                  title,
-                  style: TextStyle(
-                    color: textColor,
-                  ),
-                ),
-                iconTheme: IconThemeData(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
-              )
-            : null,
-        drawer: const AppBarDrawer(index: 1),
-        body: Row(
-          children: [
-            MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 1) : const SizedBox.shrink(),
-            Flexible(
-              flex: 1,
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                children: [
-                  Text(
-                    'Quoteput',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: headlineSize,
-                    ),
-                  ),
-                  Text(
-                    'Version 1.0.0',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: textColor),
-                  ),
-                  Text(
-                    'Developed by: Marek Musiał',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: textColor),
-                  ),
-                  SizedBox(
-                    height: screenHeight / 96 * 2,
-                  ),
-                  ListTile(
-                    textColor: textColor,
-                    tileColor: tileColor,
-                    shape: tile.border,
-                    contentPadding: tile.padding,
+      child: Stack(
+        children: [
+          const BackgroundIcon(),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: MediaQuery.of(context).orientation == Orientation.portrait
+                ? AppBar(
+                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                     title: Text(
-                      'What is this app about?',
-                      textAlign: TextAlign.center,
+                      title,
                       style: TextStyle(
-                        fontSize: headlineSize,
+                        color: textColor,
                       ),
                     ),
-                    subtitle: Text(
-                      'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: bodySize),
+                    iconTheme: IconThemeData(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                     ),
-                  ),
-                  SizedBox(
-                    height: screenHeight / 96,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: tileColor,
-                      shape: BoxShape.rectangle,
-                      borderRadius: tile.border.borderRadius,
-                    ),
-                    constraints: BoxConstraints(
-                      maxHeight: screenHeight.toDouble(),
-                      maxWidth: screenWidth.toDouble(),
-                    ),
-                    padding: tile.padding,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Our links:',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: headlineSize,
-                            color: textColor,
-                          ),
-                        ),
-                        SizedBox(
-                          height: screenHeight / 96,
-                        ),
-                        ConstrainedBox(
-                          constraints: BoxConstraints.expand(
-                            height: screenHeight / 10,
-                            width: screenWidth * 9 / 10,
-                          ),
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            children: [
-                              SocialMediaButton(
-                                textColor: textColor,
-                                bodySize: bodySize,
-                                iconData: FontAwesomeIcons.xTwitter,
-                                iconSize: screenWidth / 10,
-                                text: 'X',
-                                url: 'https://x.com/MarekMusialDev',
-                              ),
-                              SocialMediaButton(
-                                textColor: textColor,
-                                bodySize: bodySize,
-                                iconData: FontAwesomeIcons.instagram,
-                                iconSize: screenWidth / 10,
-                                text: 'Instagram',
-                                url: 'https://www.instagram.com/marek.musial.dev/',
-                              ),
-                              SocialMediaButton(
-                                textColor: textColor,
-                                bodySize: bodySize,
-                                iconData: FontAwesomeIcons.googlePlay,
-                                iconSize: screenWidth / 12,
-                                text: 'Google play',
-                                url: '',
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: screenHeight / 96,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      //implement rating
-                    },
-                    customBorder: tile.border,
-                    child: ListTile(
-                      textColor: textColor,
-                      tileColor: tileColor,
-                      shape: tile.border,
-                      contentPadding: tile.padding / 4,
-                      title: Text(
-                        'Rate the app',
+                  )
+                : null,
+            drawer: const AppBarDrawer(index: 1),
+            body: Row(
+              children: [
+                MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 1) : const SizedBox.shrink(),
+                Flexible(
+                  flex: 1,
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    children: [
+                      Text(
+                        'Quoteput',
                         textAlign: TextAlign.center,
                         style: TextStyle(
+                          color: textColor,
                           fontSize: headlineSize,
                         ),
                       ),
-                      subtitle: Text(
-                        'It really helps!',
+                      Text(
+                        'Version 1.0.0',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: bodySize,
+                        style: TextStyle(color: textColor),
+                      ),
+                      Text(
+                        'Developed by: Marek Musiał',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: textColor),
+                      ),
+                      SizedBox(
+                        height: screenHeight / 96 * 2,
+                      ),
+                      ListTile(
+                        textColor: textColor,
+                        tileColor: tileColor,
+                        shape: tile.border,
+                        contentPadding: tile.padding,
+                        title: Text(
+                          'What is this app about?',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: headlineSize,
+                          ),
+                        ),
+                        subtitle: Text(
+                          'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: bodySize),
                         ),
                       ),
-                    ),
+                      SizedBox(
+                        height: screenHeight / 96,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: tileColor,
+                          shape: BoxShape.rectangle,
+                          borderRadius: tile.border.borderRadius,
+                        ),
+                        constraints: BoxConstraints(
+                          maxHeight: screenHeight.toDouble(),
+                          maxWidth: screenWidth.toDouble(),
+                        ),
+                        padding: tile.padding,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Our links:',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: headlineSize,
+                                color: textColor,
+                              ),
+                            ),
+                            SizedBox(
+                              height: screenHeight / 96,
+                            ),
+                            ConstrainedBox(
+                              constraints: BoxConstraints.expand(
+                                height: screenHeight / 10,
+                                width: screenWidth * 9 / 10,
+                              ),
+                              child: Flex(
+                                direction: Axis.horizontal,
+                                children: [
+                                  SocialMediaButton(
+                                    textColor: textColor,
+                                    bodySize: bodySize,
+                                    iconData: FontAwesomeIcons.xTwitter,
+                                    iconSize: screenWidth / 10,
+                                    text: 'X',
+                                    url: 'https://x.com/MarekMusialDev',
+                                  ),
+                                  SocialMediaButton(
+                                    textColor: textColor,
+                                    bodySize: bodySize,
+                                    iconData: FontAwesomeIcons.instagram,
+                                    iconSize: screenWidth / 10,
+                                    text: 'Instagram',
+                                    url: 'https://www.instagram.com/marek.musial.dev/',
+                                  ),
+                                  SocialMediaButton(
+                                    textColor: textColor,
+                                    bodySize: bodySize,
+                                    iconData: FontAwesomeIcons.googlePlay,
+                                    iconSize: screenWidth / 12,
+                                    text: 'Google play',
+                                    url: '',
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: screenHeight / 96,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          //implement rating
+                        },
+                        customBorder: tile.border,
+                        child: ListTile(
+                          textColor: textColor,
+                          tileColor: tileColor,
+                          shape: tile.border,
+                          contentPadding: tile.padding / 4,
+                          title: Text(
+                            'Rate the app',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: headlineSize,
+                            ),
+                          ),
+                          subtitle: Text(
+                            'It really helps!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: bodySize,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
