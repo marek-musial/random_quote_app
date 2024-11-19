@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
+import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
@@ -29,74 +30,79 @@ class SourcesPage extends StatelessWidget {
           stops: const [.75, 1],
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: MediaQuery.of(context).orientation == Orientation.portrait
-            ? AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                title: Text(
-                  title,
-                  style: TextStyle(
-                    color: textColor,
+      child: Stack(
+        children: [
+          const BackgroundIcon(),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: MediaQuery.of(context).orientation == Orientation.portrait
+                ? AppBar(
+                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                    title: Text(
+                      title,
+                      style: TextStyle(
+                        color: textColor,
+                      ),
+                    ),
+                    iconTheme: IconThemeData(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  )
+                : null,
+            drawer: const AppBarDrawer(index: 2),
+            body: Row(
+              children: [
+                MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 2) : const SizedBox.shrink(),
+                Flexible(
+                  flex: 1,
+                  child: ListView.separated(
+                    itemCount: dataSources.length + 2,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == 0) {
+                        return ListTile(
+                          textColor: textColor,
+                          tileColor: tileColor,
+                          shape: tile.border,
+                          contentPadding: tile.padding,
+                          title: const Text(
+                            'Image sources:',
+                            textAlign: TextAlign.center,
+                          ),
+                          subtitle: const Text(
+                            'All images are a subject of their respective apis licenses.',
+                          ),
+                        );
+                      }
+                      if (index == imageDataSources.length + 1) {
+                        return ListTile(
+                          textColor: textColor,
+                          tileColor: tileColor,
+                          shape: tile.border,
+                          contentPadding: tile.padding,
+                          title: const Text(
+                            'Quote sources:',
+                            textAlign: TextAlign.center,
+                          ),
+                          subtitle: const Text(
+                            'All quotes are a subject of their recpective apis licenses.',
+                          ),
+                        );
+                      }
+                      if (index > imageDataSources.length) {
+                        return SourceListTile(dataSource: dataSources[index - 2]);
+                      }
+                      return SourceListTile(dataSource: dataSources[index - 1]);
+                    },
+                    separatorBuilder: (BuildContext context, int index) => SizedBox(
+                      height: screenHeight / 96,
+                    ),
                   ),
                 ),
-                iconTheme: IconThemeData(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
-              )
-            : null,
-        drawer: const AppBarDrawer(index: 2),
-        body: Row(
-          children: [
-            MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 2) : const SizedBox.shrink(),
-            Flexible(
-              flex: 1,
-              child: ListView.separated(
-                itemCount: dataSources.length + 2,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == 0) {
-                    return ListTile(
-                      textColor: textColor,
-                      tileColor: tileColor,
-                      shape: tile.border,
-                      contentPadding: tile.padding,
-                      title: const Text(
-                        'Image sources:',
-                        textAlign: TextAlign.center,
-                      ),
-                      subtitle: const Text(
-                        'All images are a subject of their respective apis licenses.',
-                      ),
-                    );
-                  }
-                  if (index == imageDataSources.length + 1) {
-                    return ListTile(
-                      textColor: textColor,
-                      tileColor: tileColor,
-                      shape: tile.border,
-                      contentPadding: tile.padding,
-                      title: const Text(
-                        'Quote sources:',
-                        textAlign: TextAlign.center,
-                      ),
-                      subtitle: const Text(
-                        'All quotes are a subject of their recpective apis licenses.',
-                      ),
-                    );
-                  }
-                  if (index > imageDataSources.length) {
-                    return SourceListTile(dataSource: dataSources[index - 2]);
-                  }
-                  return SourceListTile(dataSource: dataSources[index - 1]);
-                },
-                separatorBuilder: (BuildContext context, int index) => SizedBox(
-                  height: screenHeight / 96,
-                ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
