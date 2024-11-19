@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/injection_container.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
+import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
+
+final BorderRadius _borderRadius = BorderRadius.circular(screenWidth / 10);
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key, required this.title});
@@ -26,147 +29,153 @@ class SettingsPage extends StatelessWidget {
           stops: const [.75, 1],
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: MediaQuery.of(context).orientation == Orientation.portrait
-            ? AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                title: Text(
-                  title,
-                  style: TextStyle(
-                    color: textColor,
-                  ),
-                ),
-                iconTheme: IconThemeData(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
-              )
-            : null,
-        drawer: const AppBarDrawer(index: 3),
-        body: Row(
-          children: [
-            MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 3) : const SizedBox.shrink(),
-            Flexible(
-              flex: 1,
-              child: BlocBuilder<RootCubit, RootState>(
-                builder: (context, state) {
-                  return ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    children: [
-                      InkWell(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(screenWidth / 24),
-                        ),
-                        onTap: BlocProvider.of<RootCubit>(context).toggleThemeBrightness,
-                        child: ListTile(
-                          textColor: textColor,
-                          tileColor: tileColor,
-                          shape: tile.border,
-                          contentPadding: tile.padding,
-                          title: const Text(
-                            'Theme',
-                            textAlign: TextAlign.start,
-                          ),
-                          subtitle: Text(
-                            state.isThemeBright ? 'Bright' : 'Dark',
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
+      child: Stack(
+        children: [
+          const BackgroundIcon(),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: MediaQuery.of(context).orientation == Orientation.portrait
+                ? AppBar(
+                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                    title: Text(
+                      title,
+                      style: TextStyle(
+                        color: textColor,
                       ),
-                      SizedBox(
-                        height: screenHeight / 96,
-                      ),
-                      Container(
-                        padding: tile.padding,
-                        decoration: BoxDecoration(
-                          color: tileColor,
-                          borderRadius: tile.border.borderRadius,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Theme color',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                color: textColor,
-                                fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                    ),
+                    iconTheme: IconThemeData(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  )
+                : null,
+            drawer: const AppBarDrawer(index: 3),
+            body: Row(
+              children: [
+                MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 3) : const SizedBox.shrink(),
+                Flexible(
+                  flex: 1,
+                  child: BlocBuilder<RootCubit, RootState>(
+                    builder: (context, state) {
+                      return ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        children: [
+                          InkWell(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(screenWidth / 24),
+                            ),
+                            onTap: BlocProvider.of<RootCubit>(context).toggleThemeBrightness,
+                            child: ListTile(
+                              textColor: textColor,
+                              tileColor: tileColor,
+                              shape: tile.border,
+                              contentPadding: tile.padding,
+                              title: const Text(
+                                'Theme',
+                                textAlign: TextAlign.start,
+                              ),
+                              subtitle: Text(
+                                state.isThemeBright ? 'Bright' : 'Dark',
+                                textAlign: TextAlign.start,
                               ),
                             ),
-                            SizedBox(
-                              height: screenHeight / 96,
+                          ),
+                          SizedBox(
+                            height: screenHeight / 96,
+                          ),
+                          Container(
+                            padding: tile.padding,
+                            decoration: BoxDecoration(
+                              color: tileColor,
+                              borderRadius: tile.border.borderRadius,
                             ),
-                            GridView.count(
-                              crossAxisCount: 4,
-                              mainAxisSpacing: screenHeight / 96,
-                              crossAxisSpacing: screenHeight / 96,
-                              shrinkWrap: true,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {
-                                      BlocProvider.of<RootCubit>(context).setThemeColor(null);
-                                    },
-                                    borderRadius: BorderRadius.circular(screenWidth / 10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white.withOpacity(.3),
-                                      ),
-                                      child: Icon(
-                                        Icons.colorize,
-                                        color: Theme.of(context).colorScheme.primary,
-                                        size: screenWidth / 8,
-                                      ),
-                                    ),
+                                Text(
+                                  'Theme color',
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
                                   ),
                                 ),
-                                const ColorButton(
-                                  color: Colors.amber,
+                                SizedBox(
+                                  height: screenHeight / 96,
                                 ),
-                                const ColorButton(
-                                  color: Colors.red,
-                                ),
-                                const ColorButton(
-                                  color: Colors.blue,
-                                ),
-                                const ColorButton(
-                                  color: Colors.green,
-                                ),
-                                const ColorButton(
-                                  color: Colors.deepPurple,
-                                ),
-                                const ColorButton(
-                                  color: Colors.deepOrange,
-                                ),
-                                const ColorButton(
-                                  color: Colors.indigo,
-                                ),
-                                const ColorButton(
-                                  color: Colors.lime,
-                                ),
-                                const ColorButton(
-                                  color: Colors.yellow,
-                                ),
-                                const ColorButton(
-                                  color: Colors.teal,
-                                ),
-                                const ColorButton(
-                                  color: Colors.pink,
-                                ),
+                                GridView.count(
+                                  crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 4 : 7,
+                                  mainAxisSpacing: screenHeight / 96,
+                                  crossAxisSpacing: screenHeight / 96,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  children: [
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () {
+                                          BlocProvider.of<RootCubit>(context).setThemeColor(null);
+                                        },
+                                        borderRadius: _borderRadius,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.white.withOpacity(.3),
+                                          ),
+                                          child: Icon(
+                                            Icons.colorize,
+                                            color: Theme.of(context).colorScheme.primary,
+                                            size: screenWidth / 8,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.amber,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.red,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.blue,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.green,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.deepPurple,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.deepOrange,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.indigo,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.lime,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.yellow,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.teal,
+                                    ),
+                                    const ColorButton(
+                                      color: Colors.pink,
+                                    ),
+                                  ],
+                                )
                               ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -186,9 +195,9 @@ class ColorButton extends StatelessWidget {
       },
       child: Material(
         color: color,
-        borderRadius: BorderRadius.circular(screenWidth / 10),
+        borderRadius: _borderRadius,
         child: InkWell(
-          borderRadius: BorderRadius.circular(screenWidth / 10),
+          borderRadius: _borderRadius,
           onTap: () {
             BlocProvider.of<RootCubit>(context).setThemeColor(color);
           },
