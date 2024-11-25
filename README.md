@@ -57,9 +57,8 @@ This mobile app utilizes various APIs of random quotes and images,<br>
 to produce a vast choice of randomized inspiring images with one press of a button.
 </p>
 
-[!WARNING]
-Some quotes and images may use strong language, reflect unpopular views and opinions, or be straight up wrong. The app was created for entertainment only. <b>User discretion is advised.</b>
-<br>
+> [!WARNING]  
+> Some quotes and images may use strong language, reflect unpopular views and opinions, or be straight up wrong. The app was created for entertainment only. <b>User discretion is advised.</b>
 
 <div align="center">
   <img class="example-image" src="./README_assets/Reroll_1.gif" alt="Reroll-example-1" width="28%" style="padding: min(0.1%,1px);"/>&nbsp;
