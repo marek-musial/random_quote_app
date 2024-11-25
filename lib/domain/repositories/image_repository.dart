@@ -56,7 +56,7 @@ class ImageRepository {
       }
     }
     {
-      throw Exception('Error while getting image');
+      throw ('Error while getting image. Check your network connection.');
     }
   }
 }
