@@ -264,7 +264,7 @@ class SocialMediaButton extends StatelessWidget {
                 },
                 icon: Icon(
                   iconData,
-                  color: textColor,
+                  color: url != null && Uri.parse(url!).isAbsolute ? textColor : textColor.withOpacity(.5),
                 ),
                 padding: EdgeInsets.zero,
                 iconSize: iconSize ?? screenWidth / 7,
@@ -276,7 +276,7 @@ class SocialMediaButton extends StatelessWidget {
                 text ?? '',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: textColor,
+                  color: url != null && Uri.parse(url!).isAbsolute ? textColor : textColor.withOpacity(.5),
                   fontSize: bodySize! * 4 / 5,
                 ),
               ),
