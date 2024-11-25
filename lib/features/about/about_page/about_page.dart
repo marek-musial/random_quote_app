@@ -225,7 +225,7 @@ class SocialMediaButton extends StatelessWidget {
   final String? text;
   final IconData iconData;
   final double? iconSize;
-  final String url;
+  final String? url;
 
   Future<void> _launchUrl(String link) async {
     try {
@@ -256,7 +256,11 @@ class SocialMediaButton extends StatelessWidget {
               flex: 2,
               child: IconButton(
                 onPressed: () {
-                  _launchUrl(url);
+                  if (url != null && Uri.parse(url!).isAbsolute) {
+                    _launchUrl(url!);
+                  } else {
+                    null;
+                  }
                 },
                 icon: Icon(
                   iconData,
