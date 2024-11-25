@@ -177,8 +177,8 @@ class AboutPage extends StatelessWidget {
                         },
                         customBorder: tile.border,
                         child: ListTile(
-                          textColor: textColor,
-                          tileColor: tileColor,
+                          textColor: textColor.withOpacity(.5),
+                          tileColor: tileColor.withOpacity(.2),
                           shape: tile.border,
                           contentPadding: tile.padding / 4,
                           title: Text(
