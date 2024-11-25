@@ -58,7 +58,7 @@ class QuoteRepository {
       }
     }
     {
-      throw Exception('Error while getting quote');
+      throw ('Error while getting quote. Check your network connection.');
     }
   }
 }
