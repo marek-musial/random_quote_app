@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:random_quote_app/core/assets/quoteput_icons.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
@@ -57,6 +58,11 @@ class AboutPage extends StatelessWidget {
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     children: [
+                      Icon(
+                        Quoteput.quoteput,
+                        size: screenWidth / 5,
+                        color: textColor,
+                      ),
                       Text(
                         'Quoteput',
                         textAlign: TextAlign.center,
