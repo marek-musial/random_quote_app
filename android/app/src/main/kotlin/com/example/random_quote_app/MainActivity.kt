@@ -1,4 +1,4 @@
-package com.example.random_quote_app
+package com.marekmusial.random_quote_app
 
 import io.flutter.embedding.android.FlutterActivity
 
