@@ -55,8 +55,8 @@ class ImageDisplay extends StatelessWidget {
                   child: AnimatedOpacity(
                     opacity: state.status == Status.success ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 500),
-                    child: Image.network(
-                      imageModel.imageUrl,
+                    child: RawImage(
+                      image: imageModel.rawImage,
                       key: imageKey,
                       fit: state.imageModel != null &&
                               state.imageModel?.rawImage != null &&
