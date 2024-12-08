@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
+import 'package:random_quote_app/core/network_utils.dart';
 import 'package:random_quote_app/core/theme/constraints.dart';
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
@@ -116,19 +117,31 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
                 floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    switch (state.status) {
-                      case Status.loading || Status.decoding:
+                  onPressed: () async {
+                    final isConnected = await NetworkUtils.checkConnectivity();
+                    if (context.mounted) {
+                      if (!isConnected) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text('Another process in progress, please wait'),
+                            content: const Text('Check your network connection'),
                             backgroundColor: Theme.of(context).colorScheme.primary,
                           ),
                         );
-                        break;
-                      default:
-                        context.read<HomeCubit>().start();
-                        break;
+                      } else {
+                        switch (state.status) {
+                          case Status.loading || Status.decoding:
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Another process in progress, please wait'),
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                              ),
+                            );
+                            break;
+                          default:
+                            context.read<HomeCubit>().start();
+                            break;
+                        }
+                      }
                     }
                   },
                   tooltip: 'Reroll',
