@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:random_quote_app/core/directories.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
+import 'package:random_quote_app/core/network_utils.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
