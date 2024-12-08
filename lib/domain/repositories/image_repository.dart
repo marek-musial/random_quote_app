@@ -32,7 +32,7 @@ class ImageRepository {
         numberOfRetries: retries,
       );
     } catch (e) {
-      throw Exception(e);
+      rethrow;
     }
   }
 
