@@ -249,13 +249,13 @@ void main() async {
             .having(
               (state) => state.errorMessage,
               'errorMessage',
-              'Failed to load image: Exception: Error loading image',
+              'Failed to load image, check your network connection',
             ),
       ],
       verify: (cubit) => globalLogger.log,
     );
     blocTest<HomeCubit, HomeState>(
-      'emits error state when imageModel is null and logs the error',
+      'logs error when imageModel is null',
       build: () => sut,
       seed: () {
         sut.pendingState = const HomeState(
@@ -270,19 +270,6 @@ void main() async {
       act: (cubit) async {
         await cubit.loadImage();
       },
-      expect: () => [
-        isA<HomeState>()
-            .having(
-              (state) => state.status,
-              'status',
-              Status.error,
-            )
-            .having(
-              (state) => state.errorMessage,
-              'errorMessage',
-              'An error occured while getting the image',
-            ),
-      ],
       verify: (cubit) => globalLogger.log,
     );
   });

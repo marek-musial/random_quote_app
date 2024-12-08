@@ -77,7 +77,7 @@ main() {
 
         expect(
           quoteRepository.getQuoteModel,
-          throwsException,
+          throwsA('Error while getting quote. Check your network connection.'),
         );
         verify(
           () => mockQuoteDataSource2.getQuoteData(),
