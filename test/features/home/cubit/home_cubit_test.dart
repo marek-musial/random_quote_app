@@ -435,7 +435,7 @@ void main() async {
             .having(
               (state) => state.errorMessage,
               'errorMessage',
-              'scale factor calculation error',
+              'Scale factor calculation error',
             ),
       ],
       verify: (cubit) => globalLogger.log,
