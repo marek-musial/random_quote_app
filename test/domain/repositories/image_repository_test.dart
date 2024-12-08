@@ -74,7 +74,7 @@ main() {
 
         expect(
           imageRepository.getImageModel,
-          throwsException,
+          throwsA('Error while getting image. Check your network connection.'),
         );
         verify(
           () => mockImageDataSource2.getImageData(),

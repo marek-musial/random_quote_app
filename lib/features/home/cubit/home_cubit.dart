@@ -192,20 +192,14 @@ class HomeCubit extends HydratedCubit<HomeState> {
         emit(
           state.copyWith(
             status: Status.error,
-            errorMessage: 'Failed to load image: $error',
+            errorMessage: 'Failed to load image, check your network connection',
           ),
         );
         logger.log('$error');
         resetPendingState();
       }
     } else {
-      emit(
-        const HomeState(
-          status: Status.error,
-          errorMessage: 'An error occured while getting the image',
-        ),
-      );
-      resetPendingState();
+      logger.log('An error occured while getting the image, imageModel is null');
     }
   }
 
