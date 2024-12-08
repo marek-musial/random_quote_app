@@ -205,7 +205,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
   void randomizeTextLayout() {
     if (state.status != Status.decoding) {
-      int fontWeightIndex = Random().nextInt(7) + 2;
+      int fontWeightIndex = Random().nextInt(6) + 3;
       int textAlignmentIndex = Random().nextInt(3);
       int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
       int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 2);
