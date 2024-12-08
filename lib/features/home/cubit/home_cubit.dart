@@ -251,7 +251,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       emit(
         const HomeState(
           status: Status.error,
-          errorMessage: 'scale factor calculation error',
+          errorMessage: 'Scale factor calculation error',
         ),
       );
       resetPendingState();
