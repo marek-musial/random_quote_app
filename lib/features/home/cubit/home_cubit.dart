@@ -344,27 +344,35 @@ class HomeCubit extends HydratedCubit<HomeState> {
   void start() async {
     final bool isConnected = await NetworkUtils.checkConnectivity();
     if (isConnected) {
-    switch (state.status) {
-      case Status.initial || Status.success || Status.error:
-        resetPendingState();
-        await getItemModels();
-        await loadImage();
-        break;
-      case Status.decoding:
-        resetPendingState();
-        pendingState = state;
-        await loadImage();
-        break;
-      case Status.loading:
-        break;
-      default:
-        emit(
-          const HomeState(
-            status: Status.error,
-            errorMessage: 'Wrong status!',
-          ),
-        );
-        break;
+      switch (state.status) {
+        case Status.initial || Status.success || Status.error:
+          resetPendingState();
+          await getItemModels();
+          await loadImage();
+          break;
+        case Status.decoding:
+          resetPendingState();
+          pendingState = state;
+          await loadImage();
+          break;
+        case Status.loading:
+          break;
+        default:
+          emit(
+            const HomeState(
+              status: Status.error,
+              errorMessage: 'Wrong status!',
+            ),
+          );
+          break;
+      }
+    } else {
+      emit(
+        const HomeState(
+          status: Status.error,
+          errorMessage: 'Check your network connection',
+        ),
+      );
     }
   }
 
