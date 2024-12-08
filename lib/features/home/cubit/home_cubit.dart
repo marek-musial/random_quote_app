@@ -342,6 +342,8 @@ class HomeCubit extends HydratedCubit<HomeState> {
   }
 
   void start() async {
+    final bool isConnected = await NetworkUtils.checkConnectivity();
+    if (isConnected) {
     switch (state.status) {
       case Status.initial || Status.success || Status.error:
         resetPendingState();
