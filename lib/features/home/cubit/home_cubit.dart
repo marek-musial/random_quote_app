@@ -138,7 +138,17 @@ class HomeCubit extends HydratedCubit<HomeState> {
   PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService();
   ImageCaptureService imageCaptureService = ImageCaptureService();
 
+  HomeState previousState = const HomeState(status: Status.initial);
   HomeState pendingState = const HomeState(status: Status.initial);
+
+  void emitPreviousState() {
+    if (state != previousState && previousState.status == Status.success) {
+      emit(previousState);
+      logger.log('previous state emitted');
+    } else {
+      logger.log('previous state not emitted');
+    }
+  }
 
   void resetPendingState() {
     pendingState = const HomeState(status: Status.initial);
