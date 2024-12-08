@@ -295,7 +295,7 @@ void main() async {
 
         expect(
           quoteModel?.fontWeightIndex,
-          inInclusiveRange(2, 9),
+          inInclusiveRange(3, 8),
         );
         expect(
           quoteModel?.textAlignmentIndex,
