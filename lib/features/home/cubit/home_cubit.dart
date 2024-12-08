@@ -220,12 +220,14 @@ class HomeCubit extends HydratedCubit<HomeState> {
       int textAlignmentIndex = Random().nextInt(3);
       int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
       int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 2);
+
       pendingState = pendingState.copyWith.quoteModel!(
         fontWeightIndex: fontWeightIndex,
         textAlignmentIndex: textAlignmentIndex,
         mainAxisAlignmentIndex: mainAxisAlignmentIndex,
         crossAxisAlignmentIndex: crossAxisAlignmentIndex,
       );
+
       logger.log('layout randomized');
     } else {
       logger.log('layout not randomized');
