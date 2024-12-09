@@ -16,7 +16,10 @@ class QuoteslateResponse with _$QuoteslateResponse {
     required String? author,
   }) = _QuoteslateResponse;
 
-  factory QuoteslateResponse.fromJson(Map<String, dynamic> json) => _$QuoteslateResponseFromJson(json);
+  factory QuoteslateResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$QuoteslateResponseFromJson(json);
 }
 
 @injectable
@@ -54,7 +57,8 @@ class QuoteslateQuoteRemoteDataSource implements QuoteDataSource {
       );
       return quoteModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Quoteble api unknown error');
+      throw Exception(error.response?.data ?? //R
+          'Quoteble api unknown error');
     }
   }
 }

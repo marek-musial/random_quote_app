@@ -26,10 +26,14 @@ class ImageAuthorDisplay extends StatelessWidget {
               vertical: imageConstraints.maxHeight / 80,
             ),
             child: AnimatedOpacity(
-              opacity: state.status == Status.success ? 1.0 : 0.0,
+              opacity: state.status == Status.success //R
+                  ? 1.0
+                  : 0.0,
               duration: const Duration(milliseconds: 500),
               child: Text(
-                imageModel.author != null ? 'Image author: ${imageModel.author}' : '',
+                imageModel.author != null //R
+                    ? 'Image author: ${imageModel.author}'
+                    : '',
                 style: TextStyle(
                   fontSize: imageConstraints.maxHeight / 45,
                   color: quoteModel != null

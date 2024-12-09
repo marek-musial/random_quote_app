@@ -57,7 +57,11 @@ void main() {
           path.join(tempDirectoryPath, 'test_sub_dir'),
         ).createSync();
         File(
-          path.join(tempDirectoryPath, 'test_sub_dir', 'nested_file.txt'),
+          path.join(
+            tempDirectoryPath,
+            'test_sub_dir',
+            'nested_file.txt',
+          ),
         ).createSync();
       },
     );
@@ -87,7 +91,11 @@ void main() {
         );
         expect(
           File(
-            path.join(tempDirectoryPath, 'test_sub_dir', 'nested_file.txt'),
+            path.join(
+              tempDirectoryPath,
+              'test_sub_dir',
+              'nested_file.txt',
+            ),
           ).existsSync(),
           isTrue,
         );

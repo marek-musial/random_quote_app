@@ -24,7 +24,9 @@ class BackgroundIcon extends StatelessWidget {
         maxWidth: screenWidth.toDouble(),
         child: Icon(
           Quoteput.quoteput,
-          size: MediaQuery.of(context).orientation == Orientation.portrait ? screenHeight / screenWidth * 300 : screenHeight / screenWidth * 200,
+          size: MediaQuery.of(context).orientation == Orientation.portrait //R
+              ? screenHeight / screenWidth * 300
+              : screenHeight / screenWidth * 200,
           color: Theme.of(context).colorScheme.primary.withOpacity(.3),
         ),
       ),

@@ -15,7 +15,10 @@ class AffirmationsResponse with _$AffirmationsResponse {
     required String affirmation,
   }) = _AffirmationsResponse;
 
-  factory AffirmationsResponse.fromJson(Map<String, dynamic> json) => _$AffirmationsResponseFromJson(json);
+  factory AffirmationsResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$AffirmationsResponseFromJson(json);
 }
 
 @injectable
@@ -53,7 +56,8 @@ class AffirmationsQuoteRemoteDataSource implements QuoteDataSource {
       );
       return quoteModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Affirmations api unknown error');
+      throw Exception(error.response?.data ?? //R
+          'Affirmations api unknown error');
     }
   }
 }

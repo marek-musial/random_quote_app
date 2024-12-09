@@ -31,8 +31,12 @@ class MyApp extends StatelessWidget {
             builder: (context, rootState) {
               return MaterialApp(
                 theme: ThemeData(
-                  colorSchemeSeed: rootState.themeColorValue != null ? Color(rootState.themeColorValue!) : homeState.quoteModel?.textColor ?? Colors.deepPurple,
-                  brightness: rootState.isThemeBright ? Brightness.light : Brightness.dark,
+                  colorSchemeSeed: rootState.themeColorValue != null //R
+                      ? Color(rootState.themeColorValue!)
+                      : homeState.quoteModel?.textColor ?? Colors.deepPurple,
+                  brightness: rootState.isThemeBright //R
+                      ? Brightness.light
+                      : Brightness.dark,
                   useMaterial3: true,
                 ),
                 debugShowCheckedModeBanner: Config.debugShowCheckedModeBanner,

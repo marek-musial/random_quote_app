@@ -8,7 +8,10 @@ import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final List<DataSource> dataSources = [...imageDataSources, ...quoteDataSources];
+final List<DataSource> dataSources = [
+  ...imageDataSources,
+  ...quoteDataSources,
+];
 
 class SourcesPage extends StatelessWidget {
   const SourcesPage({super.key, required this.title});
@@ -52,7 +55,9 @@ class SourcesPage extends StatelessWidget {
             drawer: const AppBarDrawer(index: 2),
             body: Row(
               children: [
-                MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 2) : const SizedBox.shrink(),
+                MediaQuery.of(context).orientation == Orientation.landscape //R
+                    ? const AppBarDrawer(index: 2)
+                    : const SizedBox.shrink(),
                 Flexible(
                   flex: 1,
                   child: ListView.separated(
@@ -90,11 +95,19 @@ class SourcesPage extends StatelessWidget {
                         );
                       }
                       if (index > imageDataSources.length) {
-                        return SourceListTile(dataSource: dataSources[index - 2]);
+                        return SourceListTile(
+                          dataSource: dataSources[index - 2],
+                        );
                       }
-                      return SourceListTile(dataSource: dataSources[index - 1]);
+                      return SourceListTile(
+                        dataSource: dataSources[index - 1],
+                      );
                     },
-                    separatorBuilder: (BuildContext context, int index) => SizedBox(
+                    separatorBuilder: (
+                      BuildContext context,
+                      int index,
+                    ) =>
+                        SizedBox(
                       height: screenHeight / 96,
                     ),
                   ),

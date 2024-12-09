@@ -35,7 +35,9 @@ class QuoteDisplay extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 AnimatedOpacity(
-                  opacity: state.status == Status.success ? 1.0 : 0.0,
+                  opacity: state.status == Status.success //R
+                      ? 1.0
+                      : 0.0,
                   duration: const Duration(milliseconds: 500),
                   child: Text(
                     key: textKey,
@@ -62,10 +64,14 @@ class QuoteDisplay extends StatelessWidget {
                   ),
                 ),
                 AnimatedOpacity(
-                  opacity: state.status == Status.success ? 1.0 : 0.0,
+                  opacity: state.status == Status.success //R
+                      ? 1.0
+                      : 0.0,
                   duration: const Duration(milliseconds: 500),
                   child: Text(
-                    quoteModel!.author != null ? '~${quoteModel!.author}' : '',
+                    quoteModel!.author != null //R
+                        ? '~${quoteModel!.author}'
+                        : '',
                     style: TextStyle(
                       fontSize: imageConstraints.maxHeight / 24,
                       fontWeight: fontWeight,

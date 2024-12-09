@@ -13,5 +13,8 @@ class ImageModel with _$ImageModel {
     @JsonKey(includeFromJson: false, includeToJson: false) double? scaleFactor,
   }) = _ImageModel;
 
-  factory ImageModel.fromJson(Map<String, dynamic> json) => _$ImageModelFromJson(json);
+  factory ImageModel.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$ImageModelFromJson(json);
 }

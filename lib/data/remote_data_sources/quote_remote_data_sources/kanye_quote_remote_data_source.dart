@@ -15,7 +15,10 @@ class KanyeResponse with _$KanyeResponse {
     required String quote,
   }) = _KanyeResponse;
 
-  factory KanyeResponse.fromJson(Map<String, dynamic> json) => _$KanyeResponseFromJson(json);
+  factory KanyeResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$KanyeResponseFromJson(json);
 }
 
 @injectable
@@ -53,7 +56,8 @@ class KanyeQuoteRemoteDataSource implements QuoteDataSource {
       );
       return quoteModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Kanye api unknown error');
+      throw Exception(error.response?.data ?? //R
+          'Kanye api unknown error');
     }
   }
 }

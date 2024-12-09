@@ -19,7 +19,10 @@ class PexelsResponse with _$PexelsResponse {
     required List<PexelsPhoto> photos,
   }) = _PexelsResponse;
 
-  factory PexelsResponse.fromJson(Map<String, dynamic> json) => _$PexelsResponseFromJson(json);
+  factory PexelsResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$PexelsResponseFromJson(json);
 }
 
 @freezed
@@ -29,7 +32,10 @@ class PexelsPhoto with _$PexelsPhoto {
     @JsonKey(name: 'src') required PexelsSizes sizes,
   }) = _PexelsPhoto;
 
-  factory PexelsPhoto.fromJson(Map<String, dynamic> json) => _$PexelsPhotoFromJson(json);
+  factory PexelsPhoto.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$PexelsPhotoFromJson(json);
 }
 
 @freezed
@@ -38,7 +44,10 @@ class PexelsSizes with _$PexelsSizes {
     required String large,
   }) = _PexelsSizes;
 
-  factory PexelsSizes.fromJson(Map<String, dynamic> json) => _$PexelsSizesFromJson(json);
+  factory PexelsSizes.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$PexelsSizesFromJson(json);
 }
 
 final int randomPage = Random().nextInt(8000);
@@ -82,7 +91,9 @@ class PexelsImageRemoteDataSource implements ImageDataSource {
         perPage: perPage,
         key: Env.pexelsApiKey,
       );
-      final photo = imageData.photos[Random().nextInt(imageData.photos.length)];
+      final photo = imageData.photos[Random().nextInt(
+        imageData.photos.length,
+      )];
 
       final imageModel = ImageModel(
         imageUrl: photo.sizes.large,
@@ -90,7 +101,8 @@ class PexelsImageRemoteDataSource implements ImageDataSource {
       );
       return imageModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Pexels api unknown error');
+      throw Exception(error.response?.data ?? //R
+          'Pexels api unknown error');
     }
   }
 }

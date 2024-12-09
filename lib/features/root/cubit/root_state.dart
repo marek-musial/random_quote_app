@@ -6,6 +6,9 @@ class RootState with _$RootState {
     int? themeColorValue,
     @Default(true) bool isThemeBright,
   }) = _RootState;
-  
-  factory RootState.fromJson(Map<String, dynamic> json) => _$RootStateFromJson(json);
+
+  factory RootState.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$RootStateFromJson(json);
 }

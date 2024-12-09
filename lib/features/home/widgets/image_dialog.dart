@@ -28,7 +28,8 @@ class ImageManagementDialog extends StatelessWidget {
               icon: const Icon(Icons.save_alt),
               label: const Text('Save'),
               onPressed: () {
-                final RenderRepaintBoundary boundary = widgetToImageKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+                final RenderRepaintBoundary boundary = //R
+                    widgetToImageKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
                 context.read<HomeCubit>().capturePng(boundary);
                 Navigator.of(context).pop();
               },
@@ -40,7 +41,8 @@ class ImageManagementDialog extends StatelessWidget {
               icon: const Icon(Icons.share),
               label: const Text('Share'),
               onPressed: () {
-                final RenderRepaintBoundary boundary = widgetToImageKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+                final RenderRepaintBoundary boundary = //R
+                    widgetToImageKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
                 context.read<HomeCubit>().sharePng(boundary);
                 Navigator.of(context).pop();
               },
