@@ -64,7 +64,9 @@ class HomePage extends StatelessWidget {
                 drawer: const AppBarDrawer(index: 0),
                 body: Row(
                   children: [
-                    MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 0) : const SizedBox.shrink(),
+                    MediaQuery.of(context).orientation == Orientation.landscape //R
+                        ? const AppBarDrawer(index: 0)
+                        : const SizedBox.shrink(),
                     Flexible(
                       flex: 1,
                       child: Column(
@@ -77,13 +79,17 @@ class HomePage extends StatelessWidget {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(imageConstraints.maxWidth / 20),
+                                      Radius.circular(
+                                        imageConstraints.maxWidth / 20,
+                                      ),
                                     ),
                                   ),
                                   clipBehavior: Clip.hardEdge,
                                   child: InkWell(
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(imageConstraints.maxWidth / 20),
+                                      Radius.circular(
+                                        imageConstraints.maxWidth / 20,
+                                      ),
                                     ),
                                     child: RepaintBoundary(
                                       key: widgetToImageKey,

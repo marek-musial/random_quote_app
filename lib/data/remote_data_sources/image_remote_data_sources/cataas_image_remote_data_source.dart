@@ -15,7 +15,10 @@ class CataasResponse with _$CataasResponse {
     @JsonKey(name: '_id') required String id,
   }) = _CataasResponse;
 
-  factory CataasResponse.fromJson(Map<String, dynamic> json) => _$CataasResponseFromJson(json);
+  factory CataasResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$CataasResponseFromJson(json);
 }
 
 @injectable
@@ -54,7 +57,8 @@ class CataasImageRemoteDataSource implements ImageDataSource {
       );
       return imageModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Cataas api unknown error');
+      throw Exception(error.response?.data ?? //R
+          'Cataas api unknown error');
     }
   }
 }

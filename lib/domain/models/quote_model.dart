@@ -18,5 +18,8 @@ class QuoteModel with _$QuoteModel {
     @JsonKey(includeFromJson: false, includeToJson: false) Size? textSize,
   }) = _QuoteModel;
 
-  factory QuoteModel.fromJson(Map<String, dynamic> json) => _$QuoteModelFromJson(json);
+  factory QuoteModel.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$QuoteModelFromJson(json);
 }

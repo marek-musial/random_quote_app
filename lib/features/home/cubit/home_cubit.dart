@@ -83,7 +83,9 @@ class PaletteGeneratorService {
 class ImageCaptureService {
   Future<void> capturePng(RenderRepaintBoundary boundary) async {
     final ui.Image image = await boundary.toImage();
-    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? byteData = await image.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
     String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
     await Gal.putImageBytes(
@@ -97,7 +99,9 @@ class ImageCaptureService {
 
   Future<void> sharePng(RenderRepaintBoundary boundary) async {
     final ui.Image image = await boundary.toImage();
-    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? byteData = await image.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
     String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
     final String imageTempUri = '$tempDirectoryPath/image_$timestamp.png';
@@ -157,14 +161,16 @@ class HomeCubit extends HydratedCubit<HomeState> {
   }
 
   void _emitSuccessIfRequired() {
-    if ((state.status == Status.loading || state.status == Status.decoding)) {
+    if ((state.status == Status.loading || //R
+        state.status == Status.decoding)) {
       emitSuccess();
       previousState = state;
     }
   }
 
   void emitPreviousState() {
-    if (state != previousState && previousState.status == Status.success) {
+    if (state != previousState && //R
+        previousState.status == Status.success) {
       emit(previousState);
       logger.log('previous state emitted');
     } else {
@@ -210,7 +216,9 @@ class HomeCubit extends HydratedCubit<HomeState> {
   Future<void> loadImage() async {
     if (pendingState.imageModel != null) {
       try {
-        ui.Image? rawImage = await imageLoader.loadImage(pendingState.imageModel!.imageUrl);
+        ui.Image? rawImage = await imageLoader.loadImage(
+          pendingState.imageModel!.imageUrl,
+        );
 
         pendingState = pendingState.copyWith.imageModel!(
           rawImage: rawImage,
@@ -240,8 +248,12 @@ class HomeCubit extends HydratedCubit<HomeState> {
     if (state.status != Status.decoding) {
       int fontWeightIndex = Random().nextInt(6) + 3;
       int textAlignmentIndex = Random().nextInt(3);
-      int mainAxisAlignmentIndex = Random().nextInt(MainAxisAlignment.values.length - 3);
-      int crossAxisAlignmentIndex = Random().nextInt(CrossAxisAlignment.values.length - 2);
+      int mainAxisAlignmentIndex = Random().nextInt(
+        MainAxisAlignment.values.length - 3,
+      );
+      int crossAxisAlignmentIndex = Random().nextInt(
+        CrossAxisAlignment.values.length - 2,
+      );
 
       pendingState = pendingState.copyWith.quoteModel!(
         fontWeightIndex: fontWeightIndex,
@@ -279,7 +291,9 @@ class HomeCubit extends HydratedCubit<HomeState> {
       double heightScaleFactor = widgetImageHeight / rawImageHeight;
 
       pendingState = pendingState.copyWith.imageModel!(
-        scaleFactor: widthScaleFactor < heightScaleFactor ? widthScaleFactor : heightScaleFactor,
+        scaleFactor: widthScaleFactor < heightScaleFactor //R
+            ? widthScaleFactor
+            : heightScaleFactor,
       );
       logger.log('scaleFactor: ${pendingState.imageModel?.scaleFactor}');
     } else {
@@ -304,7 +318,10 @@ class HomeCubit extends HydratedCubit<HomeState> {
         pendingQuoteModel?.textPosition != null &&
         pendingQuoteModel?.textSize != null) {
       try {
-        final scaledImageSize = Size(pendingImageModel!.rawImage!.width * scaleFactor, pendingImageModel.rawImage!.height * scaleFactor);
+        final scaledImageSize = Size(
+          pendingImageModel!.rawImage!.width * scaleFactor,
+          pendingImageModel.rawImage!.height * scaleFactor,
+        );
         final bottomRight = pendingQuoteModel!.textPosition! +
             Offset(
               pendingState.quoteModel!.textSize!.width,
@@ -313,8 +330,14 @@ class HomeCubit extends HydratedCubit<HomeState> {
         final region = Rect.fromPoints(
           pendingQuoteModel.textPosition!,
           Offset(
-            bottomRight.dx.clamp(1, scaledImageSize.width - pendingQuoteModel.textPosition!.dx),
-            bottomRight.dy.clamp(1, scaledImageSize.height - pendingQuoteModel.textPosition!.dy),
+            bottomRight.dx.clamp(
+              1,
+              scaledImageSize.width - pendingQuoteModel.textPosition!.dx,
+            ),
+            bottomRight.dy.clamp(
+              1,
+              scaledImageSize.height - pendingQuoteModel.textPosition!.dy,
+            ),
           ),
         );
 
@@ -353,10 +376,14 @@ class HomeCubit extends HydratedCubit<HomeState> {
   }
 
   Color getInverseColor(Color color) {
-    if (color.red > 225 && color.green > 225 && color.blue > 225) {
+    if (color.red > 225 && //R
+        color.green > 225 &&
+        color.blue > 225) {
       return Colors.black;
     }
-    if (color.red < 60 && color.green < 60 && color.blue < 60) {
+    if (color.red < 60 && //R
+        color.green < 60 &&
+        color.blue < 60) {
       return Colors.white;
     } else {
       final inverseColor = Color.fromRGBO(
@@ -413,7 +440,9 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
   @override
   Map<String, dynamic>? toJson(HomeState state) {
-    if (state.status == Status.success && state.imageModel != _fromJsonState.imageModel && state.quoteModel != _fromJsonState.quoteModel) {
+    if (state.status == Status.success && //R
+        state.imageModel != _fromJsonState.imageModel &&
+        state.quoteModel != _fromJsonState.quoteModel) {
       final Map<String, dynamic> map = state.toJson();
       return map;
     } else {

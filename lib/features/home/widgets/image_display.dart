@@ -21,8 +21,10 @@ class ImageDisplay extends StatelessWidget {
         constraints = imageConstraints;
         return BlocConsumer<HomeCubit, HomeState>(
           listenWhen: (previous, current) {
-            return current.imageModel?.rawImage != null && current.status != Status.success ||
-                previous.status == Status.error && current.status != Status.success;
+            return current.imageModel?.rawImage != null && //R
+                    current.status != Status.success ||
+                previous.status == Status.error && //R
+                    current.status != Status.success;
           },
           listener: (context, state) {
             final RenderObject? imageRenderObject = imageKey.currentContext?.findRenderObject();
@@ -57,7 +59,7 @@ class ImageDisplay extends StatelessWidget {
                     child: RawImage(
                       image: imageModel.rawImage,
                       key: imageKey,
-                      fit: state.imageModel != null &&
+                      fit: state.imageModel != null && //R
                               state.imageModel?.rawImage != null &&
                               state.imageModel!.rawImage!.height < state.imageModel!.rawImage!.width
                           ? BoxFit.fitHeight

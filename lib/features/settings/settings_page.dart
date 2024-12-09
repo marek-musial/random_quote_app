@@ -51,7 +51,9 @@ class SettingsPage extends StatelessWidget {
             drawer: const AppBarDrawer(index: 3),
             body: Row(
               children: [
-                MediaQuery.of(context).orientation == Orientation.landscape ? const AppBarDrawer(index: 3) : const SizedBox.shrink(),
+                MediaQuery.of(context).orientation == Orientation.landscape //R
+                    ? const AppBarDrawer(index: 3)
+                    : const SizedBox.shrink(),
                 Flexible(
                   flex: 1,
                   child: BlocBuilder<RootCubit, RootState>(
@@ -74,7 +76,9 @@ class SettingsPage extends StatelessWidget {
                                 textAlign: TextAlign.start,
                               ),
                               subtitle: Text(
-                                state.isThemeBright ? 'Bright' : 'Dark',
+                                state.isThemeBright //R
+                                    ? 'Bright'
+                                    : 'Dark',
                                 textAlign: TextAlign.start,
                               ),
                             ),
@@ -103,7 +107,9 @@ class SettingsPage extends StatelessWidget {
                                   height: screenHeight / 96,
                                 ),
                                 GridView.count(
-                                  crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 4 : 7,
+                                  crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait //R
+                                      ? 4
+                                      : 7,
                                   mainAxisSpacing: screenHeight / 96,
                                   crossAxisSpacing: screenHeight / 96,
                                   shrinkWrap: true,

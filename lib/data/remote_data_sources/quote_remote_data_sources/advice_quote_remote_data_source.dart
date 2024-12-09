@@ -17,7 +17,10 @@ class AdviceResponse with _$AdviceResponse {
     required AdviceSlip slip,
   }) = _AdviceResponse;
 
-  factory AdviceResponse.fromJson(Map<String, dynamic> json) => _$AdviceResponseFromJson(json);
+  factory AdviceResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$AdviceResponseFromJson(json);
 }
 
 @freezed
@@ -26,7 +29,10 @@ class AdviceSlip with _$AdviceSlip {
     required String advice,
   }) = _AdviceSlip;
 
-  factory AdviceSlip.fromJson(Map<String, dynamic> json) => _$AdviceSlipFromJson(json);
+  factory AdviceSlip.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$AdviceSlipFromJson(json);
 }
 
 @injectable
@@ -48,7 +54,7 @@ class AdviceQuoteRemoteDataSource implements QuoteDataSource {
   final blurb = 'Generate random advice slips.\nCreated by Tom Kiss.';
   @override
   final link = 'https://api.adviceslip.com/';
-  
+
 // coverage:ignore-start
   late AdviceQuoteRemoteRetrofitDataSource dataSource = //R
       AdviceQuoteRemoteRetrofitDataSource(dioClient.dio);
@@ -66,7 +72,8 @@ class AdviceQuoteRemoteDataSource implements QuoteDataSource {
       );
       return quoteModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Advice api unknown error');
+      throw Exception(error.response?.data ?? //R
+          'Advice api unknown error');
     }
   }
 }

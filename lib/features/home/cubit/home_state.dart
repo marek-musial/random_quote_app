@@ -11,5 +11,8 @@ class HomeState with _$HomeState {
     QuoteModel? quoteModel,
   }) = _HomeState;
 
-  factory HomeState.fromJson(Map<String, dynamic> json) => _$HomeStateFromJson(json);
+  factory HomeState.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$HomeStateFromJson(json);
 }

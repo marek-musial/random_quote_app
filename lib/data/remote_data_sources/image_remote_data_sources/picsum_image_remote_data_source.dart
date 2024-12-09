@@ -18,7 +18,10 @@ class PicsumResponse with _$PicsumResponse {
     required String? author,
   }) = _PicsumResponse;
 
-  factory PicsumResponse.fromJson(Map<String, dynamic> json) => _$PicsumResponseFromJson(json);
+  factory PicsumResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$PicsumResponseFromJson(json);
 }
 
 @injectable
@@ -53,15 +56,21 @@ class PicsumImageRemoteDataSource implements ImageDataSource {
   Future<ImageModel?> getImageData() async {
     final randomPage = Random().nextInt(10) + 1;
     try {
-      final imageData = await dataSource.getImageData(page: randomPage, limit: 100);
-      final photo = imageData[Random().nextInt(imageData.length)];
+      final imageData = await dataSource.getImageData(
+        page: randomPage,
+        limit: 100,
+      );
+      final photo = imageData[Random().nextInt(
+        imageData.length,
+      )];
       final imageModel = ImageModel(
         imageUrl: 'https://picsum.photos/id/${photo.id}/1080',
         author: photo.author,
       );
       return imageModel;
     } on DioException catch (error) {
-      throw Exception(error.response?.data ?? 'Picsum api unknown error');
+      throw Exception(error.response?.data ?? //R
+          'Picsum api unknown error');
     }
   }
 }

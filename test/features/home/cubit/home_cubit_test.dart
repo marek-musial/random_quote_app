@@ -762,7 +762,11 @@ void main() async {
     test(
       'succesfully runs imageCaptureService.capturePng, logs boundary size',
       () async {
-        when(() => sut.imageCaptureService.capturePng(any())).thenAnswer((_) async {});
+        when(
+          () => sut.imageCaptureService.capturePng(any()),
+        ).thenAnswer(
+          (_) async {},
+        );
 
         await sut.capturePng(mockRenderRepaintBoundary);
 
@@ -827,7 +831,11 @@ void main() async {
     test(
       'succesfully runs imageCaptureService.sharePng, logs boundary size',
       () async {
-        when(() => sut.imageCaptureService.sharePng(any())).thenAnswer((_) async {});
+        when(
+          () => sut.imageCaptureService.sharePng(any()),
+        ).thenAnswer(
+          (_) async {},
+        );
 
         await sut.sharePng(mockRenderRepaintBoundary);
 

@@ -30,8 +30,7 @@ class AppBarDrawer extends StatelessWidget {
         backgroundColor: Colors.transparent,
         width: screenWidth / 5,
         shape: Border.all(style: BorderStyle.none),
-        child:
-        BlocBuilder<HomeCubit, HomeState>(
+        child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             return NavigationRail(
               backgroundColor: Colors.transparent,
@@ -59,7 +58,9 @@ class AppBarDrawer extends StatelessWidget {
                         Icons.close,
                         color: textColor,
                       ),
-                      onPressed: Navigator.canPop(context) ? Navigator.of(context).pop : null,
+                      onPressed: Navigator.canPop(context) //R
+                          ? Navigator.of(context).pop
+                          : null,
                     )
                   : SizedBox.square(
                       dimension: screenWidth / 12,
