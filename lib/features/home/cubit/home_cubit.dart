@@ -141,6 +141,28 @@ class HomeCubit extends HydratedCubit<HomeState> {
   HomeState previousState = const HomeState(status: Status.initial);
   HomeState pendingState = const HomeState(status: Status.initial);
 
+  void handleStateUpdate({
+    required Size imageWidgetSize,
+    required Offset textPosition,
+    required Size textSize,
+  }) async {
+    calculateScaleFactor(imageWidgetSize);
+    randomizeTextLayout();
+    getTextPositionAndSize(
+      textPosition,
+      textSize,
+    );
+    await generateColors();
+    _emitSuccessIfRequired();
+  }
+
+  void _emitSuccessIfRequired() {
+    if ((state.status == Status.loading || state.status == Status.decoding)) {
+      emitSuccess();
+      previousState = state;
+    }
+  }
+
   void emitPreviousState() {
     if (state != previousState && previousState.status == Status.success) {
       emit(previousState);

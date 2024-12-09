@@ -24,26 +24,25 @@ class ImageDisplay extends StatelessWidget {
             return current.imageModel?.rawImage != null && current.status != Status.success ||
                 previous.status == Status.error && current.status != Status.success;
           },
-          listener: (context, state) async {
-            final imageWidgetSize = MediaQuery.of(imageKey.currentContext!).size;
-            context.read<HomeCubit>().calculateScaleFactor(imageWidgetSize);
-            context.read<HomeCubit>().randomizeTextLayout();
-            final RenderBox imageRenderBox = imageKey.currentContext?.findRenderObject() as RenderBox;
-            final RenderBox textRenderBox = textKey.currentContext?.findRenderObject() as RenderBox;
+          listener: (context, state) {
+            final RenderObject? imageRenderObject = imageKey.currentContext?.findRenderObject();
+            final RenderObject? textRenderObject = textKey.currentContext?.findRenderObject();
+
+            final RenderBox imageRenderBox = imageRenderObject as RenderBox;
+            final RenderBox textRenderBox = textRenderObject as RenderBox;
+
             final textPosition = imageRenderBox.globalToLocal(
               Offset(
                 textRenderBox.localToGlobal(Offset.zero).dx,
                 textRenderBox.localToGlobal(Offset.zero).dy,
               ),
             );
-            context.read<HomeCubit>().getTextPositionAndSize(
-                  textPosition,
-                  textRenderBox.size,
+
+            context.read<HomeCubit>().handleStateUpdate(
+                  imageWidgetSize: imageRenderObject.size,
+                  textPosition: textPosition,
+                  textSize: textRenderBox.size,
                 );
-            await context.read<HomeCubit>().generateColors();
-            if ((state.status == Status.loading || state.status == Status.decoding) && context.mounted) {
-              context.read<HomeCubit>().emitSuccess();
-            }
           },
           builder: (context, state) {
             return Stack(
