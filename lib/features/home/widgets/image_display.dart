@@ -26,7 +26,7 @@ class ImageDisplay extends StatelessWidget {
                 previous.status == Status.error && //R
                     current.status != Status.success;
           },
-          listener: (context, state) {
+          listener: (context, state) async {
             final RenderObject? imageRenderObject = imageKey.currentContext?.findRenderObject();
             final RenderObject? textRenderObject = textKey.currentContext?.findRenderObject();
 
@@ -40,7 +40,7 @@ class ImageDisplay extends StatelessWidget {
               ),
             );
 
-            context.read<HomeCubit>().handleStateUpdate(
+            await context.read<HomeCubit>().handleStateUpdate(
                   imageWidgetSize: imageRenderObject.size,
                   textPosition: textPosition,
                   textSize: textRenderBox.size,
