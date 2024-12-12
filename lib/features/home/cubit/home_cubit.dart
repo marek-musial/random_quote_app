@@ -145,7 +145,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
   HomeState previousState = const HomeState(status: Status.initial);
   HomeState pendingState = const HomeState(status: Status.initial);
 
-  void handleStateUpdate({
+  Future<void> handleStateUpdate({
     required Size imageWidgetSize,
     required Offset textPosition,
     required Size textSize,
