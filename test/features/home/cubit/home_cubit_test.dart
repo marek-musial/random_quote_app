@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,6 +9,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
+import 'package:random_quote_app/core/network_utils.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
@@ -43,6 +45,8 @@ class MockRenderRepaintBoundary extends Mock implements RenderRepaintBoundary {
 
 class MockLogger extends Mock implements Logger {}
 
+class MockConnectivity extends Mock implements Connectivity {}
+
 void main() async {
   late Storage storage;
   late HomeCubit sut;
@@ -51,6 +55,7 @@ void main() async {
   late MockImage mockImage;
   late MockImageLoader mockImageLoader;
   globalLogger = MockLogger();
+  late MockConnectivity mockConnectivity;
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -611,9 +616,78 @@ void main() async {
   });
 
   group('start', () {
+    setUp(
+      () {
+        mockConnectivity = MockConnectivity();
+        NetworkUtils.connectivity = mockConnectivity;
+        mockImageLoader = MockImageLoader();
+        mockImage = MockImage();
+        when(
+          () => mockImageLoader.loadImage(any()),
+        ).thenAnswer((_) async {
+          return mockImage;
+        });
+        when(() => mockImage.width).thenReturn(100);
+        when(() => mockImage.height).thenReturn(200);
+
+        sut.imageLoader = mockImageLoader;
+      },
+    );
+
+    test(
+      'on no network connection, no further interactions',
+      () async {
+        when(
+          () => mockConnectivity.checkConnectivity(),
+        ).thenAnswer(
+          (_) async => [ConnectivityResult.none],
+        );
+
+        sut.emit(
+          const HomeState(status: Status.initial),
+        );
+
+        await sut.start();
+
+        expect(
+          sut.state,
+          isA<HomeState>()
+              .having(
+                (state) => state.status,
+                'status',
+                Status.error,
+              )
+              .having(
+                (state) => state.errorMessage,
+                'errorMessage',
+                'Check your network connection',
+              ),
+        );
+      },
+    );
+
     test(
       'on Status.initial reset old pendingStatus, then run getItemModels and loadImage regardless of results',
       () async {
+        when(
+          () => mockConnectivity.checkConnectivity(),
+        ).thenAnswer(
+          (_) async => [ConnectivityResult.wifi],
+        );
+        when(
+          () => imageRepository.getImageModel(),
+        ).thenAnswer(
+          (_) async => ImageModel(
+            imageUrl: 'imageUrl',
+            author: 'author',
+          ),
+        );
+        when(
+          () => quoteRepository.getQuoteModel(),
+        ).thenAnswer(
+          (_) async => QuoteModel(quote: 'quote'),
+        );
+
         sut.emit(
           const HomeState(status: Status.initial),
         );
@@ -622,9 +696,13 @@ void main() async {
 
         verifyInOrder(
           [
-            () => sut.resetPendingState,
-            () => sut.getItemModels,
-            () => sut.loadImage,
+            () => mockConnectivity.checkConnectivity(),
+            () => globalLogger.log('Connection status: true'),
+            () => globalLogger.log('pendingState reset'),
+            () => imageRepository.getImageModel(),
+            () => quoteRepository.getQuoteModel(),
+            () => mockImageLoader.loadImage('imageUrl'),
+            () => globalLogger.log('Width: 100, height: 200'),
           ],
         );
       },
@@ -633,17 +711,33 @@ void main() async {
     test(
       'on Status.decoding reset pendingStatus, copy state to pendingState and loadImage',
       () async {
+        when(
+          () => mockConnectivity.checkConnectivity(),
+        ).thenAnswer(
+          (_) async => [ConnectivityResult.wifi],
+        );
         sut.emit(
-          const HomeState(status: Status.decoding),
+          HomeState(
+            status: Status.decoding,
+            imageModel: ImageModel(
+              imageUrl: 'imageUrl',
+              author: 'author',
+            ),
+            quoteModel: QuoteModel(
+              quote: 'quote',
+            ),
+          ),
         );
 
         await sut.start();
 
         verifyInOrder(
           [
-            () => sut.resetPendingState(),
+            () => mockConnectivity.checkConnectivity(),
+            () => globalLogger.log('pendingState reset'),
             () => sut.pendingState = sut.state,
-            () => sut.loadImage(),
+            () => mockImageLoader.loadImage('imageUrl'),
+            () => globalLogger.log('Width: 100, height: 200'),
           ],
         );
       },
@@ -657,12 +751,17 @@ void main() async {
       build: () => sut,
       seed: () => const HomeState(status: Status.loading),
       act: (cubit) async {
+        when(
+          () => mockConnectivity.checkConnectivity(),
+        ).thenAnswer(
+          (_) async => [ConnectivityResult.wifi],
+        );
         stateA = cubit.state;
         await cubit.start();
         stateB = cubit.state;
       },
       verify: (cubit) {
-        stateA == stateB;
+        expect(stateA == stateB, true);
       },
     );
   });
