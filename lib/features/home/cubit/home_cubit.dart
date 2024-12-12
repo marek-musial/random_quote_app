@@ -276,6 +276,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       textPosition: textPosition,
       textSize: textSize,
     );
+    logger.log('New textPosition: $textPosition, new textSize: $textSize');
   }
 
   void calculateScaleFactor(Size imageWidgetSize) {
