@@ -175,6 +175,103 @@ void main() async {
     );
   });
 
+  group('emitPreviousState', () {
+    setUp(
+      () {
+        sut.previousState = HomeState(
+          status: Status.success,
+          imageModel: ImageModel(
+            imageUrl: 'previousImageUrl',
+            author: '',
+            rawImage: mockImage,
+            scaleFactor: .5,
+          ),
+          quoteModel: QuoteModel(
+            quote: 'previousQuote',
+          ),
+        );
+      },
+    );
+
+    blocTest(
+      'on previousState != state, updates previousState with successful state and logs success messages',
+      build: () => sut,
+      act: (cubit) => [
+        sut.emit(
+          const HomeState(
+            status: Status.error,
+            errorMessage: 'errorMessage',
+          ),
+        ),
+        sut.emitPreviousState(),
+      ],
+      expect: () => [
+        const HomeState(
+          status: Status.error,
+          errorMessage: 'errorMessage',
+        ),
+        sut.previousState,
+      ],
+      verify: (cubit) => [
+        verify(
+          () => globalLogger.log('previous state emitted'),
+        ).called(1),
+        expect(sut.previousState == sut.state, true),
+      ],
+    );
+
+    blocTest(
+      'on previousState == state, does not update previousState with the new state and logs the apropriate message',
+      build: () => sut,
+      act: (cubit) => [
+        sut.emit(
+          sut.previousState,
+        ),
+        sut.emitPreviousState(),
+      ],
+      expect: () => [
+        sut.previousState,
+      ],
+      verify: (cubit) => [
+        verify(
+          () => globalLogger.log(
+            'previous state not emitted',
+          ),
+        ).called(1),
+        expect(sut.previousState == sut.state, true),
+      ],
+    );
+
+    blocTest(
+      'on previousState != state, but previousState status != Status.success, does not update previousState with the new state and logs the apropriate message',
+      build: () => sut,
+      act: (cubit) => [
+        sut.emit(
+          sut.previousState.copyWith(
+            status: Status.loading,
+          ),
+        ),
+        sut.previousState = sut.previousState.copyWith(
+          status: Status.error,
+        ),
+        sut.emitPreviousState(),
+      ],
+      expect: () => [
+        sut.previousState.copyWith(
+          status: Status.loading,
+        ),
+      ],
+      verify: (cubit) => [
+        verify(
+          () => globalLogger.log(
+            'previous state not emitted',
+          ),
+        ).called(1),
+        expect(sut.previousState != sut.state, true),
+      ],
+    );
+  });
+
   group('getItemModels', () {
     setUp(
       () {
