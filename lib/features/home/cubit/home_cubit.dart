@@ -1,28 +1,23 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gal/gal.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:intl/intl.dart';
-import 'package:random_quote_app/core/directories.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/network_utils.dart';
+import 'package:random_quote_app/core/services/image_capture_service.dart';
+import 'package:random_quote_app/core/services/palette_generator_service.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 
-import 'package:palette_generator/palette_generator.dart';
 import 'dart:ui' as ui;
 
-import 'package:share_plus/share_plus.dart';
 
 part 'home_state.dart';
 part 'home_cubit.freezed.dart';
@@ -60,74 +55,6 @@ class ImageLoader {
   }
 }
 
-class PaletteGeneratorService {
-  Future<Color> generateColors(
-    Size scaledImageSize,
-    Rect region,
-  ) async {
-    PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(
-      imageProvider!,
-      size: scaledImageSize,
-      region: region,
-    );
-    const placeholderColor = Colors.white;
-    final paletteColor = paletteGenerator.dominantColor != null
-        ? paletteGenerator.dominantColor!.color
-        : paletteGenerator.vibrantColor != null
-            ? paletteGenerator.vibrantColor!.color
-            : placeholderColor;
-    return paletteColor;
-  }
-}
-
-class ImageCaptureService {
-  Future<void> capturePng(RenderRepaintBoundary boundary) async {
-    final ui.Image image = await boundary.toImage();
-    final ByteData? byteData = await image.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-    final Uint8List pngBytes = byteData!.buffer.asUint8List();
-    String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
-    await Gal.putImageBytes(
-      pngBytes,
-      name: 'image_$timestamp',
-    );
-    globalLogger.log(
-      'Saved image width: ${image.width}, saved image height: ${image.height}',
-    );
-  }
-
-  Future<void> sharePng(RenderRepaintBoundary boundary) async {
-    final ui.Image image = await boundary.toImage();
-    final ByteData? byteData = await image.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-    final Uint8List pngBytes = byteData!.buffer.asUint8List();
-    String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
-    final String imageTempUri = '$tempDirectoryPath/image_$timestamp.png';
-    final File imageFile = await File(
-      imageTempUri,
-    ).create();
-    imageFile.writeAsBytesSync(pngBytes);
-    final result = await Share.shareXFiles(
-      [XFile(imageTempUri)],
-    );
-    if (result.status == ShareResultStatus.success) {
-      globalLogger.log(
-        'Shared image width: ${image.width}, saved image height: ${image.height}',
-      );
-    } else if (result.status == ShareResultStatus.dismissed) {
-      globalLogger.log(
-        'Image sharing dismissed',
-      );
-    } else {
-      globalLogger.log(
-        'An error occured with share result status ${result.status.toString()}',
-      );
-    }
-  }
-}
-
 @injectable
 class HomeCubit extends HydratedCubit<HomeState> {
   HomeCubit(
@@ -139,7 +66,9 @@ class HomeCubit extends HydratedCubit<HomeState> {
   final ImageRepository _imageRepository;
   final QuoteRepository _quoteRepository;
   ImageLoader imageLoader = ImageLoader();
-  PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService();
+  PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService(
+    imageProvider ?? const AssetImage('lib/core/assets/placeholder_cat.jpg'),
+  );
   ImageCaptureService imageCaptureService = ImageCaptureService();
 
   HomeState previousState = const HomeState(status: Status.initial);

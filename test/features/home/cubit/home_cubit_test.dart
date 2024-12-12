@@ -10,6 +10,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/network_utils.dart';
+import 'package:random_quote_app/core/services/image_capture_service.dart';
+import 'package:random_quote_app/core/services/palette_generator_service.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
