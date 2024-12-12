@@ -76,6 +76,105 @@ void main() async {
     },
   );
 
+  group('emitSuccessIfRequired', () {
+    setUp(
+      () {
+        sut.pendingState = HomeState(
+          status: Status.loading,
+          imageModel: ImageModel(
+            imageUrl: 'imageUrl',
+            author: '',
+            rawImage: mockImage,
+            scaleFactor: .8,
+          ),
+          quoteModel: QuoteModel(
+            quote: 'quote',
+          ),
+        );
+        sut.previousState = HomeState(
+          status: Status.success,
+          imageModel: ImageModel(
+            imageUrl: 'previousImageUrl',
+            author: '',
+            rawImage: mockImage,
+            scaleFactor: .5,
+          ),
+          quoteModel: QuoteModel(
+            quote: 'previousQuote',
+          ),
+        );
+      },
+    );
+
+    blocTest(
+      'on state status == loading, emits the pending state with success status, logs success message, and updates previousState to the successful one',
+      build: () => sut,
+      act: (cubit) => [
+        sut.emit(
+          const HomeState(status: Status.loading),
+        ),
+        sut.emitSuccessIfRequired(),
+      ],
+      expect: () => [
+        const HomeState(status: Status.loading),
+        sut.pendingState.copyWith(status: Status.success),
+      ],
+      verify: (cubit) => [
+        verify(
+          () => globalLogger.log(
+            'success',
+          ),
+        ).called(1),
+        expect(sut.previousState == sut.state, true),
+      ],
+    );
+
+    blocTest(
+      'on state status == decoding, emits the pending state with success status, logs success message, and updates previousState to the successful one',
+      build: () => sut,
+      act: (cubit) => [
+        sut.emit(
+          const HomeState(status: Status.decoding),
+        ),
+        sut.emitSuccessIfRequired(),
+      ],
+      expect: () => [
+        const HomeState(status: Status.decoding),
+        sut.pendingState.copyWith(status: Status.success),
+      ],
+      verify: (cubit) => [
+        verify(
+          () => globalLogger.log(
+            'success',
+          ),
+        ).called(1),
+        expect(sut.previousState == sut.state, true),
+      ],
+    );
+
+    blocTest(
+      'on state status != loading && status != decoding, does not emit the pending state with success status, does not log success message, and does not update previousState to the new one',
+      build: () => sut,
+      act: (cubit) => [
+        sut.emit(
+          const HomeState(status: Status.error),
+        ),
+        sut.emitSuccessIfRequired(),
+      ],
+      expect: () => [
+        const HomeState(status: Status.error),
+      ],
+      verify: (cubit) => [
+        verifyNever(
+          () => globalLogger.log(
+            'success',
+          ),
+        ),
+        expect(sut.previousState != sut.state, true),
+      ],
+    );
+  });
+
   group('getItemModels', () {
     setUp(
       () {
