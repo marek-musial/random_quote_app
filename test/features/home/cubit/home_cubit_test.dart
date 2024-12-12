@@ -613,12 +613,12 @@ void main() async {
   group('start', () {
     test(
       'on Status.initial reset old pendingStatus, then run getItemModels and loadImage regardless of results',
-      () {
+      () async {
         sut.emit(
           const HomeState(status: Status.initial),
         );
 
-        sut.start();
+        await sut.start();
 
         verifyInOrder(
           [
@@ -632,12 +632,12 @@ void main() async {
 
     test(
       'on Status.decoding reset pendingStatus, copy state to pendingState and loadImage',
-      () {
+      () async {
         sut.emit(
           const HomeState(status: Status.decoding),
         );
 
-        sut.start();
+        await sut.start();
 
         verifyInOrder(
           [
@@ -656,9 +656,9 @@ void main() async {
       'on Status.loading, no further interaction',
       build: () => sut,
       seed: () => const HomeState(status: Status.loading),
-      act: (cubit) {
+      act: (cubit) async {
         stateA = cubit.state;
-        cubit.start();
+        await cubit.start();
         stateB = cubit.state;
       },
       verify: (cubit) {

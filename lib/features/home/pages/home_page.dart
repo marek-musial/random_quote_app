@@ -144,7 +144,7 @@ class HomePage extends StatelessWidget {
                             );
                             break;
                           default:
-                            context.read<HomeCubit>().start();
+                            await context.read<HomeCubit>().start();
                             break;
                         }
                       }
