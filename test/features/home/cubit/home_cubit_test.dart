@@ -560,7 +560,7 @@ void main() async {
     );
 
     test(
-      'gets passed pendingState textPosition and textSize',
+      'gets passed pendingState textPosition and textSize and logs the values',
       () {
         sut.getTextPositionAndSize(
           const Offset(1, 1),
@@ -575,6 +575,11 @@ void main() async {
           quoteModel?.textSize,
           const Size(1, 1),
         );
+        verify(
+          () => globalLogger.log(
+            'New textPosition: Offset(1.0, 1.0), new textSize: Size(1.0, 1.0)',
+          ),
+        ).called(1);
       },
     );
   });
