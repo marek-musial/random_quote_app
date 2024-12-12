@@ -969,6 +969,113 @@ void main() async {
     );
   });
 
+  group('handleStateUpdate', () {
+    setUp(
+      () {
+        mockImage = MockImage();
+        mockImageProvider = MockImageProvider();
+        imageProvider = mockImageProvider;
+        mockPaletteGeneratorService = MockPaletteGeneratorService();
+
+        when(
+          () => mockImage.width,
+        ).thenReturn(100);
+        when(() => mockImage.height).thenReturn(200);
+      },
+    );
+
+    test(
+      'executes the correct logic in the correct order and updates the state with the correct values and success status',
+      () async {
+        sut.paletteGeneratorService = mockPaletteGeneratorService;
+        when(
+          () => mockPaletteGeneratorService.generateColors(any(), any()),
+        ).thenAnswer(
+          (_) => Future.value(
+            const ui.Color.fromARGB(255, 0, 0, 0),
+          ),
+        );
+
+        sut.emit(
+          HomeState(
+            status: Status.loading,
+            imageModel: ImageModel(
+              imageUrl: 'imageUrl',
+              author: '',
+              rawImage: mockImage,
+            ),
+            quoteModel: QuoteModel(
+              quote: 'quote',
+            ),
+          ),
+        );
+        sut.pendingState = sut.state;
+
+        await sut.handleStateUpdate(
+          imageWidgetSize: const Size(100, 100),
+          textPosition: const Offset(10, 10),
+          textSize: const Size(50, 50),
+        );
+
+        expect(
+          sut.state,
+          isA<HomeState>()
+              .having(
+                (state) => state.status,
+                'status',
+                Status.success,
+              )
+              .having(
+                (state) => state.imageModel!.imageUrl,
+                'imageUrl',
+                'imageUrl',
+              )
+              .having(
+                (state) => state.imageModel!.rawImage,
+                'rawImage',
+                mockImage,
+              )
+              .having(
+                (state) => state.imageModel!.scaleFactor,
+                'scaleFactor',
+                .5,
+              )
+              .having(
+                (state) => state.quoteModel!.quote,
+                'quote',
+                'quote',
+              )
+              .having(
+                (state) => state.quoteModel!.textPosition,
+                'textPosition',
+                const Offset(10.0, 10.0),
+              )
+              .having(
+                (state) => state.quoteModel!.textSize,
+                'textSize',
+                const Size(50.0, 50.0),
+              )
+              .having(
+                (state) => state.quoteModel!.textColor,
+                'textColor',
+                const ui.Color.fromARGB(255, 255, 255, 255),
+              ),
+        );
+
+        verifyInOrder(
+          [
+            () => globalLogger.log('scaleFactor: 0.5'),
+            () => globalLogger.log('layout randomized'),
+            () => globalLogger.log('New textPosition: Offset(10.0, 10.0), new textSize: Size(50.0, 50.0)'),
+            () => globalLogger.log('textColor = Color(0xffffffff)'),
+            () => globalLogger.log('palette generated!'),
+            () => globalLogger.log('success'),
+          ],
+        );
+      },
+    );
+  });
+
   group('fromJson', () {
     test(
       'succesfully deserializes a json',
