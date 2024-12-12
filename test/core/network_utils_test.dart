@@ -1,9 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/network_utils.dart';
 
 class MockConnectivity extends Mock implements Connectivity {}
+
+class MockLogger extends Mock implements Logger {}
 
 void main() {
   late MockConnectivity mockConnectivity;
@@ -13,6 +16,7 @@ void main() {
       () {
         mockConnectivity = MockConnectivity();
         NetworkUtils.connectivity = mockConnectivity;
+        globalLogger = MockLogger();
       },
     );
 
@@ -43,6 +47,24 @@ void main() {
         final isConnected = await NetworkUtils.checkConnectivity();
 
         expect(isConnected, false);
+      },
+    );
+
+    test(
+      'NetworkUtils.checkConnectivity throws an error and logs it',
+      () async {
+        when(
+          () => mockConnectivity.checkConnectivity(),
+        ).thenThrow(
+          'network error',
+        );
+
+        final isConnected = await NetworkUtils.checkConnectivity();
+
+        expect(isConnected, false);
+        verify(
+          () => globalLogger.log('Error checking connectivity: network error'),
+        ).called(1);
       },
     );
   });
