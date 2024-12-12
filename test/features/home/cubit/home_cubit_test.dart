@@ -54,6 +54,8 @@ void main() async {
   late MockQuoteRepository quoteRepository;
   late MockImage mockImage;
   late MockImageLoader mockImageLoader;
+  late MockImageProvider mockImageProvider;
+  late MockPaletteGeneratorService mockPaletteGeneratorService;
   globalLogger = MockLogger();
   late MockConnectivity mockConnectivity;
 
@@ -651,8 +653,8 @@ void main() async {
   group('generateColors', () {
     mockImage = MockImage();
     mockImageLoader = MockImageLoader();
-    MockPaletteGeneratorService mockPaletteGeneratorService = MockPaletteGeneratorService();
-    MockImageProvider mockImageProvider = MockImageProvider();
+    mockPaletteGeneratorService = MockPaletteGeneratorService();
+    mockImageProvider = MockImageProvider();
 
     registerFallbackValue(FakeSize());
     registerFallbackValue(FakeRect());
