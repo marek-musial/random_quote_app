@@ -145,29 +145,6 @@ class HomeCubit extends HydratedCubit<HomeState> {
   HomeState previousState = const HomeState(status: Status.initial);
   HomeState pendingState = const HomeState(status: Status.initial);
 
-  Future<void> handleStateUpdate({
-    required Size imageWidgetSize,
-    required Offset textPosition,
-    required Size textSize,
-  }) async {
-    calculateScaleFactor(imageWidgetSize);
-    randomizeTextLayout();
-    getTextPositionAndSize(
-      textPosition,
-      textSize,
-    );
-    await generateColors();
-    emitSuccessIfRequired();
-  }
-
-  void emitSuccessIfRequired() {
-    if ((state.status == Status.loading || //R
-        state.status == Status.decoding)) {
-      emitSuccess();
-      previousState = state;
-    }
-  }
-
   void emitPreviousState() {
     if (state != previousState && //R
         previousState.status == Status.success) {
@@ -397,6 +374,14 @@ class HomeCubit extends HydratedCubit<HomeState> {
     }
   }
 
+  void emitSuccessIfRequired() {
+    if ((state.status == Status.loading || //R
+        state.status == Status.decoding)) {
+      emitSuccess();
+      previousState = state;
+    }
+  }
+
   void emitSuccess() {
     emit(
       pendingState.copyWith(status: Status.success),
@@ -437,6 +422,21 @@ class HomeCubit extends HydratedCubit<HomeState> {
         ),
       );
     }
+  }
+
+  Future<void> handleStateUpdate({
+    required Size imageWidgetSize,
+    required Offset textPosition,
+    required Size textSize,
+  }) async {
+    calculateScaleFactor(imageWidgetSize);
+    randomizeTextLayout();
+    getTextPositionAndSize(
+      textPosition,
+      textSize,
+    );
+    await generateColors();
+    emitSuccessIfRequired();
   }
 
   @override
