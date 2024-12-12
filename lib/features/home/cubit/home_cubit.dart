@@ -157,10 +157,10 @@ class HomeCubit extends HydratedCubit<HomeState> {
       textSize,
     );
     await generateColors();
-    _emitSuccessIfRequired();
+    emitSuccessIfRequired();
   }
 
-  void _emitSuccessIfRequired() {
+  void emitSuccessIfRequired() {
     if ((state.status == Status.loading || //R
         state.status == Status.decoding)) {
       emitSuccess();
