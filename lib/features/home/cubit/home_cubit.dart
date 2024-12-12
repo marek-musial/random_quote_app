@@ -403,7 +403,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     logger.log('success');
   }
 
-  void start() async {
+  Future<void> start() async {
     final bool isConnected = await NetworkUtils.checkConnectivity();
     if (isConnected) {
       switch (state.status) {
