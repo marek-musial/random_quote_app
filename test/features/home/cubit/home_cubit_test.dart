@@ -688,6 +688,28 @@ void main() async {
         expect(inverseColor, const Color.fromARGB(255, 200, 155, 55));
       },
     );
+
+    test(
+      'on high rgb values (color is nearly white) of the passed color, returns black color with max alpha value',
+      () {
+        Color testColor = const ui.Color.fromARGB(255, 230, 230, 230);
+
+        Color inverseColor = sut.getInverseColor(testColor);
+
+        expect(inverseColor, Colors.black);
+      },
+    );
+
+    test(
+      'on low rgb values (color is nearly black) of the passed color, returns white color with max alpha value',
+      () {
+        Color testColor = const ui.Color.fromARGB(255, 55, 55, 55);
+
+        Color inverseColor = sut.getInverseColor(testColor);
+
+        expect(inverseColor, Colors.white);
+      },
+    );
   });
 
   group('emitSuccessIfRequired', () {
