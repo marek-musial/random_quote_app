@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/network_utils.dart';
@@ -15,9 +18,6 @@ import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
-
-import 'dart:ui' as ui;
-
 
 part 'home_state.dart';
 part 'home_cubit.freezed.dart';
