@@ -66,9 +66,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
   final ImageRepository _imageRepository;
   final QuoteRepository _quoteRepository;
   ImageLoader imageLoader = ImageLoader();
-  PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService(
-    imageProvider ?? const AssetImage('lib/core/assets/placeholder_cat.jpg'),
-  );
+  PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService();
   ImageCaptureService imageCaptureService = ImageCaptureService();
 
   HomeState previousState = const HomeState(status: Status.initial);
@@ -249,6 +247,8 @@ class HomeCubit extends HydratedCubit<HomeState> {
         );
 
         final paletteColor = await paletteGeneratorService.generateColors(
+          imageProvider ?? //R
+              const AssetImage('lib/core/assets/placeholder_cat.jpg'),
           scaledImageSize,
           region,
         );

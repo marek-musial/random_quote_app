@@ -1,29 +1,41 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-
 import 'package:palette_generator/palette_generator.dart';
 
+class PaletteGeneratorWrapper {
+  Future<PaletteGenerator> fromImageProvider(
+    ImageProvider imageProvider, {
+    Size? size,
+    Rect? region,
+  }) {
+    return PaletteGenerator.fromImageProvider(
+      imageProvider,
+      size: size,
+      region: region,
+    );
+  }
+}
+
 class PaletteGeneratorService {
-  final ImageProvider imageProvider;
-  PaletteGeneratorService(
-    this.imageProvider,
-  );
+  final PaletteGeneratorWrapper wrapper;
+
+  PaletteGeneratorService({
+    PaletteGeneratorWrapper? wrapper,
+  }) : wrapper = wrapper ?? PaletteGeneratorWrapper();
 
   Future<Color> generateColors(
+    ImageProvider imageProvider,
     Size scaledImageSize,
     Rect region,
   ) async {
-    PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(
+    final paletteGenerator = await wrapper.fromImageProvider(
       imageProvider,
       size: scaledImageSize,
       region: region,
     );
+
     const placeholderColor = Colors.white;
-    final paletteColor = paletteGenerator.dominantColor != null
-        ? paletteGenerator.dominantColor!.color
-        : paletteGenerator.vibrantColor != null
-            ? paletteGenerator.vibrantColor!.color
-            : placeholderColor;
-    return paletteColor;
+    return paletteGenerator.dominantColor?.color ?? //R
+        paletteGenerator.vibrantColor?.color ??
+        placeholderColor;
   }
 }

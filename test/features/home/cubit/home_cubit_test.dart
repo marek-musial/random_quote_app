@@ -588,7 +588,11 @@ void main() async {
         imageProvider = mockImageProvider;
 
         when(
-          () => mockPaletteGeneratorService.generateColors(any(), any()),
+          () => mockPaletteGeneratorService.generateColors(
+            mockImageProvider,
+            any(),
+            any(),
+          ),
         ).thenAnswer(
           (_) => Future.value(
             const ui.Color.fromARGB(255, 0, 0, 0),
@@ -625,7 +629,11 @@ void main() async {
       },
       act: (cubit) async {
         when(
-          () => mockPaletteGeneratorService.generateColors(any(), any()),
+          () => mockPaletteGeneratorService.generateColors(
+            mockImageProvider,
+            any(),
+            any(),
+          ),
         ).thenThrow(
           Exception('Error generating colors'),
         );
@@ -1013,7 +1021,11 @@ void main() async {
       () async {
         sut.paletteGeneratorService = mockPaletteGeneratorService;
         when(
-          () => mockPaletteGeneratorService.generateColors(any(), any()),
+          () => mockPaletteGeneratorService.generateColors(
+            mockImageProvider,
+            any(),
+            any(),
+          ),
         ).thenAnswer(
           (_) => Future.value(
             const ui.Color.fromARGB(255, 0, 0, 0),
