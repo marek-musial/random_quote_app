@@ -11,7 +11,25 @@ import 'package:share_plus/share_plus.dart';
 import 'package:random_quote_app/core/directories.dart';
 import 'package:random_quote_app/core/logger.dart';
 
+class GalWrapper {
+  Future<void> putImageBytes(
+    Uint8List pngBytes, {
+    required String name,
+  }) {
+    return Gal.putImageBytes(
+      pngBytes,
+      name: name,
+    );
+  }
+}
+
 class ImageCaptureService {
+  final GalWrapper wrapper;
+
+  ImageCaptureService({
+    GalWrapper? wrapper,
+  }) : wrapper = wrapper ?? GalWrapper();
+
   Future<void> capturePng(RenderRepaintBoundary boundary) async {
     final ui.Image image = await boundary.toImage();
     final ByteData? byteData = await image.toByteData(
@@ -19,7 +37,7 @@ class ImageCaptureService {
     );
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
     String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
-    await Gal.putImageBytes(
+    await wrapper.putImageBytes(
       pngBytes,
       name: 'image_$timestamp',
     );
