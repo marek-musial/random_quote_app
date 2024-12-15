@@ -28,75 +28,70 @@ void main() {
   late MockGalWrapper mockGalWrapper;
   late ByteData byteData;
 
-  group(
-    'ImageCaptureService',
+  setUp(
     () {
-      setUp(
-        () {
-          mockRenderRepaintBoundary = MockRenderRepaintBoundary();
-          mockImage = MockImage();
-          mockLogger = MockLogger();
-          globalLogger = mockLogger;
+      mockRenderRepaintBoundary = MockRenderRepaintBoundary();
+      mockImage = MockImage();
+      mockLogger = MockLogger();
+      globalLogger = mockLogger;
 
-          registerFallbackValue(Uint8List(0));
-          registerFallbackValue('');
+      registerFallbackValue(Uint8List(0));
+      registerFallbackValue('');
 
-          byteData = ByteData(8)..setInt64(0, 12345);
-          when(
-            () => mockImage.width,
-          ).thenReturn(1920);
-          when(
-            () => mockImage.height,
-          ).thenReturn(1080);
-        },
-      );
+      byteData = ByteData(8)..setInt64(0, 12345);
+      when(
+        () => mockImage.width,
+      ).thenReturn(1920);
+      when(
+        () => mockImage.height,
+      ).thenReturn(1080);
+    },
+  );
 
-      group(
-        'capturePng',
-        () {
-          test('run the image saving logic on correct values, and log the size of the saved image', () async {
-            mockGalWrapper = MockGalWrapper();
-            final imageCaptureService = ImageCaptureService(
-              galWrapper: mockGalWrapper,
-            );
+  group(
+    'capturePng',
+    () {
+      test('run the image saving logic on correct values, and log the size of the saved image', () async {
+        mockGalWrapper = MockGalWrapper();
+        final imageCaptureService = ImageCaptureService(
+          galWrapper: mockGalWrapper,
+        );
 
-            when(
-              () => mockRenderRepaintBoundary.toImage(),
-            ).thenAnswer(
-              (_) async => mockImage,
-            );
-            when(
-              () => mockImage.toByteData(format: ui.ImageByteFormat.png),
-            ).thenAnswer(
-              (_) async => byteData,
-            );
-            when(
-              () => mockGalWrapper.putImageBytes(
-                any(),
-                name: any(named: 'name'),
-              ),
-            ).thenAnswer(
-              (_) async {},
-            );
+        when(
+          () => mockRenderRepaintBoundary.toImage(),
+        ).thenAnswer(
+          (_) async => mockImage,
+        );
+        when(
+          () => mockImage.toByteData(format: ui.ImageByteFormat.png),
+        ).thenAnswer(
+          (_) async => byteData,
+        );
+        when(
+          () => mockGalWrapper.putImageBytes(
+            any(),
+            name: any(named: 'name'),
+          ),
+        ).thenAnswer(
+          (_) async {},
+        );
 
-            await imageCaptureService.capturePng(
-              mockRenderRepaintBoundary,
-            );
+        await imageCaptureService.capturePng(
+          mockRenderRepaintBoundary,
+        );
 
-            verify(
-              () => mockGalWrapper.putImageBytes(
-                any(),
-                name: any(named: 'name'),
-              ),
-            ).called(1);
-            verify(
-              () => mockLogger.log(
-                'Saved image width: ${mockImage.width}, saved image height: ${mockImage.height}',
-              ),
-            ).called(1);
-          });
-        },
-      );
+        verify(
+          () => mockGalWrapper.putImageBytes(
+            any(),
+            name: any(named: 'name'),
+          ),
+        ).called(1);
+        verify(
+          () => mockLogger.log(
+            'Saved image width: ${mockImage.width}, saved image height: ${mockImage.height}',
+          ),
+        ).called(1);
+      });
     },
   );
 }
