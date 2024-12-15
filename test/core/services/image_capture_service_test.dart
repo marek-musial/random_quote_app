@@ -57,7 +57,7 @@ void main() {
           test('run the image saving logic on correct values, and log the size of the saved image', () async {
             mockGalWrapper = MockGalWrapper();
             final imageCaptureService = ImageCaptureService(
-              wrapper: mockGalWrapper,
+              galWrapper: mockGalWrapper,
             );
 
             when(
