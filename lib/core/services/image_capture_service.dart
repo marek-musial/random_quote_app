@@ -25,21 +25,30 @@ class GalWrapper {
 
 class ImageCaptureService {
   final GalWrapper galWrapper;
+  late String timestamp;
 
   ImageCaptureService({
     GalWrapper? galWrapper,
   }) : galWrapper = galWrapper ?? GalWrapper();
 
-  Future<void> capturePng(RenderRepaintBoundary boundary) async {
+  Future<void> capturePng(
+    RenderRepaintBoundary boundary, {
+    String? fileName,
+  }) async {
     final ui.Image image = await boundary.toImage();
     final ByteData? byteData = await image.toByteData(
       format: ui.ImageByteFormat.png,
     );
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
-    String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
+    if (fileName != null && fileName.isNotEmpty) {
+      timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
+    }
     await galWrapper.putImageBytes(
       pngBytes,
-      name: 'image_$timestamp',
+      name: fileName ?? 'image_$timestamp',
+    );
+    globalLogger.log(
+      'Saved image name: ${fileName ?? 'image_$timestamp'}',
     );
     globalLogger.log(
       'Saved image width: ${image.width}, saved image height: ${image.height}',
