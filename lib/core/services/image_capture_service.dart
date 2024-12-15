@@ -55,14 +55,19 @@ class ImageCaptureService {
     );
   }
 
-  Future<void> sharePng(RenderRepaintBoundary boundary) async {
+  Future<void> sharePng(
+    RenderRepaintBoundary boundary, {
+    String? fileName,
+  }) async {
     final ui.Image image = await boundary.toImage();
     final ByteData? byteData = await image.toByteData(
       format: ui.ImageByteFormat.png,
     );
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
-    String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
-    final String imageTempUri = '$tempDirectoryPath/image_$timestamp.png';
+    if (fileName != null && fileName.isNotEmpty) {
+      timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
+    }
+    final String imageTempUri = '$tempDirectoryPath/${fileName ?? 'image_$timestamp'}.png';
     final File imageFile = await File(
       imageTempUri,
     ).create();
