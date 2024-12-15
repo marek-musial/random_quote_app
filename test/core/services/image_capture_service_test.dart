@@ -68,11 +68,11 @@ void main() {
         },
       );
 
-      test('run the image saving logic on correct values, and log the size of the saved image', () async {
+      test('runs the image saving logic on correct values, and logs the name and the size of the saved image', () async {
         when(
           () => mockGalWrapper.putImageBytes(
             any(),
-            name: any(named: 'name'),
+            name: 'nameString',
           ),
         ).thenAnswer(
           (_) async {},
@@ -80,12 +80,18 @@ void main() {
 
         await imageCaptureService.capturePng(
           mockRenderRepaintBoundary,
+          fileName: 'nameString',
         );
 
         verify(
           () => mockGalWrapper.putImageBytes(
-            any(),
-            name: any(named: 'name'),
+            pngBytes,
+            name: 'nameString',
+          ),
+        ).called(1);
+        verify(
+          () => globalLogger.log(
+            'Saved image name: nameString',
           ),
         ).called(1);
         verify(
