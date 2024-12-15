@@ -23,19 +23,16 @@ class MockGalWrapper extends Mock implements GalWrapper {}
 
 void main() {
   late ImageCaptureService imageCaptureService;
-  late MockRenderRepaintBoundary mockRenderRepaintBoundary;
-  late MockImage mockImage;
-  late MockLogger mockLogger;
+  final mockRenderRepaintBoundary = MockRenderRepaintBoundary();
+  final mockImage = MockImage();
+  final mockLogger = MockLogger();
+  globalLogger = mockLogger;
   late MockGalWrapper mockGalWrapper;
-  late ByteData byteData;
+  final byteData = ByteData(8)..setInt64(0, 12345);
+  final pngBytes = byteData.buffer.asUint8List();
 
   setUp(
-    () {
-      mockRenderRepaintBoundary = MockRenderRepaintBoundary();
-      mockImage = MockImage();
-      mockLogger = MockLogger();
-      globalLogger = mockLogger;
-
+    () async {
       registerFallbackValue(Uint8List(0));
       registerFallbackValue('');
 
@@ -46,6 +43,16 @@ void main() {
       when(
         () => mockImage.height,
       ).thenReturn(1080);
+      when(
+        () => mockRenderRepaintBoundary.toImage(),
+      ).thenAnswer(
+        (_) async => mockImage,
+      );
+      when(
+        () => mockImage.toByteData(format: ui.ImageByteFormat.png),
+      ).thenAnswer(
+        (_) async => byteData,
+      );
     },
   );
 
@@ -62,16 +69,6 @@ void main() {
       );
 
       test('run the image saving logic on correct values, and log the size of the saved image', () async {
-        when(
-          () => mockRenderRepaintBoundary.toImage(),
-        ).thenAnswer(
-          (_) async => mockImage,
-        );
-        when(
-          () => mockImage.toByteData(format: ui.ImageByteFormat.png),
-        ).thenAnswer(
-          (_) async => byteData,
-        );
         when(
           () => mockGalWrapper.putImageBytes(
             any(),
