@@ -40,7 +40,7 @@ class ImageCaptureService {
       format: ui.ImageByteFormat.png,
     );
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
-    if (fileName != null && fileName.isNotEmpty) {
+    if (fileName == null || fileName.isEmpty) {
       timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
     }
     await galWrapper.putImageBytes(
@@ -64,7 +64,7 @@ class ImageCaptureService {
       format: ui.ImageByteFormat.png,
     );
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
-    if (fileName != null && fileName.isNotEmpty) {
+    if (fileName == null || fileName.isEmpty) {
       timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
     }
     final String imageTempUri = '$tempDirectoryPath/${fileName ?? 'image_$timestamp'}.png';
