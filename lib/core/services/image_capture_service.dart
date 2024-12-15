@@ -24,11 +24,11 @@ class GalWrapper {
 }
 
 class ImageCaptureService {
-  final GalWrapper wrapper;
+  final GalWrapper galWrapper;
 
   ImageCaptureService({
-    GalWrapper? wrapper,
-  }) : wrapper = wrapper ?? GalWrapper();
+    GalWrapper? galWrapper,
+  }) : galWrapper = galWrapper ?? GalWrapper();
 
   Future<void> capturePng(RenderRepaintBoundary boundary) async {
     final ui.Image image = await boundary.toImage();
@@ -37,7 +37,7 @@ class ImageCaptureService {
     );
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
     String timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
-    await wrapper.putImageBytes(
+    await galWrapper.putImageBytes(
       pngBytes,
       name: 'image_$timestamp',
     );
