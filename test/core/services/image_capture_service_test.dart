@@ -22,6 +22,7 @@ class MockLogger extends Mock implements Logger {}
 class MockGalWrapper extends Mock implements GalWrapper {}
 
 void main() {
+  late ImageCaptureService imageCaptureService;
   late MockRenderRepaintBoundary mockRenderRepaintBoundary;
   late MockImage mockImage;
   late MockLogger mockLogger;
@@ -51,12 +52,16 @@ void main() {
   group(
     'capturePng',
     () {
-      test('run the image saving logic on correct values, and log the size of the saved image', () async {
-        mockGalWrapper = MockGalWrapper();
-        final imageCaptureService = ImageCaptureService(
-          galWrapper: mockGalWrapper,
-        );
+      setUp(
+        () {
+          mockGalWrapper = MockGalWrapper();
+          imageCaptureService = ImageCaptureService(
+            galWrapper: mockGalWrapper,
+          );
+        },
+      );
 
+      test('run the image saving logic on correct values, and log the size of the saved image', () async {
         when(
           () => mockRenderRepaintBoundary.toImage(),
         ).thenAnswer(
