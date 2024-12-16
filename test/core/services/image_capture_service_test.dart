@@ -36,7 +36,6 @@ void main() {
       registerFallbackValue(Uint8List(0));
       registerFallbackValue('');
 
-      byteData = ByteData(8)..setInt64(0, 12345);
       when(
         () => mockImage.width,
       ).thenReturn(1920);
