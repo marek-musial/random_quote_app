@@ -23,13 +23,26 @@ class GalWrapper {
   }
 }
 
+class SharePlusWrapper {
+  Future<ShareResult> shareXFiles(
+    String imageTempUri,
+  ) {
+    return Share.shareXFiles(
+      [XFile(imageTempUri)],
+    );
+  }
+}
+
 class ImageCaptureService {
   final GalWrapper galWrapper;
+  final SharePlusWrapper sharePlusWrapper;
   late String timestamp;
 
   ImageCaptureService({
     GalWrapper? galWrapper,
-  }) : galWrapper = galWrapper ?? GalWrapper();
+    SharePlusWrapper? sharePlusWrapper,
+  })  : galWrapper = galWrapper ?? GalWrapper(),
+        sharePlusWrapper = sharePlusWrapper ?? SharePlusWrapper();
 
   Future<void> capturePng(
     RenderRepaintBoundary boundary, {
@@ -72,8 +85,8 @@ class ImageCaptureService {
       imageTempUri,
     ).create();
     imageFile.writeAsBytesSync(pngBytes);
-    final result = await Share.shareXFiles(
-      [XFile(imageTempUri)],
+    final result = await sharePlusWrapper.shareXFiles(
+      imageTempUri,
     );
     if (result.status == ShareResultStatus.success) {
       globalLogger.log(
