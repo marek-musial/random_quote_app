@@ -1,12 +1,16 @@
-import 'dart:typed_data';
+import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mocktail/mocktail.dart';
 
 import 'package:random_quote_app/core/logger.dart';
+import 'package:random_quote_app/core/directories.dart';
 import 'package:random_quote_app/core/services/image_capture_service.dart';
+
+import 'package:share_plus/share_plus.dart';
 
 class MockRenderRepaintBoundary extends Mock implements RenderRepaintBoundary {
   @override
@@ -21,6 +25,8 @@ class MockLogger extends Mock implements Logger {}
 
 class MockGalWrapper extends Mock implements GalWrapper {}
 
+class MockSharePlusWrapper extends Mock implements SharePlusWrapper {}
+
 void main() {
   late ImageCaptureService imageCaptureService;
   final mockRenderRepaintBoundary = MockRenderRepaintBoundary();
@@ -28,6 +34,7 @@ void main() {
   final mockLogger = MockLogger();
   globalLogger = mockLogger;
   late MockGalWrapper mockGalWrapper;
+  late MockSharePlusWrapper mockSharePlusWrapper;
   final byteData = ByteData(8)..setInt64(0, 12345);
   final pngBytes = byteData.buffer.asUint8List();
 
@@ -99,6 +106,122 @@ void main() {
           ),
         ).called(1);
       });
+    },
+  );
+
+  group(
+    'sharePng',
+    () {
+      late Directory tempDirectory;
+      setUp(
+        () async {
+          mockSharePlusWrapper = MockSharePlusWrapper();
+          imageCaptureService = ImageCaptureService(
+            sharePlusWrapper: mockSharePlusWrapper,
+          );
+          tempDirectory = Directory.systemTemp.createTempSync();
+          tempDirectoryPath = tempDirectory.path;
+        },
+      );
+
+      tearDown(
+        () async {
+          if (tempDirectory.existsSync()) {
+            tempDirectory.deleteSync(recursive: true);
+          }
+        },
+      );
+
+      test(
+        'runs the image sharing logic with correct values, and on status = success logs the size of the shared image',
+        () async {
+          when(
+            () => mockSharePlusWrapper.shareXFiles(any()),
+          ).thenAnswer(
+            (_) async => const ShareResult(
+              'raw',
+              ShareResultStatus.success,
+            ),
+          );
+
+          await imageCaptureService.sharePng(
+            mockRenderRepaintBoundary,
+            fileName: 'nameString',
+          );
+
+          verify(
+            () => mockSharePlusWrapper.shareXFiles(
+              '$tempDirectoryPath/nameString.png',
+            ),
+          ).called(1);
+          verify(
+            () => mockLogger.log(
+              'Shared image width: ${mockImage.width}, saved image height: ${mockImage.height}',
+            ),
+          ).called(1);
+        },
+      );
+
+      test(
+        'runs the image sharing logic with correct values, and on status = dismissed logs the appropriate message',
+        () async {
+          when(
+            () => mockSharePlusWrapper.shareXFiles(any()),
+          ).thenAnswer(
+            (_) async => const ShareResult(
+              'raw',
+              ShareResultStatus.dismissed,
+            ),
+          );
+
+          await imageCaptureService.sharePng(
+            mockRenderRepaintBoundary,
+            fileName: 'nameString',
+          );
+
+          verify(
+            () => mockSharePlusWrapper.shareXFiles(
+              '$tempDirectoryPath/nameString.png',
+            ),
+          ).called(1);
+          verify(
+            () => mockLogger.log(
+              'Image sharing dismissed',
+            ),
+          ).called(1);
+        },
+      );
+
+      test(
+        'runs the image sharing logic with correct values, and on any other status logs the appropriate message',
+        () async {
+          late ShareResult result;
+          when(
+            () => mockSharePlusWrapper.shareXFiles(any()),
+          ).thenAnswer(
+            (_) async => result = const ShareResult(
+              'raw',
+              ShareResultStatus.unavailable,
+            ),
+          );
+
+          await imageCaptureService.sharePng(
+            mockRenderRepaintBoundary,
+            fileName: 'nameString',
+          );
+
+          verify(
+            () => mockSharePlusWrapper.shareXFiles(
+              '$tempDirectoryPath/nameString.png',
+            ),
+          ).called(1);
+          verify(
+            () => mockLogger.log(
+              'An error occured with share result status ${result.status.toString()}',
+            ),
+          ).called(1);
+        },
+      );
     },
   );
 }
