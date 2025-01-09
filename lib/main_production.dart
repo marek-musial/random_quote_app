@@ -6,13 +6,13 @@ import 'package:random_quote_app/app.dart';
 import 'package:random_quote_app/core/config.dart';
 import 'package:random_quote_app/core/directories.dart';
 import 'package:random_quote_app/core/injection_container.dart';
-import 'package:random_quote_app/firebase_options.dart';
+import 'package:random_quote_app/firebase_options_production.dart';
 
 void main() async {
   Config.appFlavor = Flavor.production;
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: ProductionFirebaseOptions.currentPlatform,
   );
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getApplicationDocumentsDirectory(),
