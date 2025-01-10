@@ -77,7 +77,7 @@ class AboutPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Version 1.0.0',
+                        'Version 1.0.1',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: textColor),
                       ),
