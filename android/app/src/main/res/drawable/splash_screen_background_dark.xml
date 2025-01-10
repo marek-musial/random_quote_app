@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Modify this file to customize your launch splash screen when the OS's Dark Mode setting is on-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@android:color/black" />
+    <item 
+        android:gravity="center" 
+        android:drawable="@drawable/splash_screen_foreground">
+    </item>
+</layer-list>

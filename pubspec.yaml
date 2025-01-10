@@ -16,10 +16,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
-  sdk: '>=3.2.6 <4.0.0'
+  sdk: '>=3.5.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,6 +35,25 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  flutter_bloc: ^8.1.4
+  dio: ^5.4.1
+  palette_generator: ^0.3.3+3
+  envied: ^0.5.4+1
+  url_launcher: ^6.3.0
+  hydrated_bloc: ^9.1.5
+  path_provider: ^2.1.4
+  json_annotation: ^4.9.0
+  freezed_annotation: ^2.4.4
+  retrofit: ^4.4.1
+  get_it: ^7.7.0
+  injectable: ^2.4.4
+  intl: ^0.19.0
+  gal: ^2.3.0
+  mocktail: ^1.0.4
+  share_plus: ^10.1.0
+  font_awesome_flutter: ^10.7.0
+  firebase_core: ^3.8.0
+  connectivity_plus: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -45,7 +64,15 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
+  envied_generator: ^0.5.4+1
+  build_runner: ^2.4.11
+  json_serializable: ^6.8.0
+  freezed: ^2.5.2
+  retrofit_generator: ^9.1.2
+  injectable_generator: ^2.6.2
+  bloc_test: ^9.1.7
+  path: ^1.9.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -59,9 +86,14 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - lib/core/assets/placeholder_cat.jpg
   #   - images/a_dot_ham.jpeg
+
+  fonts:
+    - family: Quoteput
+      fonts:
+        - asset: fonts/Quoteput.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
