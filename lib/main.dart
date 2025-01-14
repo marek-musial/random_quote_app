@@ -13,7 +13,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: await getApplicationDocumentsDirectory(),
+    storageDirectory: HydratedStorageDirectory(
+      (await getApplicationDocumentsDirectory()).path,
+    ),
   );
   await initializeTempDirectory();
   cleanDirectory(tempDirectoryPath);
