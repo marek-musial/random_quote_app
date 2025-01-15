@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:random_quote_app/app.dart';
+import 'package:random_quote_app/core/app_version.dart';
 import 'package:random_quote_app/core/directories.dart';
 import 'package:random_quote_app/core/injection_container.dart';
 import 'package:random_quote_app/firebase_options.dart';
@@ -17,6 +18,7 @@ void main() async {
       (await getApplicationDocumentsDirectory()).path,
     ),
   );
+  await getAppVersion(build: 'dev');
   await initializeTempDirectory();
   cleanDirectory(tempDirectoryPath);
   configureDependencies();

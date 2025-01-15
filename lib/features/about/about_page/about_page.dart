@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:random_quote_app/core/app_version.dart';
 import 'package:random_quote_app/core/assets/quoteput_icons.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
@@ -77,7 +78,7 @@ class AboutPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Version 1.0.1',
+                        appVersion,
                         textAlign: TextAlign.center,
                         style: TextStyle(color: textColor),
                       ),
