@@ -37,6 +37,7 @@ class ImageCaptureService {
   final GalWrapper galWrapper;
   final SharePlusWrapper sharePlusWrapper;
   late String timestamp;
+  double imageScale = 1.0;
 
   ImageCaptureService({
     GalWrapper? galWrapper,
@@ -47,8 +48,15 @@ class ImageCaptureService {
   Future<void> capturePng(
     RenderRepaintBoundary boundary, {
     String? fileName,
+    double? targetImageDimension,
   }) async {
-    final ui.Image image = await boundary.toImage();
+    final boundaryHeight = boundary.size.height;
+    if (targetImageDimension != null) {
+      imageScale = targetImageDimension / boundaryHeight;
+    }
+    final ui.Image image = await boundary.toImage(
+      pixelRatio: imageScale,
+    );
     final ByteData? byteData = await image.toByteData(
       format: ui.ImageByteFormat.png,
     );
@@ -71,8 +79,15 @@ class ImageCaptureService {
   Future<void> sharePng(
     RenderRepaintBoundary boundary, {
     String? fileName,
+    double? targetImageDimension,
   }) async {
-    final ui.Image image = await boundary.toImage();
+    final boundaryHeight = boundary.size.height;
+    if (targetImageDimension != null) {
+      imageScale = targetImageDimension / boundaryHeight;
+    }
+    final ui.Image image = await boundary.toImage(
+      pixelRatio: imageScale,
+    );
     final ByteData? byteData = await image.toByteData(
       format: ui.ImageByteFormat.png,
     );
