@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -12,7 +11,6 @@ import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/network_utils.dart';
-import 'package:random_quote_app/core/services/image_capture_service.dart';
 import 'package:random_quote_app/core/services/palette_generator_service.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
@@ -67,7 +65,6 @@ class HomeCubit extends HydratedCubit<HomeState> {
   final QuoteRepository _quoteRepository;
   ImageLoader imageLoader = ImageLoader();
   PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService();
-  ImageCaptureService imageCaptureService = ImageCaptureService();
 
   HomeState previousState = const HomeState(status: Status.initial);
   HomeState pendingState = const HomeState(status: Status.initial);
@@ -391,42 +388,6 @@ class HomeCubit extends HydratedCubit<HomeState> {
     } catch (e) {
       logger.log('Error on HomeState fromJson: $e');
       return null;
-    }
-  }
-
-  Future<void> capturePng(RenderRepaintBoundary boundary) async {
-    logger.log(
-      'Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}',
-    );
-    try {
-      await imageCaptureService.capturePng(boundary);
-    } on Exception catch (e) {
-      String errorMessage = e.toString();
-      emit(
-        HomeState(
-          status: Status.error,
-          errorMessage: errorMessage,
-        ),
-      );
-      logger.log(errorMessage);
-    }
-  }
-
-  Future<void> sharePng(RenderRepaintBoundary boundary) async {
-    logger.log(
-      'Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}',
-    );
-    try {
-      await imageCaptureService.sharePng(boundary);
-    } on Exception catch (e) {
-      String errorMessage = e.toString();
-      emit(
-        HomeState(
-          status: Status.error,
-          errorMessage: errorMessage,
-        ),
-      );
-      logger.log(errorMessage);
     }
   }
 }
