@@ -47,6 +47,7 @@ class HomePage extends StatelessWidget {
             children: [
               const BackgroundIcon(),
               Scaffold(
+                resizeToAvoidBottomInset: false,
                 backgroundColor: Colors.transparent,
                 appBar: MediaQuery.of(context).orientation == Orientation.portrait
                     ? AppBar(
