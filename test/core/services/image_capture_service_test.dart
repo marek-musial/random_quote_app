@@ -157,6 +157,7 @@ void main() {
           await imageCaptureService.sharePng(
             mockRenderRepaintBoundary,
             fileName: 'nameString',
+            targetImageDimension: 100,
           );
 
           verify(
