@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/network_utils.dart';
+import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/constraints.dart';
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
@@ -74,43 +75,58 @@ class HomePage extends StatelessWidget {
                         children: [
                           if (imageModel != null && quoteModel != null)
                             Center(
-                              child: ConstrainedBox(
-                                constraints: imageConstraints,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(
-                                        imageConstraints.maxWidth / 20,
+                              child: Column(
+                                children: [
+                                  ConstrainedBox(
+                                    constraints: imageConstraints,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(
+                                            imageConstraints.maxWidth / 20,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  clipBehavior: Clip.hardEdge,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(
-                                        imageConstraints.maxWidth / 20,
-                                      ),
-                                    ),
-                                    child: RepaintBoundary(
-                                      key: widgetToImageKey,
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          ImageDisplay(imageModel: imageModel),
-                                          QuoteDisplay(quoteModel: quoteModel),
-                                        ],
-                                      ),
-                                    ),
-                                    onLongPress: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return const ImageManagementDialog();
+                                      clipBehavior: Clip.hardEdge,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(
+                                            imageConstraints.maxWidth / 20,
+                                          ),
+                                        ),
+                                        child: RepaintBoundary(
+                                          key: widgetToImageKey,
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              ImageDisplay(imageModel: imageModel),
+                                              QuoteDisplay(quoteModel: quoteModel),
+                                            ],
+                                          ),
+                                        ),
+                                        onLongPress: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return const ImageManagementDialog();
+                                            },
+                                          );
                                         },
-                                      );
-                                    },
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  SizedBox.square(
+                                    dimension: screenWidth / 96,
+                                  ),
+                                  Text(
+                                    'Hold image for more options',
+                                    style: TextStyle(
+                                      fontSize: screenWidth / 32,
+                                      color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(.5),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                           else
