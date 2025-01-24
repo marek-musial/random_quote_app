@@ -50,7 +50,16 @@ void main() {
         () => mockImage.height,
       ).thenReturn(1080);
       when(
-        () => mockRenderRepaintBoundary.toImage(),
+        () => mockRenderRepaintBoundary.size,
+      ).thenReturn(
+        Size(320, 420),
+      );
+      when(
+        () => mockRenderRepaintBoundary.toImage(
+          pixelRatio: any(
+            named: 'pixelRatio',
+          ),
+        ),
       ).thenAnswer(
         (_) async => mockImage,
       );
@@ -87,6 +96,7 @@ void main() {
         await imageCaptureService.capturePng(
           mockRenderRepaintBoundary,
           fileName: 'nameString',
+          targetImageDimension: 100,
         );
 
         verify(
