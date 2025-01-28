@@ -133,21 +133,15 @@ class AppBarDrawer extends StatelessWidget {
                         onPressed: () {
                           context
                               .read<NavigationDrawerCubit>() //R
-                              .toggleFeedbackMode();
+                              .turnOnFeedbackMode(context);
                         },
-                        isSelected: navigationState.isFeedbackMode,
                         icon: Icon(
-                          Icons.bug_report,
-                          color: Theme.of(context).colorScheme.primary.withOpacity(.8),
-                        ),
-                        focusColor: textColor,
-                        selectedIcon: Icon(
                           Icons.bug_report,
                           color: textColor,
                         ),
                       ),
                       Text(
-                        'Toggle feedback mode',
+                        'Leave feedback\n(Gmail)',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontWeight: FontWeight.bold,

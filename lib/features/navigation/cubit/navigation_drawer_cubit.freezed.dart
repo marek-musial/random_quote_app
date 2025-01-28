@@ -17,7 +17,6 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$NavigationDrawerState {
   int get navigationIndex => throw _privateConstructorUsedError;
-  bool get isFeedbackMode => throw _privateConstructorUsedError;
 
   /// Create a copy of NavigationDrawerState
   /// with the given fields replaced by the non-null parameter values.
@@ -32,7 +31,7 @@ abstract class $NavigationDrawerStateCopyWith<$Res> {
           $Res Function(NavigationDrawerState) then) =
       _$NavigationDrawerStateCopyWithImpl<$Res, NavigationDrawerState>;
   @useResult
-  $Res call({int navigationIndex, bool isFeedbackMode});
+  $Res call({int navigationIndex});
 }
 
 /// @nodoc
@@ -52,17 +51,12 @@ class _$NavigationDrawerStateCopyWithImpl<$Res,
   @override
   $Res call({
     Object? navigationIndex = null,
-    Object? isFeedbackMode = null,
   }) {
     return _then(_value.copyWith(
       navigationIndex: null == navigationIndex
           ? _value.navigationIndex
           : navigationIndex // ignore: cast_nullable_to_non_nullable
               as int,
-      isFeedbackMode: null == isFeedbackMode
-          ? _value.isFeedbackMode
-          : isFeedbackMode // ignore: cast_nullable_to_non_nullable
-              as bool,
     ) as $Val);
   }
 }
@@ -76,7 +70,7 @@ abstract class _$$NavigationDrawerStateImplCopyWith<$Res>
       __$$NavigationDrawerStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int navigationIndex, bool isFeedbackMode});
+  $Res call({int navigationIndex});
 }
 
 /// @nodoc
@@ -94,17 +88,12 @@ class __$$NavigationDrawerStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? navigationIndex = null,
-    Object? isFeedbackMode = null,
   }) {
     return _then(_$NavigationDrawerStateImpl(
       navigationIndex: null == navigationIndex
           ? _value.navigationIndex
           : navigationIndex // ignore: cast_nullable_to_non_nullable
               as int,
-      isFeedbackMode: null == isFeedbackMode
-          ? _value.isFeedbackMode
-          : isFeedbackMode // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
@@ -112,19 +101,15 @@ class __$$NavigationDrawerStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$NavigationDrawerStateImpl implements _NavigationDrawerState {
-  const _$NavigationDrawerStateImpl(
-      {this.navigationIndex = 0, this.isFeedbackMode = false});
+  const _$NavigationDrawerStateImpl({this.navigationIndex = 0});
 
   @override
   @JsonKey()
   final int navigationIndex;
-  @override
-  @JsonKey()
-  final bool isFeedbackMode;
 
   @override
   String toString() {
-    return 'NavigationDrawerState(navigationIndex: $navigationIndex, isFeedbackMode: $isFeedbackMode)';
+    return 'NavigationDrawerState(navigationIndex: $navigationIndex)';
   }
 
   @override
@@ -133,13 +118,11 @@ class _$NavigationDrawerStateImpl implements _NavigationDrawerState {
         (other.runtimeType == runtimeType &&
             other is _$NavigationDrawerStateImpl &&
             (identical(other.navigationIndex, navigationIndex) ||
-                other.navigationIndex == navigationIndex) &&
-            (identical(other.isFeedbackMode, isFeedbackMode) ||
-                other.isFeedbackMode == isFeedbackMode));
+                other.navigationIndex == navigationIndex));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, navigationIndex, isFeedbackMode);
+  int get hashCode => Object.hash(runtimeType, navigationIndex);
 
   /// Create a copy of NavigationDrawerState
   /// with the given fields replaced by the non-null parameter values.
@@ -152,14 +135,11 @@ class _$NavigationDrawerStateImpl implements _NavigationDrawerState {
 }
 
 abstract class _NavigationDrawerState implements NavigationDrawerState {
-  const factory _NavigationDrawerState(
-      {final int navigationIndex,
-      final bool isFeedbackMode}) = _$NavigationDrawerStateImpl;
+  const factory _NavigationDrawerState({final int navigationIndex}) =
+      _$NavigationDrawerStateImpl;
 
   @override
   int get navigationIndex;
-  @override
-  bool get isFeedbackMode;
 
   /// Create a copy of NavigationDrawerState
   /// with the given fields replaced by the non-null parameter values.
