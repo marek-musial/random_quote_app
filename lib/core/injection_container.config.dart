@@ -35,6 +35,8 @@ import 'package:random_quote_app/domain/repositories/quote_repository.dart'
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart' as _i532;
 import 'package:random_quote_app/features/home/cubit/image_dialog_cubit.dart'
     as _i185;
+import 'package:random_quote_app/features/navigation/cubit/navigation_drawer_cubit.dart'
+    as _i123;
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart' as _i701;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -54,6 +56,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1031.QuoteRepository>(() => _i1031.QuoteRepository());
     gh.factory<_i185.ImageDialogCubit>(() => _i185.ImageDialogCubit());
     gh.factory<_i701.RootCubit>(() => _i701.RootCubit());
+    gh.factory<_i123.NavigationDrawerCubit>(
+        () => _i123.NavigationDrawerCubit());
     gh.lazySingleton<_i361.Dio>(() => dioModule.dio());
     gh.factory<_i131.CataasImageRemoteRetrofitDataSource>(
         () => _i131.CataasImageRemoteRetrofitDataSource(gh<_i361.Dio>()));

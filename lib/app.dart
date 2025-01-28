@@ -5,6 +5,7 @@ import 'package:random_quote_app/core/injection_container.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 import 'package:random_quote_app/features/home/pages/home_page.dart';
 import 'package:random_quote_app/features/about/page/about_page.dart';
+import 'package:random_quote_app/features/navigation/cubit/navigation_drawer_cubit.dart';
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart';
 import 'package:random_quote_app/features/settings/page/settings_page.dart';
 import 'package:random_quote_app/features/sources/sources_page.dart';
@@ -22,6 +23,11 @@ class MyApp extends StatelessWidget {
         BlocProvider<RootCubit>(
           create: (context) {
             return getIt<RootCubit>();
+          },
+        ),
+        BlocProvider<NavigationDrawerCubit>(
+          create: (context) {
+            return getIt<NavigationDrawerCubit>();
           },
         ),
       ],
