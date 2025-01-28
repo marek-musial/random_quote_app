@@ -5,7 +5,7 @@ import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart'
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
-import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
+import 'package:random_quote_app/features/navigation/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final List<DataSource> dataSources = [
