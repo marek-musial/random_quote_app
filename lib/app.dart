@@ -6,7 +6,7 @@ import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 import 'package:random_quote_app/features/home/pages/home_page.dart';
 import 'package:random_quote_app/features/about/about_page/about_page.dart';
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart';
-import 'package:random_quote_app/features/settings/settings_page.dart';
+import 'package:random_quote_app/features/settings/page/settings_page.dart';
 import 'package:random_quote_app/features/sources/sources_page.dart';
 
 class MyApp extends StatelessWidget {
