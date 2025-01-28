@@ -4,7 +4,7 @@ import 'package:random_quote_app/core/injection_container.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart';
-import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
+import 'package:random_quote_app/features/navigation/widgets/navigation_drawer.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 
 final BorderRadius _borderRadius = BorderRadius.circular(screenWidth / 10);

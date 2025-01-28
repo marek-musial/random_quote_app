@@ -7,7 +7,7 @@ import 'package:random_quote_app/core/theme/constraints.dart';
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 import 'package:random_quote_app/features/home/widgets/home_page_widgets_export.dart';
-import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
+import 'package:random_quote_app/features/navigation/widgets/navigation_drawer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.title});

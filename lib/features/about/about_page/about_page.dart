@@ -6,7 +6,7 @@ import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
-import 'package:random_quote_app/features/widgets/navigation_drawer.dart';
+import 'package:random_quote_app/features/navigation/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatelessWidget {
