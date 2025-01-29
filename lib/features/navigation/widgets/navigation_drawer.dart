@@ -35,6 +35,7 @@ class AppBarDrawer extends StatelessWidget {
             return BlocBuilder<HomeCubit, HomeState>(
               builder: (context, homeState) {
                 return SingleChildScrollView(
+                  physics: ClampingScrollPhysics(),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       maxHeight: screenHeight.toDouble(),
@@ -135,6 +136,11 @@ class AppBarDrawer extends StatelessWidget {
                         ],
                         trailing: Column(
                           children: [
+                            Divider(
+                              color: textColor,
+                              indent: screenWidth / 64,
+                              endIndent: screenWidth / 64,
+                            ),
                             IconButton(
                               onPressed: () {
                                 context
@@ -154,6 +160,9 @@ class AppBarDrawer extends StatelessWidget {
                                     color: textColor,
                                   ),
                             ),
+                            SizedBox(
+                              height: screenHeight / 64,
+                            )
                           ],
                         ),
                       ),
