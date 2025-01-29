@@ -34,121 +34,130 @@ class AppBarDrawer extends StatelessWidget {
           builder: (context, navigationState) {
             return BlocBuilder<HomeCubit, HomeState>(
               builder: (context, homeState) {
-                return NavigationRail(
-                  backgroundColor: Colors.transparent,
-                  onDestinationSelected: (int index) {
-                    context
-                        .read<NavigationDrawerCubit>() //R
-                        .changeNavigationIndex(index);
-                    if (index == 0) {
-                      context.read<HomeCubit>().emitPreviousState();
-                    }
-                    Navigator.pushReplacementNamed(
-                      context,
-                      switch (index) {
-                        0 => '/',
-                        1 => '/about',
-                        2 => '/sources',
-                        3 => '/settings',
-                        int() => '/',
-                      },
-                    );
-                  },
-                  selectedIndex: navigationState.navigationIndex,
-                  labelType: NavigationRailLabelType.all,
-                  leading: MediaQuery.of(context).orientation == Orientation.portrait
-                      ? IconButton(
-                          icon: Icon(
-                            Icons.close,
-                            color: textColor,
-                          ),
-                          onPressed: Navigator.canPop(context) //R
-                              ? Navigator.of(context).pop
-                              : null,
-                        )
-                      : SizedBox.square(
-                          dimension: screenWidth / 12,
-                          child: Icon(
-                            Icons.menu,
-                            color: textColor,
-                          ),
-                        ),
-                  destinations: <NavigationRailDestination>[
-                    NavigationRailDestination(
-                      icon: Icon(
-                        Icons.home,
-                        color: textColor,
-                      ),
-                      label: Text(
-                        'Home',
-                        style: TextStyle(
-                          color: textColor,
-                        ),
-                      ),
-                      disabled: index == 0,
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: screenHeight.toDouble(),
                     ),
-                    NavigationRailDestination(
-                      icon: Icon(
-                        Icons.info,
-                        color: textColor,
-                      ),
-                      label: Text(
-                        'About',
-                        style: TextStyle(
-                          color: textColor,
-                        ),
-                      ),
-                      disabled: index == 1,
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(
-                        Icons.source,
-                        color: textColor,
-                      ),
-                      label: Text(
-                        'Sources',
-                        style: TextStyle(
-                          color: textColor,
-                        ),
-                      ),
-                      disabled: index == 2,
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(
-                        Icons.settings,
-                        color: textColor,
-                      ),
-                      label: Text(
-                        'Settings',
-                        style: TextStyle(
-                          color: textColor,
-                        ),
-                      ),
-                      disabled: index == 3,
-                    ),
-                  ],
-                  trailing: Column(
-                    children: [
-                      IconButton(
-                        onPressed: () {
+                    child: IntrinsicHeight(
+                      child: NavigationRail(
+                        backgroundColor: Colors.transparent,
+                        onDestinationSelected: (int index) {
                           context
                               .read<NavigationDrawerCubit>() //R
-                              .turnOnFeedbackMode(context);
+                              .changeNavigationIndex(index);
+                          if (index == 0) {
+                            context.read<HomeCubit>().emitPreviousState();
+                          }
+                          Navigator.pushReplacementNamed(
+                            context,
+                            switch (index) {
+                              0 => '/',
+                              1 => '/about',
+                              2 => '/sources',
+                              3 => '/settings',
+                              int() => '/',
+                            },
+                          );
                         },
-                        icon: Icon(
-                          Icons.bug_report,
-                          color: textColor,
-                        ),
-                      ),
-                      Text(
-                        'Leave feedback\n(Gmail)',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.bold,
+                        selectedIndex: navigationState.navigationIndex,
+                        labelType: NavigationRailLabelType.all,
+                        leading: MediaQuery.of(context).orientation == Orientation.portrait
+                            ? IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  color: textColor,
+                                ),
+                                onPressed: Navigator.canPop(context) //R
+                                    ? Navigator.of(context).pop
+                                    : null,
+                              )
+                            : SizedBox.square(
+                                dimension: screenWidth / 12,
+                                child: Icon(
+                                  Icons.menu,
+                                  color: textColor,
+                                ),
+                              ),
+                        destinations: <NavigationRailDestination>[
+                          NavigationRailDestination(
+                            icon: Icon(
+                              Icons.home,
                               color: textColor,
                             ),
+                            label: Text(
+                              'Home',
+                              style: TextStyle(
+                                color: textColor,
+                              ),
+                            ),
+                            disabled: index == 0,
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(
+                              Icons.info,
+                              color: textColor,
+                            ),
+                            label: Text(
+                              'About',
+                              style: TextStyle(
+                                color: textColor,
+                              ),
+                            ),
+                            disabled: index == 1,
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(
+                              Icons.source,
+                              color: textColor,
+                            ),
+                            label: Text(
+                              'Sources',
+                              style: TextStyle(
+                                color: textColor,
+                              ),
+                            ),
+                            disabled: index == 2,
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(
+                              Icons.settings,
+                              color: textColor,
+                            ),
+                            label: Text(
+                              'Settings',
+                              style: TextStyle(
+                                color: textColor,
+                              ),
+                            ),
+                            disabled: index == 3,
+                          ),
+                        ],
+                        trailing: Column(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                context
+                                    .read<NavigationDrawerCubit>() //R
+                                    .turnOnFeedbackMode(context);
+                              },
+                              icon: Icon(
+                                Icons.bug_report,
+                                color: textColor,
+                              ),
+                            ),
+                            Text(
+                              'Leave feedback\n(Gmail)',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: textColor,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
                 );
               },
