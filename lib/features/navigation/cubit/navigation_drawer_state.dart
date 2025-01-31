@@ -1,6 +1,6 @@
 part of 'navigation_drawer_cubit.dart';
 
-@freezed
+@Freezed(equal: true)
 class NavigationDrawerState with _$NavigationDrawerState {
   const factory NavigationDrawerState({
     @Default(0) int navigationIndex,
