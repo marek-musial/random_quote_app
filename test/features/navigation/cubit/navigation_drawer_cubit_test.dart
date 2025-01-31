@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:random_quote_app/core/logger.dart';
 
+import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/services/feedback_service.dart';
 import 'package:random_quote_app/features/navigation/cubit/navigation_drawer_cubit.dart';
 
