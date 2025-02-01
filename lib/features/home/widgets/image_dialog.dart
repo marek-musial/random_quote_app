@@ -16,9 +16,17 @@ class ImageManagementDialog extends StatelessWidget {
         widgetToImageKey.currentContext!.findRenderObject()! //R
             as RenderRepaintBoundary;
     final textEditingController = TextEditingController();
+    final double startValue = 1080;
 
     return BlocProvider(
-      create: (context) => ImageDialogCubit(),
+      create: (context) => ImageDialogCubit()
+        ..updateImageDimension(
+          startValue,
+        )
+        ..updateFileSize(
+          boundary,
+          startValue.toInt(),
+        ),
       child: BlocBuilder<ImageDialogCubit, ImageDialogState>(
         builder: (context, state) {
           return SimpleDialog(
@@ -67,25 +75,25 @@ class ImageManagementDialog extends StatelessWidget {
                       children: [
                         Text('Image dimensions:'),
                         Slider.adaptive(
-                          value: state.imageDimension ?? boundary.size.width,
+                          value: state.imageDimension ?? startValue,
                           onChanged: (double newValue) async {
                             context.read<ImageDialogCubit>().updateImageDimension(
                                   newValue.roundToDouble(),
                                 );
                           },
-                          onChangeEnd: (double newValue) async {
+                          onChangeEnd: (double? newValue) async {
                             await context.read<ImageDialogCubit>().updateFileSize(
                                   boundary,
-                                  newValue.round(),
+                                  newValue?.round() ?? startValue.toInt(),
                                 );
                           },
                           min: 300,
-                          max: 1080,
+                          max: startValue,
                         ),
                         Text(
                           '${state.imageDimension?.toInt() ?? //R
-                              'W'} x ${state.imageDimension?.toInt() ?? //R
-                              'H'}',
+                              startValue} x ${state.imageDimension?.toInt() ?? //R
+                              startValue}',
                         ),
                         Text(
                           'Estimated file size: ${state.fileSize ?? 'awaiting'}',
