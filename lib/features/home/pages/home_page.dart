@@ -144,21 +144,25 @@ class HomePage extends StatelessWidget {
                     final isConnected = await NetworkUtils.checkConnectivity();
                     if (context.mounted) {
                       if (!isConnected) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Check your network connection'),
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                          ),
-                        );
+                        ScaffoldMessenger.of(context)
+                          ..removeCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(
+                              content: const Text('Check your network connection'),
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                            ),
+                          );
                       } else {
                         switch (state.status) {
                           case Status.loading || Status.decoding:
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('Another process in progress, please wait'),
-                                backgroundColor: Theme.of(context).colorScheme.primary,
-                              ),
-                            );
+                            ScaffoldMessenger.of(context)
+                              ..removeCurrentSnackBar()
+                              ..showSnackBar(
+                                SnackBar(
+                                  content: const Text('Another process in progress, please wait'),
+                                  backgroundColor: Theme.of(context).colorScheme.primary,
+                                ),
+                              );
                             break;
                           default:
                             await context.read<HomeCubit>().start();
