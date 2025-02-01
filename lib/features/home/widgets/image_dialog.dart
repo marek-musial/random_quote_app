@@ -79,7 +79,7 @@ class ImageManagementDialog extends StatelessWidget {
                                   newValue.round(),
                                 );
                           },
-                          min: boundary.size.width,
+                          min: 300,
                           max: 1080,
                         ),
                         Text(
