@@ -28,7 +28,7 @@ class AppBarDrawer extends StatelessWidget {
       ),
       child: Drawer(
         backgroundColor: Colors.transparent,
-        width: screenWidth / 5,
+        width: (screenWidth ~/ 6).clamp(70, 90).toDouble(),
         shape: Border.all(style: BorderStyle.none),
         child: BlocBuilder<NavigationDrawerCubit, NavigationDrawerState>(
           builder: (context, navigationState) {
