@@ -12,12 +12,12 @@ class BackgroundIcon extends StatelessWidget {
     return FractionalTranslation(
       translation: MediaQuery.of(context).orientation == Orientation.portrait
           ? Offset(
-              screenHeight / screenWidth * -.3,
-              screenHeight / screenWidth * .1,
+              -.3,
+              .25,
             )
           : Offset(
-              screenWidth / screenHeight * -.25,
-              screenWidth / screenHeight * .2,
+              -.2,
+              .1,
             ),
       child: OverflowBox(
         maxHeight: screenHeight.toDouble(),
@@ -25,8 +25,8 @@ class BackgroundIcon extends StatelessWidget {
         child: Icon(
           Quoteput.quoteput,
           size: MediaQuery.of(context).orientation == Orientation.portrait //R
-              ? screenHeight / screenWidth * 300
-              : screenHeight / screenWidth * 200,
+              ? screenHeight / 1.6
+              : screenHeight / 1.6,
           color: Theme.of(context).colorScheme.primary.withOpacity(.3),
         ),
       ),
