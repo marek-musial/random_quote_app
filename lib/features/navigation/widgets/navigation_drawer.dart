@@ -138,8 +138,8 @@ class AppBarDrawer extends StatelessWidget {
                           children: [
                             Divider(
                               color: textColor,
-                              indent: screenWidth / 64,
-                              endIndent: screenWidth / 64,
+                              indent: 10,
+                              endIndent: 10,
                             ),
                             IconButton(
                               onPressed: () {
