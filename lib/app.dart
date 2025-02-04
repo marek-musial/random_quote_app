@@ -8,7 +8,7 @@ import 'package:random_quote_app/features/about/page/about_page.dart';
 import 'package:random_quote_app/features/navigation/cubit/navigation_drawer_cubit.dart';
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart';
 import 'package:random_quote_app/features/settings/page/settings_page.dart';
-import 'package:random_quote_app/features/sources/sources_page.dart';
+import 'package:random_quote_app/features/sources/page/sources_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
