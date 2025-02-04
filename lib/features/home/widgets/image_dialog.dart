@@ -16,7 +16,7 @@ class ImageManagementDialog extends StatelessWidget {
         widgetToImageKey.currentContext!.findRenderObject()! //R
             as RenderRepaintBoundary;
     final textEditingController = TextEditingController();
-    final double startValue = 1080;
+    const double startValue = 1080;
 
     return BlocProvider(
       create: (context) => ImageDialogCubit()
