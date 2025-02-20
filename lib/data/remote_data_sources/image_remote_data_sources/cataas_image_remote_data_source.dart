@@ -12,7 +12,7 @@ part 'cataas_image_remote_data_source.freezed.dart';
 @freezed
 class CataasResponse with _$CataasResponse {
   factory CataasResponse({
-    @JsonKey(name: '_id') required String id,
+    @JsonKey(name: 'id') required String id,
   }) = _CataasResponse;
 
   factory CataasResponse.fromJson(

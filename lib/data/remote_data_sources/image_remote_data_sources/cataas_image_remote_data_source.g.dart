@@ -9,20 +9,20 @@ part of 'cataas_image_remote_data_source.dart';
 
 _$CataasResponseImpl _$$CataasResponseImplFromJson(Map<String, dynamic> json) =>
     _$CataasResponseImpl(
-      id: json['_id'] as String,
+      id: json['id'] as String,
     );
 
 Map<String, dynamic> _$$CataasResponseImplToJson(
         _$CataasResponseImpl instance) =>
     <String, dynamic>{
-      '_id': instance.id,
+      'id': instance.id,
     };
 
 // **************************************************************************
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
 class _CataasImageRemoteRetrofitDataSource
     implements CataasImageRemoteRetrofitDataSource {

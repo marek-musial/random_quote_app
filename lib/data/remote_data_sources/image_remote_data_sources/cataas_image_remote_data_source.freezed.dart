@@ -20,7 +20,7 @@ CataasResponse _$CataasResponseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CataasResponse {
-  @JsonKey(name: '_id')
+  @JsonKey(name: 'id')
   String get id => throw _privateConstructorUsedError;
 
   /// Serializes this CataasResponse to a JSON map.
@@ -39,7 +39,7 @@ abstract class $CataasResponseCopyWith<$Res> {
           CataasResponse value, $Res Function(CataasResponse) then) =
       _$CataasResponseCopyWithImpl<$Res, CataasResponse>;
   @useResult
-  $Res call({@JsonKey(name: '_id') String id});
+  $Res call({@JsonKey(name: 'id') String id});
 }
 
 /// @nodoc
@@ -76,7 +76,7 @@ abstract class _$$CataasResponseImplCopyWith<$Res>
       __$$CataasResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({@JsonKey(name: '_id') String id});
+  $Res call({@JsonKey(name: 'id') String id});
 }
 
 /// @nodoc
@@ -106,13 +106,13 @@ class __$$CataasResponseImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$CataasResponseImpl implements _CataasResponse {
-  _$CataasResponseImpl({@JsonKey(name: '_id') required this.id});
+  _$CataasResponseImpl({@JsonKey(name: 'id') required this.id});
 
   factory _$CataasResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$CataasResponseImplFromJson(json);
 
   @override
-  @JsonKey(name: '_id')
+  @JsonKey(name: 'id')
   final String id;
 
   @override
@@ -150,14 +150,14 @@ class _$CataasResponseImpl implements _CataasResponse {
 }
 
 abstract class _CataasResponse implements CataasResponse {
-  factory _CataasResponse({@JsonKey(name: '_id') required final String id}) =
+  factory _CataasResponse({@JsonKey(name: 'id') required final String id}) =
       _$CataasResponseImpl;
 
   factory _CataasResponse.fromJson(Map<String, dynamic> json) =
       _$CataasResponseImpl.fromJson;
 
   @override
-  @JsonKey(name: '_id')
+  @JsonKey(name: 'id')
   String get id;
 
   /// Create a copy of CataasResponse
