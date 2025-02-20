@@ -38,7 +38,11 @@ class QuoteRepository {
     while (retries-- > 0) {
       try {
         final randomDataSource = dataSources[chosenIndex];
-        return await randomDataSource.getQuoteData();
+        if (randomDataSource.isEnabled) {
+          return await randomDataSource.getQuoteData();
+        } else {
+          throw ('${randomDataSource.title} skipped');
+        }
       } catch (e) {
         globalLogger.log('$e');
         if (chosenIndex < dataSources.length - 1) {
