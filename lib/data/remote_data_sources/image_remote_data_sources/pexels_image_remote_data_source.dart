@@ -68,13 +68,13 @@ abstract class PexelsImageRemoteRetrofitDataSource {
   });
 }
 
-class PexelsImageRemoteDataSource implements ImageDataSource {
+class PexelsImageRemoteDataSource extends ImageDataSource {
   @override
-  final title = 'Pexels';
+  String get title => 'Pexels';
   @override
-  final blurb = 'The best free stock photos, royalty free images & videos shared by creators.';
+  String? get blurb => 'The best free stock photos, royalty free images & videos shared by creators.';
   @override
-  final link = 'https://www.pexels.com/api/';
+  String? get link => 'https://www.pexels.com/api/';
 
 // coverage:ignore-start
   late PexelsImageRemoteRetrofitDataSource dataSource = //R

@@ -33,13 +33,13 @@ abstract class KanyeQuoteRemoteRetrofitDataSource {
   Future<KanyeResponse> getQuoteData();
 }
 
-class KanyeQuoteRemoteDataSource implements QuoteDataSource {
+class KanyeQuoteRemoteDataSource extends QuoteDataSource {
   @override
-  final title = 'kanye.rest';
+  String get  title => 'kanye.rest';
   @override
-  final blurb = 'A free REST API for random Kanye West quotes (Kanye as a Service).\nCreated by Andrew Jazbec.';
+  String? get  blurb => 'A free REST API for random Kanye West quotes (Kanye as a Service).\nCreated by Andrew Jazbec.';
   @override
-  final link = 'https://kanye.rest/';
+  String? get  link => 'https://kanye.rest/';
 
 // coverage:ignore-start
   late KanyeQuoteRemoteRetrofitDataSource dataSource = //R

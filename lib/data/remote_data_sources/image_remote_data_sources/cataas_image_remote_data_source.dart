@@ -33,13 +33,13 @@ abstract class CataasImageRemoteRetrofitDataSource {
   Future<CataasResponse> getImageData();
 }
 
-class CataasImageRemoteDataSource implements ImageDataSource {
+class CataasImageRemoteDataSource extends ImageDataSource {
   @override
-  final title = 'Cataas';
+  String get title => 'Cataas';
   @override
-  final blurb = 'Cat as a service (CATAAS) is a REST API to spread peace and love (or not) thanks to cats.\nCreated by Kevin Balicot.';
+  String? get blurb => 'Cat as a service (CATAAS) is a REST API to spread peace and love (or not) thanks to cats.\nCreated by Kevin Balicot.';
   @override
-  final link = 'https://cataas.com/';
+  String? get link => 'https://cataas.com/';
 
 // coverage:ignore-start
   late CataasImageRemoteRetrofitDataSource dataSource = //R
