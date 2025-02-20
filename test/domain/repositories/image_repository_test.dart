@@ -7,6 +7,10 @@ import 'package:random_quote_app/domain/repositories/image_repository.dart';
 
 class MockImageDataSource extends Mock implements ImageDataSource {
   Future<ImageModel?> getImageModel();
+  @override
+  String title = 'data source title';
+  @override
+  late bool isEnabled = true;
 }
 
 class MockLogger extends Mock implements Logger {}
@@ -16,6 +20,7 @@ main() {
   late ImageRepository imageRepository;
   late MockImageDataSource mockImageDataSource1;
   late MockImageDataSource mockImageDataSource2;
+  late MockImageDataSource mockImageDataSource3;
   final ImageModel imageModel = ImageModel(
     imageUrl: 'imageUrl',
     author: 'author',
@@ -25,7 +30,9 @@ main() {
     setUp(() {
       mockImageDataSource1 = MockImageDataSource();
       mockImageDataSource2 = MockImageDataSource();
-      imageRepository = ImageRepository();
+      mockImageDataSource3 = MockImageDataSource();
+      mockImageDataSource3.isEnabled = false;
+      imageRepository = ImageRepository([]);
 
       when(
         () => mockImageDataSource1.getImageData(),
@@ -86,6 +93,23 @@ main() {
         ).called(
           imageRepository.dataSources.length,
         );
+      },
+    );
+
+    test(
+      'on call on disabled data source in the list logs it as skipped',
+      () async {
+        imageRepository.dataSources = [
+          mockImageDataSource3,
+        ];
+
+        expect(
+          imageRepository.getImageModel,
+          throwsA('Error while getting image. Check your network connection.'),
+        );
+        verify(
+          () => globalLogger.log('data source title skipped'),
+        ).called(1);
       },
     );
   });
