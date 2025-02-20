@@ -47,13 +47,13 @@ abstract class AdviceQuoteRemoteRetrofitDataSource {
   Future<String> getQuoteData();
 }
 
-class AdviceQuoteRemoteDataSource implements QuoteDataSource {
+class AdviceQuoteRemoteDataSource extends QuoteDataSource {
   @override
-  final title = 'Advice Slip JSON API';
+  String get  title => 'Advice Slip JSON API';
   @override
-  final blurb = 'Generate random advice slips.\nCreated by Tom Kiss.';
+  String? get  blurb => 'Generate random advice slips.\nCreated by Tom Kiss.';
   @override
-  final link = 'https://api.adviceslip.com/';
+  String? get  link => 'https://api.adviceslip.com/';
 
 // coverage:ignore-start
   late AdviceQuoteRemoteRetrofitDataSource dataSource = //R
