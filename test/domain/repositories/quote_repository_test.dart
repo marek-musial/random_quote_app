@@ -7,6 +7,10 @@ import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 
 class MockQuoteDataSource extends Mock implements QuoteDataSource {
   Future<QuoteModel?> getQuoteModel();
+  @override
+  String title = 'data source title';
+  @override
+  late bool isEnabled = true;
 }
 
 class MockLogger extends Mock implements Logger {}
@@ -16,6 +20,7 @@ main() {
   late QuoteRepository quoteRepository;
   late MockQuoteDataSource mockQuoteDataSource1;
   late MockQuoteDataSource mockQuoteDataSource2;
+  late MockQuoteDataSource mockQuoteDataSource3;
   QuoteModel quoteModel = QuoteModel(
     quote: 'quoteUrl',
     author: 'author',
@@ -25,7 +30,9 @@ main() {
     setUp(() {
       mockQuoteDataSource1 = MockQuoteDataSource();
       mockQuoteDataSource2 = MockQuoteDataSource();
-      quoteRepository = QuoteRepository();
+      mockQuoteDataSource3 = MockQuoteDataSource();
+      mockQuoteDataSource3.isEnabled = false;
+      quoteRepository = QuoteRepository([]);
 
       when(
         () => mockQuoteDataSource1.getQuoteData(),
@@ -89,6 +96,23 @@ main() {
         ).called(
           quoteRepository.dataSources.length,
         );
+      },
+    );
+
+    test(
+      'on call on disabled data source in the list logs it as skipped',
+      () async {
+        quoteRepository.dataSources = [
+          mockQuoteDataSource3,
+        ];
+
+        expect(
+          quoteRepository.getQuoteModel,
+          throwsA('Error while getting quote. Check your network connection.'),
+        );
+        verify(
+          () => globalLogger.log('data source title skipped'),
+        ).called(1);
       },
     );
   });
