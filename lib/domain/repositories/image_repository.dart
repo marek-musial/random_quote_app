@@ -38,7 +38,11 @@ class ImageRepository {
     while (retries-- > 0) {
       try {
         final randomDataSource = dataSources[chosenIndex];
-        return await randomDataSource.getImageData();
+        if (randomDataSource.isEnabled) {
+          return await randomDataSource.getImageData();
+        } else {
+          throw ('${randomDataSource.title} skipped');
+        }
       } catch (e) {
         globalLogger.log('$e');
         if (chosenIndex < dataSources.length - 1) {
