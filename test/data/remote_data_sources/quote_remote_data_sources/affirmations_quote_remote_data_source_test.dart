@@ -18,6 +18,23 @@ void main() {
     },
   );
 
+  group('AffirmationsQuoteRemoteDataSource', () {
+    test('instantiates data source with predetermined values', () {
+      expect(
+        affirmationsDataSource.title,
+        'Affirmations',
+      );
+      expect(
+        affirmationsDataSource.blurb,
+        'A tiny api for fighting impostor syndrome and building example apps.\nCreated by Tilde Thurium.',
+      );
+      expect(
+        affirmationsDataSource.link,
+        'https://www.affirmations.dev/',
+      );
+    });
+  });
+
   group('getQuoteData', () {
     test(
       'should return QuoteModel when getQuoteData is successful',

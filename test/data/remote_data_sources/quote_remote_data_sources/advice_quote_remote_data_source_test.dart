@@ -20,6 +20,23 @@ void main() {
     },
   );
 
+  group('AdviceQuoteRemoteDataSource', () {
+    test('instantiates data source with predetermined values', () {
+      expect(
+        adviceDataSource.title,
+        'Advice Slip JSON API',
+      );
+      expect(
+        adviceDataSource.blurb,
+        'Generate random advice slips.\nCreated by Tom Kiss.',
+      );
+      expect(
+        adviceDataSource.link,
+        'https://api.adviceslip.com/',
+      );
+    });
+  });
+
   group('getQuoteData', () {
     test(
       'should return QuoteModel when getQuoteData is successful',
