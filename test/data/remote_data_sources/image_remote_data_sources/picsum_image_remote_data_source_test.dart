@@ -18,6 +18,23 @@ void main() {
     },
   );
 
+  group('PicsumImageRemoteDataSource', () {
+    test('instantiates data source with predetermined values', () {
+      expect(
+        picsumDataSource.title,
+        'Picsum',
+      );
+      expect(
+        picsumDataSource.blurb,
+        'Lorem Picsum is a service providing easy to use, stylish placeholders.\nCreated by David Marby & Nijiko Yonskai.',
+      );
+      expect(
+        picsumDataSource.link,
+        'https://picsum.photos/',
+      );
+    });
+  });
+
   group('getImageData', () {
     test(
       'should return ImageModel when getImageData is successful',

@@ -18,6 +18,23 @@ void main() {
     },
   );
 
+  group('KanyeQuoteRemoteDataSource', () {
+    test('instantiates data source with predetermined values', () {
+      expect(
+        kanyeDataSource.title,
+        'kanye.rest',
+      );
+      expect(
+        kanyeDataSource.blurb,
+        'A free REST API for random Kanye West quotes (Kanye as a Service).\nCreated by Andrew Jazbec.',
+      );
+      expect(
+        kanyeDataSource.link,
+        'https://kanye.rest/',
+      );
+    });
+  });
+
   group('getQuoteData', () {
     test(
       'should return QuoteModel when getQuoteData is successful',

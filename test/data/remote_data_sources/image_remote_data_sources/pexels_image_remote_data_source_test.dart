@@ -18,6 +18,23 @@ void main() {
     },
   );
 
+  group('PexelsImageRemoteDataSource', () {
+    test('instantiates data source with predetermined values', () {
+      expect(
+        pexelsDataSource.title,
+        'Pexels',
+      );
+      expect(
+        pexelsDataSource.blurb,
+        'The best free stock photos, royalty free images & videos shared by creators.',
+      );
+      expect(
+        pexelsDataSource.link,
+        'https://www.pexels.com/api/',
+      );
+    });
+  });
+
   group('randomPage', () {
     test(
       'return random int within range',
