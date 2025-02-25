@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
                       ? Brightness.light
                       : Brightness.dark,
                   useMaterial3: true,
+                  splashColor: Colors.white.withOpacity(.15),
                 ),
                 debugShowCheckedModeBanner: Config.debugShowCheckedModeBanner,
                 routes: {
