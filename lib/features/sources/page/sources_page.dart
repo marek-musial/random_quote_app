@@ -158,46 +158,42 @@ class SourceListTile extends StatelessWidget {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
     final Color containerColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
 
-    return Tooltip(
-      message: dataSource.link,
-      triggerMode: TooltipTriggerMode.longPress,
-      child: ExpansionTile(
-        textColor: textColor,
-        collapsedTextColor: textColor,
-        backgroundColor: containerColor,
-        collapsedBackgroundColor: containerColor,
-        shape: tile.border,
-        collapsedShape: tile.border,
-        tilePadding: tile.padding,
-        title: Text(
-          dataSource.title,
-          textAlign: TextAlign.start,
-        ),
-        controlAffinity: ListTileControlAffinity.leading,
-        trailing: Consumer<DataSourceNotifier>(
-          builder: (context, dataSourceNotifier, child) {
-            return Switch.adaptive(
-                value: dataSource.isEnabled,
-                onChanged: (_) {
-                  dataSourceNotifier.toggleDataSource(dataSource.title);
-                });
-          },
-        ),
-        childrenPadding: tile.padding,
-        children: [
-          Text(
-            dataSource.blurb ?? '',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              color: textColor,
-            ),
-          ),
-          TextButton(
-            onPressed: _launchUrl,
-            child: Text('Go to source'),
-          )
-        ],
+    return ExpansionTile(
+      textColor: textColor,
+      collapsedTextColor: textColor,
+      backgroundColor: containerColor,
+      collapsedBackgroundColor: containerColor,
+      shape: tile.border,
+      collapsedShape: tile.border,
+      tilePadding: tile.padding,
+      title: Text(
+        dataSource.title,
+        textAlign: TextAlign.start,
       ),
+      controlAffinity: ListTileControlAffinity.leading,
+      trailing: Consumer<DataSourceNotifier>(
+        builder: (context, dataSourceNotifier, child) {
+          return Switch.adaptive(
+              value: dataSource.isEnabled,
+              onChanged: (_) {
+                dataSourceNotifier.toggleDataSource(dataSource.title);
+              });
+        },
+      ),
+      childrenPadding: tile.padding,
+      children: [
+        Text(
+          dataSource.blurb ?? '',
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            color: textColor,
+          ),
+        ),
+        TextButton(
+          onPressed: _launchUrl,
+          child: Text('Go to source'),
+        )
+      ],
     );
   }
 }
