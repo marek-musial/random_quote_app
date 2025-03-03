@@ -119,8 +119,8 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 GridView.count(
                                   crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait //R
-                                      ? 4
-                                      : 7,
+                                      ? ((screenWidth * .8) / 80).round().clamp(4, 12) & ~1
+                                      : ((screenHeight * .8) / 80).round().clamp(4, 12) & ~1,
                                   mainAxisSpacing: screenHeight / 96,
                                   crossAxisSpacing: screenHeight / 96,
                                   shrinkWrap: true,
