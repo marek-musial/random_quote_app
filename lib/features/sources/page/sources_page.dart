@@ -20,6 +20,8 @@ class SourcesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
+    final double fontSize = (screenWidth / 45).clamp(14, 18);
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -69,12 +71,19 @@ class SourcesPage extends StatelessWidget {
                           return ListTile(
                             textColor: textColor,
                             contentPadding: tile.padding,
-                            title: const Text(
+                            title: Text(
                               'Image sources:',
                               textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: fontSize * 1.1,
+                              ),
                             ),
-                            subtitle: const Text(
+                            subtitle: Text(
                               'All images are a subject of their respective apis licenses.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: fontSize,
+                              ),
                             ),
                           );
                         }
@@ -82,26 +91,39 @@ class SourcesPage extends StatelessWidget {
                           return ListTile(
                             textColor: textColor,
                             contentPadding: tile.padding,
-                            title: const Text(
+                            title: Text(
                               'Quote sources:',
                               textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: fontSize * 1.1,
+                              ),
                             ),
-                            subtitle: const Text(
+                            subtitle: Text(
                               'All quotes are a subject of their recpective apis licenses.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: fontSize,
+                              ),
                             ),
                           );
                         }
                         if (index == _imageDataSources.length + _quoteDataSources.length + 2) {
                           return ListTile(
-                            textColor: Theme.of(context).colorScheme.onPrimaryFixedVariant,
+                            textColor: Theme.of(context).colorScheme.onPrimaryContainer,
                             contentPadding: tile.padding,
-                            title: const Text(
+                            title: Text(
                               'At least one of each type of sources must be enabled at a time!',
                               textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: fontSize * 1.1,
+                              ),
                             ),
-                            subtitle: const Text(
+                            subtitle: Text(
                               'Occasionally, some APIs may return invalid responses or be unavailable.\nHaving more sources active helps prevent API connection errors.',
                               textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: fontSize,
+                              ),
                             ),
                           );
                         }
@@ -157,6 +179,7 @@ class SourceListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
     final Color containerColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
+    final double fontSize = (screenWidth / 45).clamp(14, 18);
 
     return Theme(
       data: Theme.of(context).copyWith(
@@ -167,7 +190,7 @@ class SourceListTile extends StatelessWidget {
       child: ExpansionTile(
         textColor: textColor,
         collapsedTextColor: textColor,
-        collapsedIconColor: Theme.of(context).colorScheme.primary,
+        collapsedIconColor: textColor,
         backgroundColor: containerColor,
         collapsedBackgroundColor: containerColor,
         shape: tile.border,
@@ -176,6 +199,7 @@ class SourceListTile extends StatelessWidget {
         title: Text(
           dataSource.title,
           textAlign: TextAlign.start,
+          style: TextStyle(fontSize: (fontSize * 1.1)),
         ),
         controlAffinity: ListTileControlAffinity.leading,
         trailing: Consumer<DataSourceNotifier>(
@@ -195,14 +219,21 @@ class SourceListTile extends StatelessWidget {
         children: [
           Text(
             dataSource.blurb ?? '',
-            textAlign: TextAlign.start,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: textColor,
+              fontSize: fontSize,
             ),
           ),
           TextButton(
             onPressed: _launchUrl,
-            child: Text('Go to source'),
+            child: Text(
+              'Go to source',
+              style: TextStyle(
+                color: textColor,
+                fontSize: fontSize,
+              ),
+            ),
           )
         ],
       ),
