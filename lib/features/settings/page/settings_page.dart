@@ -17,6 +17,8 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
     final Color tileColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
+    final double fontSize = (screenWidth / 45).clamp(14, 18);
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -71,15 +73,21 @@ class SettingsPage extends StatelessWidget {
                               tileColor: tileColor,
                               shape: tile.border,
                               contentPadding: tile.padding,
-                              title: const Text(
+                              title: Text(
                                 'Theme',
                                 textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: fontSize * 1.1,
+                                ),
                               ),
                               subtitle: Text(
                                 state.isThemeBright //R
                                     ? 'Bright'
                                     : 'Dark',
                                 textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: fontSize,
+                                ),
                               ),
                             ),
                           ),
@@ -100,7 +108,7 @@ class SettingsPage extends StatelessWidget {
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                     color: textColor,
-                                    fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                                    fontSize: fontSize * 1.1,
                                   ),
                                 ),
                                 SizedBox(
