@@ -134,14 +134,17 @@ class SettingsPage extends StatelessWidget {
                                         },
                                         borderRadius: _borderRadius,
                                         child: Container(
+                                          padding: EdgeInsets.all(8),
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: Colors.white.withOpacity(.3),
                                           ),
-                                          child: Icon(
-                                            Icons.colorize,
-                                            color: Theme.of(context).colorScheme.primary,
-                                            size: screenWidth / 8,
+                                          child: FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: Icon(
+                                              Icons.colorize,
+                                              color: Theme.of(context).colorScheme.primary,
+                                            ),
                                           ),
                                         ),
                                       ),
