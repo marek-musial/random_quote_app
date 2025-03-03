@@ -95,7 +95,10 @@ class SettingsPage extends StatelessWidget {
                             height: screenHeight / 96,
                           ),
                           Container(
-                            padding: tile.padding,
+                            padding: tile.padding.copyWith(
+                              top: screenHeight / 128 + screenHeight / 52,
+                              bottom: screenHeight / 32,
+                            ),
                             decoration: BoxDecoration(
                               color: tileColor,
                               borderRadius: tile.border.borderRadius,
