@@ -62,6 +62,7 @@ class AppBarDrawer extends StatelessWidget {
                           );
                         },
                         selectedIndex: navigationState.navigationIndex,
+                        indicatorColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(.5),
                         labelType: NavigationRailLabelType.all,
                         leading: MediaQuery.of(context).orientation == Orientation.portrait
                             ? IconButton(
