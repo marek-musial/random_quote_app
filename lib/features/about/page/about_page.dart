@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:random_quote_app/core/app_version.dart';
 import 'package:random_quote_app/core/assets/quoteput_icons.dart';
@@ -6,6 +7,7 @@ import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
+import 'package:random_quote_app/features/navigation/cubit/navigation_drawer_cubit.dart';
 import 'package:random_quote_app/features/navigation/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,179 +36,186 @@ class AboutPage extends StatelessWidget {
       child: Stack(
         children: [
           const BackgroundIcon(),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: MediaQuery.of(context).orientation == Orientation.portrait
-                ? AppBar(
-                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                    title: Text(
-                      title,
-                      style: TextStyle(
-                        color: textColor,
-                      ),
-                    ),
-                    iconTheme: IconThemeData(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                  )
-                : null,
-            drawer: const AppBarDrawer(index: 1),
-            body: Row(
-              children: [
-                MediaQuery.of(context).orientation == Orientation.landscape //R
-                    ? const AppBarDrawer(index: 1)
-                    : const SizedBox.shrink(),
-                Flexible(
-                  flex: 1,
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    children: [
-                      Icon(
-                        Quoteput.quoteput,
-                        size: screenWidth / 5,
-                        color: textColor,
-                      ),
-                      Text(
-                        'Quoteput',
-                        textAlign: TextAlign.center,
+          PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, result) {
+              context.read<NavigationDrawerCubit>().changeNavigationIndex(0);
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: MediaQuery.of(context).orientation == Orientation.portrait
+                  ? AppBar(
+                      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                      title: Text(
+                        title,
                         style: TextStyle(
                           color: textColor,
-                          fontSize: headlineSize,
                         ),
                       ),
-                      Text(
-                        appVersion,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: textColor),
+                      iconTheme: IconThemeData(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
-                      Text(
-                        'Developed by: Marek Musiał',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: textColor),
+                    )
+                  : null,
+              drawer: const AppBarDrawer(index: 1),
+              body: Row(
+                children: [
+                  MediaQuery.of(context).orientation == Orientation.landscape //R
+                      ? const AppBarDrawer(index: 1)
+                      : const SizedBox.shrink(),
+                  Flexible(
+                    flex: 1,
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
                       ),
-                      SizedBox(
-                        height: screenHeight / 96 * 2,
-                      ),
-                      ListTile(
-                        textColor: textColor,
-                        tileColor: tileColor,
-                        shape: tile.border,
-                        contentPadding: tile.padding,
-                        title: Text(
-                          'What is this app about?',
+                      children: [
+                        Icon(
+                          Quoteput.quoteput,
+                          size: screenWidth / 5,
+                          color: textColor,
+                        ),
+                        Text(
+                          'Quoteput',
                           textAlign: TextAlign.center,
                           style: TextStyle(
+                            color: textColor,
                             fontSize: headlineSize,
                           ),
                         ),
-                        subtitle: Text(
-                          'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
+                        Text(
+                          appVersion,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: bodySize),
+                          style: TextStyle(color: textColor),
                         ),
-                      ),
-                      SizedBox(
-                        height: screenHeight / 96,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: tileColor,
-                          shape: BoxShape.rectangle,
-                          borderRadius: tile.border.borderRadius,
+                        Text(
+                          'Developed by: Marek Musiał',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: textColor),
                         ),
-                        constraints: BoxConstraints(
-                          maxHeight: screenHeight.toDouble(),
-                          maxWidth: screenWidth.toDouble(),
+                        SizedBox(
+                          height: screenHeight / 96 * 2,
                         ),
-                        padding: tile.padding,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Our links:',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: headlineSize,
-                                color: textColor,
-                              ),
-                            ),
-                            SizedBox(
-                              height: screenHeight / 96,
-                            ),
-                            ConstrainedBox(
-                              constraints: BoxConstraints.expand(
-                                height: screenHeight / 10,
-                                width: screenWidth * 9 / 10,
-                              ),
-                              child: Flex(
-                                direction: Axis.horizontal,
-                                children: [
-                                  SocialMediaButton(
-                                    textColor: textColor,
-                                    bodySize: bodySize,
-                                    iconData: FontAwesomeIcons.xTwitter,
-                                    iconSize: screenWidth / 10,
-                                    text: 'X',
-                                    url: 'https://x.com/MarekMusialDev',
-                                  ),
-                                  SocialMediaButton(
-                                    textColor: textColor,
-                                    bodySize: bodySize,
-                                    iconData: FontAwesomeIcons.instagram,
-                                    iconSize: screenWidth / 10,
-                                    text: 'Instagram',
-                                    url: 'https://www.instagram.com/marek.musial.dev/',
-                                  ),
-                                  SocialMediaButton(
-                                    textColor: textColor,
-                                    bodySize: bodySize,
-                                    iconData: FontAwesomeIcons.googlePlay,
-                                    iconSize: screenWidth / 12,
-                                    text: 'Google play',
-                                    url: '',
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: screenHeight / 96,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          //implement rating
-                        },
-                        customBorder: tile.border,
-                        child: ListTile(
-                          textColor: textColor.withOpacity(.5),
-                          tileColor: tileColor.withOpacity(.2),
+                        ListTile(
+                          textColor: textColor,
+                          tileColor: tileColor,
                           shape: tile.border,
-                          contentPadding: tile.padding / 4,
+                          contentPadding: tile.padding,
                           title: Text(
-                            'Rate the app',
+                            'What is this app about?',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: headlineSize,
                             ),
                           ),
                           subtitle: Text(
-                            'It really helps!',
+                            'This app utilizes various apis of random quotes and images, to produce a vast choice of randomized inspirational or entertertaining images with one press of a button.',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: bodySize,
+                            style: TextStyle(fontSize: bodySize),
+                          ),
+                        ),
+                        SizedBox(
+                          height: screenHeight / 96,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: tileColor,
+                            shape: BoxShape.rectangle,
+                            borderRadius: tile.border.borderRadius,
+                          ),
+                          constraints: BoxConstraints(
+                            maxHeight: screenHeight.toDouble(),
+                            maxWidth: screenWidth.toDouble(),
+                          ),
+                          padding: tile.padding,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Our links:',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: headlineSize,
+                                  color: textColor,
+                                ),
+                              ),
+                              SizedBox(
+                                height: screenHeight / 96,
+                              ),
+                              ConstrainedBox(
+                                constraints: BoxConstraints.expand(
+                                  height: screenHeight / 10,
+                                  width: screenWidth * 9 / 10,
+                                ),
+                                child: Flex(
+                                  direction: Axis.horizontal,
+                                  children: [
+                                    SocialMediaButton(
+                                      textColor: textColor,
+                                      bodySize: bodySize,
+                                      iconData: FontAwesomeIcons.xTwitter,
+                                      iconSize: screenWidth / 10,
+                                      text: 'X',
+                                      url: 'https://x.com/MarekMusialDev',
+                                    ),
+                                    SocialMediaButton(
+                                      textColor: textColor,
+                                      bodySize: bodySize,
+                                      iconData: FontAwesomeIcons.instagram,
+                                      iconSize: screenWidth / 10,
+                                      text: 'Instagram',
+                                      url: 'https://www.instagram.com/marek.musial.dev/',
+                                    ),
+                                    SocialMediaButton(
+                                      textColor: textColor,
+                                      bodySize: bodySize,
+                                      iconData: FontAwesomeIcons.googlePlay,
+                                      iconSize: screenWidth / 12,
+                                      text: 'Google play',
+                                      url: '',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: screenHeight / 96,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            //implement rating
+                          },
+                          customBorder: tile.border,
+                          child: ListTile(
+                            textColor: textColor.withOpacity(.5),
+                            tileColor: tileColor.withOpacity(.2),
+                            shape: tile.border,
+                            contentPadding: tile.padding / 4,
+                            title: Text(
+                              'Rate the app',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: headlineSize,
+                              ),
+                            ),
+                            subtitle: Text(
+                              'It really helps!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: bodySize,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
