@@ -106,7 +106,7 @@ class SourcesPage extends StatelessWidget {
                                 ),
                               ),
                               subtitle: Text(
-                                'All quotes are a subject of their recpective apis licenses.',
+                                'All quotes are a subject of their respective apis licenses.',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: fontSize,
