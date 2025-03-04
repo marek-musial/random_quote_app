@@ -5,6 +5,7 @@ import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
+import 'package:random_quote_app/features/navigation/cubit/navigation_drawer_cubit.dart';
 import 'package:random_quote_app/features/navigation/widgets/navigation_drawer.dart';
 import 'package:random_quote_app/features/sources/providers/data_source_notifier.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,116 +38,123 @@ class SourcesPage extends StatelessWidget {
       child: Stack(
         children: [
           const BackgroundIcon(),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: MediaQuery.of(context).orientation == Orientation.portrait
-                ? AppBar(
-                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                    title: Text(
-                      title,
-                      style: TextStyle(
-                        color: textColor,
+          PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, result) {
+              context.read<NavigationDrawerCubit>().changeNavigationIndex(0);
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: MediaQuery.of(context).orientation == Orientation.portrait
+                  ? AppBar(
+                      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                      title: Text(
+                        title,
+                        style: TextStyle(
+                          color: textColor,
+                        ),
                       ),
-                    ),
-                    iconTheme: IconThemeData(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                  )
-                : null,
-            drawer: const AppBarDrawer(index: 2),
-            body: Row(
-              children: [
-                MediaQuery.of(context).orientation == Orientation.landscape //R
-                    ? const AppBarDrawer(index: 2)
-                    : const SizedBox.shrink(),
-                Flexible(
-                  flex: 1,
-                  child: ChangeNotifierProvider(
-                    create: (_) => DataSourceNotifier(),
-                    child: ListView.separated(
-                      itemCount: _dataSources.length + 3,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index == 0) {
-                          return ListTile(
-                            textColor: textColor,
-                            contentPadding: tile.padding,
-                            title: Text(
-                              'Image sources:',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: fontSize * 1.1,
+                      iconTheme: IconThemeData(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                    )
+                  : null,
+              drawer: const AppBarDrawer(index: 2),
+              body: Row(
+                children: [
+                  MediaQuery.of(context).orientation == Orientation.landscape //R
+                      ? const AppBarDrawer(index: 2)
+                      : const SizedBox.shrink(),
+                  Flexible(
+                    flex: 1,
+                    child: ChangeNotifierProvider(
+                      create: (_) => DataSourceNotifier(),
+                      child: ListView.separated(
+                        itemCount: _dataSources.length + 3,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        itemBuilder: (BuildContext context, int index) {
+                          if (index == 0) {
+                            return ListTile(
+                              textColor: textColor,
+                              contentPadding: tile.padding,
+                              title: Text(
+                                'Image sources:',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: fontSize * 1.1,
+                                ),
                               ),
-                            ),
-                            subtitle: Text(
-                              'All images are a subject of their respective apis licenses.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: fontSize,
+                              subtitle: Text(
+                                'All images are a subject of their respective apis licenses.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: fontSize,
+                                ),
                               ),
-                            ),
-                          );
-                        }
-                        if (index == _imageDataSources.length + 1) {
-                          return ListTile(
-                            textColor: textColor,
-                            contentPadding: tile.padding,
-                            title: Text(
-                              'Quote sources:',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: fontSize * 1.1,
+                            );
+                          }
+                          if (index == _imageDataSources.length + 1) {
+                            return ListTile(
+                              textColor: textColor,
+                              contentPadding: tile.padding,
+                              title: Text(
+                                'Quote sources:',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: fontSize * 1.1,
+                                ),
                               ),
-                            ),
-                            subtitle: Text(
-                              'All quotes are a subject of their recpective apis licenses.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: fontSize,
+                              subtitle: Text(
+                                'All quotes are a subject of their recpective apis licenses.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: fontSize,
+                                ),
                               ),
-                            ),
-                          );
-                        }
-                        if (index == _imageDataSources.length + _quoteDataSources.length + 2) {
-                          return ListTile(
-                            textColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                            contentPadding: tile.padding,
-                            title: Text(
-                              'At least one of each type of sources must be enabled at a time!',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: fontSize * 1.1,
+                            );
+                          }
+                          if (index == _imageDataSources.length + _quoteDataSources.length + 2) {
+                            return ListTile(
+                              textColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                              contentPadding: tile.padding,
+                              title: Text(
+                                'At least one of each type of sources must be enabled at a time!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: fontSize * 1.1,
+                                ),
                               ),
-                            ),
-                            subtitle: Text(
-                              'Occasionally, some APIs may return invalid responses or be unavailable.\nHaving more sources active helps prevent API connection errors.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: fontSize,
+                              subtitle: Text(
+                                'Occasionally, some APIs may return invalid responses or be unavailable.\nHaving more sources active helps prevent API connection errors.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: fontSize,
+                                ),
                               ),
-                            ),
-                          );
-                        }
-                        if (index > _imageDataSources.length) {
+                            );
+                          }
+                          if (index > _imageDataSources.length) {
+                            return SourceListTile(
+                              dataSource: _dataSources[index - 2],
+                            );
+                          }
                           return SourceListTile(
-                            dataSource: _dataSources[index - 2],
+                            dataSource: _dataSources[index - 1],
                           );
-                        }
-                        return SourceListTile(
-                          dataSource: _dataSources[index - 1],
-                        );
-                      },
-                      separatorBuilder: (
-                        BuildContext context,
-                        int index,
-                      ) =>
-                          SizedBox(
-                        height: screenHeight / 96,
+                        },
+                        separatorBuilder: (
+                          BuildContext context,
+                          int index,
+                        ) =>
+                            SizedBox(
+                          height: screenHeight / 96,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
