@@ -131,7 +131,7 @@ void main() {
         verify(
           () => globalLogger.log(
             any(
-              that: contains('PathAccessException:'),
+              that: contains('Deletion failed'),
             ),
           ),
         ).called(1);
