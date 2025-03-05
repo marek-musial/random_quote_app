@@ -33,13 +33,13 @@ abstract class AffirmationsQuoteRemoteRetrofitDataSource {
   Future<AffirmationsResponse> getQuoteData();
 }
 
-class AffirmationsQuoteRemoteDataSource implements QuoteDataSource {
+class AffirmationsQuoteRemoteDataSource extends QuoteDataSource {
   @override
-  final title = 'Affirmations';
+  String get  title => 'Affirmations';
   @override
-  final blurb = 'A tiny api for fighting impostor syndrome and building example apps.\nCreated by Tilde Thurium.';
+  String? get  blurb => 'A tiny api for fighting impostor syndrome and building example apps.\nCreated by Tilde Thurium.';
   @override
-  final link = 'https://www.affirmations.dev/';
+  String? get  link => 'https://www.affirmations.dev/';
 
 // coverage:ignore-start
   late AffirmationsQuoteRemoteRetrofitDataSource dataSource = //R

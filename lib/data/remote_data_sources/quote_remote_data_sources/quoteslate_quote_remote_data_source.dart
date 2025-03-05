@@ -34,13 +34,13 @@ abstract class QuoteslateQuoteRemoteRetrofitDataSource {
   Future<QuoteslateResponse> getQuoteData();
 }
 
-class QuoteslateQuoteRemoteDataSource implements QuoteDataSource {
+class QuoteslateQuoteRemoteDataSource extends QuoteDataSource {
   @override
-  final title = 'Quoteslate';
+  String get title => 'Quoteslate';
   @override
-  final blurb = 'QuoteSlate provides access to a vast collection of inspirational quotes.\nCreated by Musheer Alam.';
+  String? get blurb => 'QuoteSlate provides access to a vast collection of inspirational quotes.\nCreated by Musheer Alam.';
   @override
-  final link = 'https://quoteslate.vercel.app/';
+  String? get link => 'https://quoteslate.vercel.app/';
 
 // coverage:ignore-start
   late QuoteslateQuoteRemoteRetrofitDataSource dataSource = //R

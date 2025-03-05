@@ -39,13 +39,13 @@ abstract class PicsumImageRemoteRetrofitDataSource {
   });
 }
 
-class PicsumImageRemoteDataSource implements ImageDataSource {
+class PicsumImageRemoteDataSource extends ImageDataSource {
   @override
-  final title = 'Picsum';
+  String get title => 'Picsum';
   @override
-  final blurb = 'Lorem Picsum is a service providing easy to use, stylish placeholders.\nCreated by David Marby & Nijiko Yonskai.';
+  String? get blurb => 'Lorem Picsum is a service providing easy to use, stylish placeholders.\nCreated by David Marby & Nijiko Yonskai.';
   @override
-  final link = 'https://picsum.photos/';
+  String? get link => 'https://picsum.photos/';
 
 // coverage:ignore-start
   late PicsumImageRemoteRetrofitDataSource dataSource = //R

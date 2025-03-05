@@ -3,22 +3,15 @@ import 'dart:math';
 import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/data/remote_data_sources/data_source.dart';
-import 'package:random_quote_app/data/remote_data_sources/image_remote_data_sources/cataas_image_remote_data_source.dart';
-import 'package:random_quote_app/data/remote_data_sources/image_remote_data_sources/pexels_image_remote_data_source.dart';
-import 'package:random_quote_app/data/remote_data_sources/image_remote_data_sources/picsum_image_remote_data_source.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
-
-final List<ImageDataSource> imageDataSources = [
-  PicsumImageRemoteDataSource(),
-  CataasImageRemoteDataSource(),
-  PexelsImageRemoteDataSource(),
-];
 
 @injectable
 class ImageRepository {
-  ImageRepository();
-  List<ImageDataSource> dataSources = imageDataSources;
+  ImageRepository(@LazySingleton() this.dataSources);
+
+  List<ImageDataSource> dataSources;
   late int chosenIndex;
+
   int chooseIndex() {
     return Random().nextInt(dataSources.length);
   }
@@ -45,7 +38,11 @@ class ImageRepository {
     while (retries-- > 0) {
       try {
         final randomDataSource = dataSources[chosenIndex];
-        return await randomDataSource.getImageData();
+        if (randomDataSource.isEnabled) {
+          return await randomDataSource.getImageData();
+        } else {
+          throw ('${randomDataSource.title} skipped');
+        }
       } catch (e) {
         globalLogger.log('$e');
         if (chosenIndex < dataSources.length - 1) {

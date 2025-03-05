@@ -4,10 +4,11 @@ import 'package:random_quote_app/core/config.dart';
 import 'package:random_quote_app/core/injection_container.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 import 'package:random_quote_app/features/home/pages/home_page.dart';
-import 'package:random_quote_app/features/about/about_page/about_page.dart';
+import 'package:random_quote_app/features/about/page/about_page.dart';
+import 'package:random_quote_app/features/navigation/cubit/navigation_drawer_cubit.dart';
 import 'package:random_quote_app/features/root/cubit/root_cubit.dart';
-import 'package:random_quote_app/features/settings/settings_page.dart';
-import 'package:random_quote_app/features/sources/sources_page.dart';
+import 'package:random_quote_app/features/settings/page/settings_page.dart';
+import 'package:random_quote_app/features/sources/page/sources_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -16,12 +17,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) {
-          return getIt<HomeCubit>()..start();
-        }),
+        BlocProvider<HomeCubit>(
+          create: (context) {
+            return getIt<HomeCubit>()..start();
+          },
+        ),
         BlocProvider<RootCubit>(
           create: (context) {
             return getIt<RootCubit>();
+          },
+        ),
+        BlocProvider<NavigationDrawerCubit>(
+          create: (context) {
+            return getIt<NavigationDrawerCubit>();
           },
         ),
       ],
@@ -38,6 +46,7 @@ class MyApp extends StatelessWidget {
                       ? Brightness.light
                       : Brightness.dark,
                   useMaterial3: true,
+                  splashColor: Colors.white.withOpacity(.15),
                 ),
                 debugShowCheckedModeBanner: Config.debugShowCheckedModeBanner,
                 routes: {

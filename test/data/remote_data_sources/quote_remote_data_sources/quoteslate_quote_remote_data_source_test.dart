@@ -18,6 +18,23 @@ void main() {
     },
   );
 
+  group('QuoteslateQuoteRemoteDataSource', () {
+    test('instantiates data source with predetermined values', () {
+      expect(
+        quoteslateDataSource.title,
+        'Quoteslate',
+      );
+      expect(
+        quoteslateDataSource.blurb,
+        'QuoteSlate provides access to a vast collection of inspirational quotes.\nCreated by Musheer Alam.',
+      );
+      expect(
+        quoteslateDataSource.link,
+        'https://quoteslate.vercel.app/',
+      );
+    });
+  });
+
   group('getQuoteData', () {
     test(
       'should return QuoteModel when getQuoteData is successful',

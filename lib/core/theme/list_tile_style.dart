@@ -3,7 +3,7 @@ import 'package:random_quote_app/core/screen_sizes.dart';
 
 final padding = EdgeInsets.symmetric(
   horizontal: screenHeight / 32,
-  vertical: screenHeight / 64,
+  vertical: screenHeight / 128,
 );
 
 final border = RoundedRectangleBorder(

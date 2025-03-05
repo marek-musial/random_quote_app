@@ -18,13 +18,30 @@ void main() {
     },
   );
 
+  group('CataasImageRemoteDataSource', () {
+    test('instantiates data source with predetermined values', () {
+      expect(
+        cataasDataSource.title,
+        'Cataas',
+      );
+      expect(
+        cataasDataSource.blurb,
+        'Cat as a service (CATAAS) is a REST API to spread peace and love (or not) thanks to cats.\nCreated by Kevin Balicot.',
+      );
+      expect(
+        cataasDataSource.link,
+        'https://cataas.com/',
+      );
+    });
+  });
+
   group('getImageData', () {
     test(
       'should return ImageModel when getImageData is successful',
       () async {
         final cataasResponse = CataasResponse.fromJson(
           <String, String>{
-            '_id': 'abc123',
+            'id': 'abc123',
           },
         );
 
