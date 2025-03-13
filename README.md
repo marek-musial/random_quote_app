@@ -114,6 +114,10 @@ to produce a vast choice of randomized inspiring images with one press of a butt
   <a href="https://www.instagram.com/marek.musial.dev/">
     <img src="https://cdn.simpleicons.org/instagram/grey" width="32">
   </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://play.google.com/store/apps/developer?id=Marek+Musia%C5%82&hl=en">
+    <img src="https://cdn.simpleicons.org/googleplay/grey" width="32">
+  </a>
 </div>
 <br>
 <br>
