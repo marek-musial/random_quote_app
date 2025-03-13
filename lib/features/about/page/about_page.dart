@@ -174,7 +174,7 @@ class AboutPage extends StatelessWidget {
                                       iconData: FontAwesomeIcons.googlePlay,
                                       iconSize: screenWidth / 12,
                                       text: 'Google play',
-                                      url: '',
+                                      url: 'https://play.google.com/store/apps/developer?id=Marek+Musia%C5%82&hl=en',
                                     ),
                                   ],
                                 ),
