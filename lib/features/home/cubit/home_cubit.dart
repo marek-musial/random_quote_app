@@ -11,6 +11,7 @@ import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/network_utils.dart';
+import 'package:random_quote_app/core/services/app_rating_service.dart';
 import 'package:random_quote_app/core/services/palette_generator_service.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
@@ -300,18 +301,19 @@ class HomeCubit extends HydratedCubit<HomeState> {
     }
   }
 
-  void emitSuccessIfRequired() {
+  Future<void> emitSuccessIfRequired() async {
     if ((state.status == Status.loading || //R
         state.status == Status.decoding)) {
-      emitSuccess();
+      await emitSuccess();
       previousState = state;
     }
   }
 
-  void emitSuccess() {
+  Future<void> emitSuccess() async {
     emit(
       pendingState.copyWith(status: Status.success),
     );
+    await globalReviewService.showRatingDialogIfMeetsConditions();
     logger.log('success');
   }
 
@@ -362,7 +364,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       textSize,
     );
     await generateColors();
-    emitSuccessIfRequired();
+    await emitSuccessIfRequired();
   }
 
   @override
