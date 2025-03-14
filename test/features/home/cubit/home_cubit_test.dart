@@ -753,11 +753,11 @@ void main() async {
     blocTest(
       'on state status == loading, emits the pending state with success status, logs success message, and updates previousState to the successful one',
       build: () => sut,
-      act: (cubit) => [
+      act: (cubit) async => [
         sut.emit(
           const HomeState(status: Status.loading),
         ),
-        sut.emitSuccessIfRequired(),
+        await sut.emitSuccessIfRequired(),
       ],
       expect: () => [
         const HomeState(status: Status.loading),
@@ -776,11 +776,11 @@ void main() async {
     blocTest(
       'on state status == decoding, emits the pending state with success status, logs success message, and updates previousState to the successful one',
       build: () => sut,
-      act: (cubit) => [
+      act: (cubit) async => [
         sut.emit(
           const HomeState(status: Status.decoding),
         ),
-        sut.emitSuccessIfRequired(),
+        await sut.emitSuccessIfRequired(),
       ],
       expect: () => [
         const HomeState(status: Status.decoding),
@@ -799,11 +799,11 @@ void main() async {
     blocTest(
       'on state status != loading && status != decoding, does not emit the pending state with success status, does not log success message, and does not update previousState to the new one',
       build: () => sut,
-      act: (cubit) => [
+      act: (cubit) async => [
         sut.emit(
           const HomeState(status: Status.error),
         ),
-        sut.emitSuccessIfRequired(),
+        await sut.emitSuccessIfRequired(),
       ],
       expect: () => [
         const HomeState(status: Status.error),
@@ -840,7 +840,7 @@ void main() async {
     blocTest(
       'emits the pending state with success status, logs a success message',
       build: () => sut,
-      act: (cubit) => sut.emitSuccess(),
+      act: (cubit) async => await sut.emitSuccess(),
       expect: () => [
         sut.pendingState.copyWith(status: Status.success),
       ],
