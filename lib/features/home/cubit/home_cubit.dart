@@ -11,7 +11,6 @@ import 'package:injectable/injectable.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/network_utils.dart';
-import 'package:random_quote_app/core/services/app_rating_service.dart';
 import 'package:random_quote_app/core/services/palette_generator_service.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
@@ -313,7 +312,6 @@ class HomeCubit extends HydratedCubit<HomeState> {
     emit(
       pendingState.copyWith(status: Status.success),
     );
-    await globalReviewService.showRatingDialogIfMeetsConditions();
     logger.log('success');
   }
 
