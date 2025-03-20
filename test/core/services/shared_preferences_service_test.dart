@@ -192,4 +192,108 @@ void main() {
       },
     );
   });
+
+  group('getBool', () {
+    setUp(
+      () async {
+        await SharedPreferencesService.init(p: mockPrefs);
+      },
+    );
+
+    tearDown(
+      () {
+        SharedPreferencesService.isInitialized = false;
+      },
+    );
+
+    test(
+      'gets bool value and logs apropriate message',
+      () {
+        when(() => mockPrefs.getBool('test_key')).thenAnswer((_) => true);
+
+        SharedPreferencesService.getBool('test_key');
+
+        verify(() => mockPrefs.getBool('test_key')).called(1);
+        verify(() => mockLogger.log('Value got at test_key - true')).called(1);
+      },
+    );
+  });
+
+  group('setBool', () {
+    setUp(
+      () async {
+        await SharedPreferencesService.init(p: mockPrefs);
+      },
+    );
+
+    tearDown(
+      () {
+        SharedPreferencesService.isInitialized = false;
+      },
+    );
+
+    test(
+      'gets bool value and logs apropriate message',
+      () async {
+        when(() => mockPrefs.setBool('test_key', false)).thenAnswer((_) async {});
+
+        await SharedPreferencesService.setBool('test_key', false);
+
+        verify(() => mockPrefs.setBool('test_key', false)).called(1);
+        verify(() => mockLogger.log('Set test_key to false')).called(1);
+      },
+    );
+  });
+
+  group('getInt', () {
+    setUp(
+      () async {
+        await SharedPreferencesService.init(p: mockPrefs);
+      },
+    );
+
+    tearDown(
+      () {
+        SharedPreferencesService.isInitialized = false;
+      },
+    );
+
+    test(
+      'gets int value and logs apropriate message',
+      () {
+        when(() => mockPrefs.getInt('test_key')).thenAnswer((_) => 1);
+
+        SharedPreferencesService.getInt('test_key');
+
+        verify(() => mockPrefs.getInt('test_key')).called(1);
+        verify(() => mockLogger.log('Value got at test_key - 1')).called(1);
+      },
+    );
+  });
+
+  group('setInt', () {
+    setUp(
+      () async {
+        await SharedPreferencesService.init(p: mockPrefs);
+      },
+    );
+
+    tearDown(
+      () {
+        SharedPreferencesService.isInitialized = false;
+      },
+    );
+
+    test(
+      'gets int value and logs apropriate message',
+      () async {
+        when(() => mockPrefs.setInt('test_key', 2)).thenAnswer((_) async {});
+
+        await SharedPreferencesService.setInt('test_key', 2);
+
+        verify(() => mockPrefs.setInt('test_key', 2)).called(1);
+        verify(() => mockLogger.log('Set test_key to 2')).called(1);
+      },
+    );
+  });
 }
