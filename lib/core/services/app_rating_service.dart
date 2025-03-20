@@ -10,15 +10,6 @@ class InAppReviewServiceWrapper {
     return inAppReview.isAvailable();
   }
 
-  void showRatingDialogIfMeetsConditions() {
-    AdvancedInAppReview() //R
-        .setMinDaysAfterInstall(0)
-        .setMinDaysBeforeRemind(0)
-        .setMinLaunchTimes(0)
-        .setMinSecondsBeforeShowDialog(3)
-        .monitor();
-  }
-
   Future<void> openStoreListing() async {
     inAppReview.openStoreListing();
   }
