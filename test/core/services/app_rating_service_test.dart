@@ -67,10 +67,12 @@ void main() {
       test(
         'calls service method for opening store listing',
         () async {
+          when(() => mockPrefs.setBool('is_reviewed', true)).thenAnswer((_) async {});
           when(() => mockReviewWrapper.openStoreListing()).thenAnswer((_) async {});
 
           await reviewService.openStoreListing();
 
+          verify(() => mockPrefs.setBool('is_reviewed', true)).called(1);
           verify(() => mockReviewWrapper.openStoreListing()).called(1);
         },
       );
@@ -241,7 +243,6 @@ void main() {
       testWidgets(
         'sets new last_prompt_date on tap on remind later button',
         (tester) async {
-          when(() => mockPrefs.setBool(any(), any())).thenAnswer((_) async {});
           when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async {});
           when(() => mockReviewWrapper.openStoreListing()).thenAnswer((_) async {});
 
