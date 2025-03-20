@@ -169,7 +169,7 @@ void main() {
           when(() => mockPrefs.getInt(ReviewService.installDateKey)).thenReturn(
             DateTime.now().subtract(Duration(days: 5)).millisecondsSinceEpoch,
           );
-          when(() => mockPrefs.getInt(ReviewService.launchCountKey)).thenReturn(3);
+          when(() => mockPrefs.getInt(ReviewService.launchCountKey)).thenReturn(6);
           when(() => mockPrefs.getInt(ReviewService.actionCountKey)).thenReturn(10);
           when(() => mockPrefs.getInt(ReviewService.lastPromptDateKey)).thenReturn(
             DateTime.now().subtract(Duration(days: 5)).millisecondsSinceEpoch,
