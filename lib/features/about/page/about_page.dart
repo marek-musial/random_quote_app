@@ -6,6 +6,7 @@ import 'package:random_quote_app/core/assets/quoteput_icons.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/services/app_rating_service.dart';
+import 'package:random_quote_app/core/services/shared_preferences_service.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/navigation/cubit/navigation_drawer_cubit.dart';
@@ -188,7 +189,8 @@ class AboutPage extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () async {
-                            globalReviewService.openStoreListing();
+                            await SharedPreferencesService.setBool('is_reviewed', true);
+                            await globalReviewService.openStoreListing();
                           },
                           customBorder: tile.border,
                           child: ListTile(
