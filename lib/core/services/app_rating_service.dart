@@ -33,7 +33,8 @@ class ReviewService {
   }
 
   Future<void> openStoreListing() async {
-    wrapper.openStoreListing();
+    await SharedPreferencesService.setBool('is_reviewed', true);
+    await wrapper.openStoreListing();
   }
 
   static const String isReviewedKey = 'is_reviewed';
@@ -149,7 +150,6 @@ class ReviewService {
                       ),
                       onPressed: () async {
                         Navigator.pop(context);
-                        await SharedPreferencesService.setBool('is_reviewed', true);
                         await globalReviewService.openStoreListing();
                       },
                       child: Text(
