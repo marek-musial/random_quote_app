@@ -16,6 +16,7 @@ _$QuoteModelImpl _$$QuoteModelImplFromJson(Map<String, dynamic> json) =>
       mainAxisAlignmentIndex: (json['mainAxisAlignmentIndex'] as num?)?.toInt(),
       crossAxisAlignmentIndex:
           (json['crossAxisAlignmentIndex'] as num?)?.toInt(),
+      textColor: _colorFromJson((json['textColor'] as num?)?.toInt()),
     );
 
 Map<String, dynamic> _$$QuoteModelImplToJson(_$QuoteModelImpl instance) =>
@@ -26,4 +27,5 @@ Map<String, dynamic> _$$QuoteModelImplToJson(_$QuoteModelImpl instance) =>
       'textAlignmentIndex': instance.textAlignmentIndex,
       'mainAxisAlignmentIndex': instance.mainAxisAlignmentIndex,
       'crossAxisAlignmentIndex': instance.crossAxisAlignmentIndex,
+      'textColor': _colorToJson(instance.textColor),
     };

@@ -36,9 +36,9 @@ mixin _$QuoteModel {
   set mainAxisAlignmentIndex(int? value) => throw _privateConstructorUsedError;
   int? get crossAxisAlignmentIndex => throw _privateConstructorUsedError;
   set crossAxisAlignmentIndex(int? value) => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
   Color? get textColor => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
   set textColor(Color? value) => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Offset? get textPosition => throw _privateConstructorUsedError;
@@ -72,7 +72,7 @@ abstract class $QuoteModelCopyWith<$Res> {
       int? textAlignmentIndex,
       int? mainAxisAlignmentIndex,
       int? crossAxisAlignmentIndex,
-      @JsonKey(includeFromJson: false, includeToJson: false) Color? textColor,
+      @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) Color? textColor,
       @JsonKey(includeFromJson: false, includeToJson: false)
       Offset? textPosition,
       @JsonKey(includeFromJson: false, includeToJson: false) Size? textSize});
@@ -159,7 +159,7 @@ abstract class _$$QuoteModelImplCopyWith<$Res>
       int? textAlignmentIndex,
       int? mainAxisAlignmentIndex,
       int? crossAxisAlignmentIndex,
-      @JsonKey(includeFromJson: false, includeToJson: false) Color? textColor,
+      @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) Color? textColor,
       @JsonKey(includeFromJson: false, includeToJson: false)
       Offset? textPosition,
       @JsonKey(includeFromJson: false, includeToJson: false) Size? textSize});
@@ -239,7 +239,7 @@ class _$QuoteModelImpl implements _QuoteModel {
       this.textAlignmentIndex,
       this.mainAxisAlignmentIndex,
       this.crossAxisAlignmentIndex,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.textColor,
+      @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) this.textColor,
       @JsonKey(includeFromJson: false, includeToJson: false) this.textPosition,
       @JsonKey(includeFromJson: false, includeToJson: false) this.textSize});
 
@@ -261,7 +261,7 @@ class _$QuoteModelImpl implements _QuoteModel {
   @override
   int? crossAxisAlignmentIndex;
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
   Color? textColor;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -299,7 +299,7 @@ abstract class _QuoteModel implements QuoteModel {
       int? textAlignmentIndex,
       int? mainAxisAlignmentIndex,
       int? crossAxisAlignmentIndex,
-      @JsonKey(includeFromJson: false, includeToJson: false) Color? textColor,
+      @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) Color? textColor,
       @JsonKey(includeFromJson: false, includeToJson: false)
       Offset? textPosition,
       @JsonKey(includeFromJson: false, includeToJson: false)
@@ -331,9 +331,9 @@ abstract class _QuoteModel implements QuoteModel {
   int? get crossAxisAlignmentIndex;
   set crossAxisAlignmentIndex(int? value);
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
   Color? get textColor;
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
   set textColor(Color? value);
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
