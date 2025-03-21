@@ -13,7 +13,7 @@ class QuoteModel with _$QuoteModel {
     int? textAlignmentIndex,
     int? mainAxisAlignmentIndex,
     int? crossAxisAlignmentIndex,
-    @JsonKey(includeFromJson: false, includeToJson: false) Color? textColor,
+    @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) Color? textColor,
     @JsonKey(includeFromJson: false, includeToJson: false) Offset? textPosition,
     @JsonKey(includeFromJson: false, includeToJson: false) Size? textSize,
   }) = _QuoteModel;
@@ -23,3 +23,9 @@ class QuoteModel with _$QuoteModel {
   ) =>
       _$QuoteModelFromJson(json);
 }
+
+Color? _colorFromJson(int? colorValue) => colorValue != null //R
+    ? Color(colorValue)
+    : null;
+
+int? _colorToJson(Color? color) => color?.value;

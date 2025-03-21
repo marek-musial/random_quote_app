@@ -50,4 +50,34 @@ class SharedPreferencesService {
       'Set source $key to ${value ? 'enabled' : 'disabled'}',
     );
   }
+
+  static Future<void> setBool(String key, bool value) async {
+    await prefs.setBool(key, value);
+    globalLogger.log(
+      'Set $key to $value',
+    );
+  }
+
+  static bool? getBool(String key) {
+    final bool? value = prefs.getBool(key);
+    globalLogger.log(
+      'Value got at $key - $value',
+    );
+    return value;
+  }
+
+  static Future<void> setInt(String key, int value) async {
+    await prefs.setInt(key, value);
+    globalLogger.log(
+      'Set $key to $value',
+    );
+  }
+
+  static int? getInt(String key) {
+    final int? value = prefs.getInt(key);
+    globalLogger.log(
+      'Value got at $key - $value',
+    );
+    return value;
+  }
 }

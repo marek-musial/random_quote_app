@@ -5,6 +5,7 @@ import 'package:random_quote_app/core/app_version.dart';
 import 'package:random_quote_app/core/assets/quoteput_icons.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
+import 'package:random_quote_app/core/services/app_rating_service.dart';
 import 'package:random_quote_app/core/theme/list_tile_style.dart' as tile;
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/navigation/cubit/navigation_drawer_cubit.dart';
@@ -174,7 +175,7 @@ class AboutPage extends StatelessWidget {
                                       iconData: FontAwesomeIcons.googlePlay,
                                       iconSize: screenWidth / 12,
                                       text: 'Google play',
-                                      url: '',
+                                      url: 'https://play.google.com/store/apps/developer?id=Marek+Musia%C5%82&hl=en',
                                     ),
                                   ],
                                 ),
@@ -186,13 +187,13 @@ class AboutPage extends StatelessWidget {
                           height: screenHeight / 96,
                         ),
                         InkWell(
-                          onTap: () {
-                            //implement rating
+                          onTap: () async {
+                            await globalReviewService.openStoreListing();
                           },
                           customBorder: tile.border,
                           child: ListTile(
-                            textColor: textColor.withOpacity(.5),
-                            tileColor: tileColor.withOpacity(.2),
+                            textColor: textColor,
+                            tileColor: tileColor,
                             shape: tile.border,
                             contentPadding: tile.padding / 4,
                             title: Text(

@@ -300,15 +300,15 @@ class HomeCubit extends HydratedCubit<HomeState> {
     }
   }
 
-  void emitSuccessIfRequired() {
+  Future<void> emitSuccessIfRequired() async {
     if ((state.status == Status.loading || //R
         state.status == Status.decoding)) {
-      emitSuccess();
+      await emitSuccess();
       previousState = state;
     }
   }
 
-  void emitSuccess() {
+  Future<void> emitSuccess() async {
     emit(
       pendingState.copyWith(status: Status.success),
     );
@@ -361,8 +361,10 @@ class HomeCubit extends HydratedCubit<HomeState> {
       textPosition,
       textSize,
     );
-    await generateColors();
-    emitSuccessIfRequired();
+    if (state.quoteModel?.textColor == null) {
+      await generateColors();
+    }
+    await emitSuccessIfRequired();
   }
 
   @override

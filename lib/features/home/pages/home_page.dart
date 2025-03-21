@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/network_utils.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
+import 'package:random_quote_app/core/services/app_rating_service.dart';
 import 'package:random_quote_app/core/theme/constraints.dart';
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
@@ -190,6 +191,9 @@ class HomePage extends StatelessWidget {
                               break;
                             default:
                               await context.read<HomeCubit>().start();
+                              if (context.mounted) {
+                                await globalReviewService.monitor(context);
+                              }
                               break;
                           }
                         }
