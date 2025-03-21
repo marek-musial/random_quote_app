@@ -361,7 +361,9 @@ class HomeCubit extends HydratedCubit<HomeState> {
       textPosition,
       textSize,
     );
-    await generateColors();
+    if (state.quoteModel?.textColor == null) {
+      await generateColors();
+    }
     await emitSuccessIfRequired();
   }
 
