@@ -28,6 +28,8 @@ import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sour
     as _i187;
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/kanye_quote_remote_data_source.dart'
     as _i1048;
+import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quotes_net_quotable_quote_remote_data_source.dart'
+    as _i517;
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quoteslate_quote_remote_data_source.dart'
     as _i152;
 import 'package:random_quote_app/domain/repositories/image_repository.dart'
@@ -74,12 +76,15 @@ extension GetItInjectableX on _i174.GetIt {
         () => registerModule.kanye);
     gh.lazySingleton<_i152.QuoteslateQuoteRemoteDataSource>(
         () => registerModule.quoteslate);
+    gh.lazySingleton<_i517.QuotesNetQuotableQuoteRemoteDataSource>(
+        () => registerModule.quotable);
     gh.lazySingleton<List<_i970.QuoteDataSource>>(
         () => registerModule.quoteDataSources(
               gh<_i817.AdviceQuoteRemoteDataSource>(),
               gh<_i187.AffirmationsQuoteRemoteDataSource>(),
               gh<_i1048.KanyeQuoteRemoteDataSource>(),
               gh<_i152.QuoteslateQuoteRemoteDataSource>(),
+              gh<_i517.QuotesNetQuotableQuoteRemoteDataSource>(),
             ));
     gh.factory<_i131.CataasImageRemoteRetrofitDataSource>(
         () => _i131.CataasImageRemoteRetrofitDataSource(gh<_i361.Dio>()));
@@ -95,6 +100,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1048.KanyeQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.factory<_i152.QuoteslateQuoteRemoteRetrofitDataSource>(
         () => _i152.QuoteslateQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
+    gh.factory<_i517.QuotesNetQuotableQuoteRemoteRetrofitDataSource>(() =>
+        _i517.QuotesNetQuotableQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.singleton<_i427.DioClient>(() => _i427.DioClient(gh<_i361.Dio>()));
     gh.factory<_i1031.QuoteRepository>(
         () => _i1031.QuoteRepository(gh<List<_i970.QuoteDataSource>>()));

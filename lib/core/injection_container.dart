@@ -11,6 +11,7 @@ import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sour
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/affirmations_quote_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/kanye_quote_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quoteslate_quote_remote_data_source.dart';
+import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quotes_net_quotable_quote_remote_data_source.dart';
 
 import 'package:random_quote_app/core/injection_container.config.dart';
 
@@ -61,17 +62,22 @@ abstract class RegisterModule {
   QuoteslateQuoteRemoteDataSource get quoteslate => QuoteslateQuoteRemoteDataSource();
 
   @lazySingleton
+  QuotesNetQuotableQuoteRemoteDataSource get quotable => QuotesNetQuotableQuoteRemoteDataSource();
+
+  @lazySingleton
   List<QuoteDataSource> quoteDataSources(
     AdviceQuoteRemoteDataSource advice,
     AffirmationsQuoteRemoteDataSource affirmations,
     KanyeQuoteRemoteDataSource kanye,
     QuoteslateQuoteRemoteDataSource quoteslate,
+    QuotesNetQuotableQuoteRemoteDataSource quotable,
   ) =>
       [
         advice,
         affirmations,
         kanye,
         quoteslate,
+        quotable,
       ];
 
   @lazySingleton
