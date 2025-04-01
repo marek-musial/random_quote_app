@@ -42,10 +42,10 @@ abstract class QuotesNetQuotableQuoteRemoteRetrofitDataSource {
 
 class QuotesNetQuotableQuoteRemoteDataSource extends QuoteDataSource {
   @override
-  String get title => 'Quotes-net, Quotable dataset';
+  String get title => 'Quotes-net API, Quotable dataset';
   @override
   String? get blurb =>
-      "Quotes-net source for inspirational, motivational, and thought-provoking quotes from some of the best collections available online!\nCreated by Florin Bobis.";
+      "Inspirational, motivational, and thought-provoking quotes from some of the best collections available online!\nCreated by Florin Bobis.\nQuotable dataset by Luke Peavey.";
   @override
   String? get link => 'https://huggingface.co/spaces/florinbobis/quotes-net/blob/main/README.md';
 
