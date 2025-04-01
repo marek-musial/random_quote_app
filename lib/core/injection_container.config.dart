@@ -28,6 +28,8 @@ import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sour
     as _i187;
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/kanye_quote_remote_data_source.dart'
     as _i1048;
+import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quotes_net_mittal_quote_remote_data_source.dart'
+    as _i137;
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quotes_net_quotable_quote_remote_data_source.dart'
     as _i517;
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quoteslate_quote_remote_data_source.dart'
@@ -78,14 +80,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => registerModule.quoteslate);
     gh.lazySingleton<_i517.QuotesNetQuotableQuoteRemoteDataSource>(
         () => registerModule.quotable);
-    gh.lazySingleton<List<_i970.QuoteDataSource>>(
-        () => registerModule.quoteDataSources(
-              gh<_i817.AdviceQuoteRemoteDataSource>(),
-              gh<_i187.AffirmationsQuoteRemoteDataSource>(),
-              gh<_i1048.KanyeQuoteRemoteDataSource>(),
-              gh<_i152.QuoteslateQuoteRemoteDataSource>(),
-              gh<_i517.QuotesNetQuotableQuoteRemoteDataSource>(),
-            ));
+    gh.lazySingleton<_i137.QuotesNetMittalQuoteRemoteDataSource>(
+        () => registerModule.mittal);
     gh.factory<_i131.CataasImageRemoteRetrofitDataSource>(
         () => _i131.CataasImageRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.factory<_i971.PexelsImageRemoteRetrofitDataSource>(
@@ -102,9 +98,18 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i152.QuoteslateQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.factory<_i517.QuotesNetQuotableQuoteRemoteRetrofitDataSource>(() =>
         _i517.QuotesNetQuotableQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
+    gh.factory<_i137.QuotesNetMittalQuoteRemoteRetrofitDataSource>(() =>
+        _i137.QuotesNetMittalQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.singleton<_i427.DioClient>(() => _i427.DioClient(gh<_i361.Dio>()));
-    gh.factory<_i1031.QuoteRepository>(
-        () => _i1031.QuoteRepository(gh<List<_i970.QuoteDataSource>>()));
+    gh.lazySingleton<List<_i970.QuoteDataSource>>(
+        () => registerModule.quoteDataSources(
+              gh<_i817.AdviceQuoteRemoteDataSource>(),
+              gh<_i187.AffirmationsQuoteRemoteDataSource>(),
+              gh<_i1048.KanyeQuoteRemoteDataSource>(),
+              gh<_i152.QuoteslateQuoteRemoteDataSource>(),
+              gh<_i517.QuotesNetQuotableQuoteRemoteDataSource>(),
+              gh<_i137.QuotesNetMittalQuoteRemoteDataSource>(),
+            ));
     gh.lazySingleton<List<_i970.ImageDataSource>>(
         () => registerModule.imageDataSources(
               gh<_i210.PicsumImageRemoteDataSource>(),
@@ -115,6 +120,8 @@ extension GetItInjectableX on _i174.GetIt {
           gh<List<_i970.ImageDataSource>>(),
           gh<List<_i970.QuoteDataSource>>(),
         ));
+    gh.factory<_i1031.QuoteRepository>(
+        () => _i1031.QuoteRepository(gh<List<_i970.QuoteDataSource>>()));
     gh.factory<_i501.ImageRepository>(
         () => _i501.ImageRepository(gh<List<_i970.ImageDataSource>>()));
     gh.lazySingleton<Map<String, _i970.DataSource>>(

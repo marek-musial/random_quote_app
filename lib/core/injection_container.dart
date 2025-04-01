@@ -10,6 +10,7 @@ import 'package:random_quote_app/data/remote_data_sources/image_remote_data_sour
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/advice_quote_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/affirmations_quote_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/kanye_quote_remote_data_source.dart';
+import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quotes_net_mittal_quote_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quoteslate_quote_remote_data_source.dart';
 import 'package:random_quote_app/data/remote_data_sources/quote_remote_data_sources/quotes_net_quotable_quote_remote_data_source.dart';
 
@@ -65,12 +66,16 @@ abstract class RegisterModule {
   QuotesNetQuotableQuoteRemoteDataSource get quotable => QuotesNetQuotableQuoteRemoteDataSource();
 
   @lazySingleton
+  QuotesNetMittalQuoteRemoteDataSource get mittal => QuotesNetMittalQuoteRemoteDataSource();
+
+  @lazySingleton
   List<QuoteDataSource> quoteDataSources(
     AdviceQuoteRemoteDataSource advice,
     AffirmationsQuoteRemoteDataSource affirmations,
     KanyeQuoteRemoteDataSource kanye,
     QuoteslateQuoteRemoteDataSource quoteslate,
     QuotesNetQuotableQuoteRemoteDataSource quotable,
+    QuotesNetMittalQuoteRemoteDataSource mittal,
   ) =>
       [
         advice,
@@ -78,6 +83,7 @@ abstract class RegisterModule {
         kanye,
         quoteslate,
         quotable,
+        mittal,
       ];
 
   @lazySingleton
