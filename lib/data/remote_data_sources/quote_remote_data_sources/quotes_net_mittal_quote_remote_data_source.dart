@@ -40,6 +40,8 @@ abstract class QuotesNetMittalQuoteRemoteRetrofitDataSource {
   });
 }
 
+int randomizePage() => Random().nextInt(370) + 1; // total Mittal responses 36937
+
 class QuotesNetMittalQuoteRemoteDataSource extends QuoteDataSource {
   @override
   String get title => 'Quotes-net API, Mittal dataset';
@@ -56,8 +58,8 @@ class QuotesNetMittalQuoteRemoteDataSource extends QuoteDataSource {
 
   @override
   Future<QuoteModel?> getQuoteData() async {
-    final randomPage = Random().nextInt(17) + 1;
     try {
+      final randomPage = randomizePage();
       final responses = await dataSource.getQuoteData(
         pageNumber: randomPage,
         pageSize: 100,

@@ -40,6 +40,8 @@ abstract class QuotesNetQuotableQuoteRemoteRetrofitDataSource {
   });
 }
 
+int randomizePage() => Random().nextInt(17) + 1; // total Quotable responses 1636
+
 class QuotesNetQuotableQuoteRemoteDataSource extends QuoteDataSource {
   @override
   String get title => 'Quotes-net API, Quotable dataset';
@@ -56,8 +58,8 @@ class QuotesNetQuotableQuoteRemoteDataSource extends QuoteDataSource {
 
   @override
   Future<QuoteModel?> getQuoteData() async {
-    final randomPage = Random().nextInt(17) + 1;
     try {
+      final randomPage = randomizePage();
       final responses = await dataSource.getQuoteData(
         pageNumber: randomPage,
         pageSize: 100,
