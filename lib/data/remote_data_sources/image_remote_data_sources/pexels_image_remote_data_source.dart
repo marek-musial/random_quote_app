@@ -50,8 +50,6 @@ class PexelsSizes with _$PexelsSizes {
       _$PexelsSizesFromJson(json);
 }
 
-final int randomPage = Random().nextInt(8000);
-
 @injectable
 @RestApi(baseUrl: 'https://api.pexels.com/v1/')
 abstract class PexelsImageRemoteRetrofitDataSource {
@@ -67,6 +65,8 @@ abstract class PexelsImageRemoteRetrofitDataSource {
     @Header('Authorization') required String key,
   });
 }
+
+int randomizePage() => Random().nextInt(8000) + 1; //total Pexels responses = 8000
 
 class PexelsImageRemoteDataSource extends ImageDataSource {
   @override
@@ -85,7 +85,7 @@ class PexelsImageRemoteDataSource extends ImageDataSource {
   Future<ImageModel?> getImageData() async {
     try {
       const int perPage = 1;
-      final randomPage = Random().nextInt(8000);
+      final randomPage = randomizePage();
       final imageData = await dataSource.getImageData(
         page: randomPage,
         perPage: perPage,

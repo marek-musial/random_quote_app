@@ -40,7 +40,7 @@ void main() {
       'return random int within range',
       () {
         expect(
-          randomPage,
+          randomizePage(),
           inInclusiveRange(1, 8000),
         );
       },
