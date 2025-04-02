@@ -17,6 +17,17 @@ class QuoteDisplay extends StatelessWidget {
 
   final QuoteModel? quoteModel;
 
+  List<BoxShadow> getShadow() {
+    final shadow = quoteModel != null
+        ? quoteModel!.textColor != null
+            ? quoteModel!.textColor!.isBright()
+                ? [shadows.black]
+                : [shadows.white]
+            : [shadows.white]
+        : [shadows.white];
+    return shadow;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
@@ -51,14 +62,8 @@ class QuoteDisplay extends StatelessWidget {
                               : imageConstraints.maxHeight / 20
                           : imageConstraints.maxHeight / 24,
                       fontWeight: fontWeight,
-                      color: state.quoteModel?.textColor,
-                      shadows: state.quoteModel != null
-                          ? state.quoteModel!.textColor != null
-                              ? state.quoteModel!.textColor!.isBright()
-                                  ? [shadows.black]
-                                  : [shadows.white]
-                              : [shadows.white]
-                          : [shadows.white],
+                      color: quoteModel?.textColor,
+                      shadows: getShadow(),
                     ),
                     textAlign: textAlign,
                   ),
@@ -75,14 +80,8 @@ class QuoteDisplay extends StatelessWidget {
                     style: TextStyle(
                       fontSize: imageConstraints.maxHeight / 24,
                       fontWeight: fontWeight,
-                      color: state.quoteModel?.textColor,
-                      shadows: state.quoteModel != null
-                          ? state.quoteModel!.textColor != null
-                              ? state.quoteModel!.textColor!.isBright()
-                                  ? [shadows.black]
-                                  : [shadows.white]
-                              : [shadows.white]
-                          : [shadows.white],
+                      color: quoteModel?.textColor,
+                      shadows: getShadow(),
                     ),
                     textAlign: textAlign,
                   ),
