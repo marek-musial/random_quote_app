@@ -35,7 +35,7 @@ void main() {
     });
   });
 
-  group('randomPage', () {
+  group('randomizePage', () {
     test(
       'return random int within range',
       () {
