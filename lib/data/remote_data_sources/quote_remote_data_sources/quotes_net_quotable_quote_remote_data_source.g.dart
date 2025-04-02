@@ -1,3 +1,4 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'quotes_net_quotable_quote_remote_data_source.dart';
@@ -6,16 +7,12 @@ part of 'quotes_net_quotable_quote_remote_data_source.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$QuotesNetQuotableResponseImpl _$$QuotesNetQuotableResponseImplFromJson(
-        Map<String, dynamic> json) =>
-    _$QuotesNetQuotableResponseImpl(
+_$QuotesNetQuotableResponseImpl _$$QuotesNetQuotableResponseImplFromJson(Map<String, dynamic> json) => _$QuotesNetQuotableResponseImpl(
       quote: json['quoteText'] as String,
       author: json['author'] as String?,
     );
 
-Map<String, dynamic> _$$QuotesNetQuotableResponseImplToJson(
-        _$QuotesNetQuotableResponseImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$$QuotesNetQuotableResponseImplToJson(_$QuotesNetQuotableResponseImpl instance) => <String, dynamic>{
       'quoteText': instance.quote,
       'author': instance.author,
     };
@@ -26,8 +23,7 @@ Map<String, dynamic> _$$QuotesNetQuotableResponseImplToJson(
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _QuotesNetQuotableQuoteRemoteRetrofitDataSource
-    implements QuotesNetQuotableQuoteRemoteRetrofitDataSource {
+class _QuotesNetQuotableQuoteRemoteRetrofitDataSource implements QuotesNetQuotableQuoteRemoteRetrofitDataSource {
   _QuotesNetQuotableQuoteRemoteRetrofitDataSource(
     this._dio, {
     this.baseUrl,
@@ -75,10 +71,7 @@ class _QuotesNetQuotableQuoteRemoteRetrofitDataSource
     final _result = await _dio.fetch<List<dynamic>>(_options);
     late List<QuotesNetQuotableResponse> _value;
     try {
-      _value = _result.data!
-          .map((dynamic i) =>
-              QuotesNetQuotableResponse.fromJson(i as Map<String, dynamic>))
-          .toList();
+      _value = _result.data!.map((dynamic i) => QuotesNetQuotableResponse.fromJson(i as Map<String, dynamic>)).toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -87,9 +80,7 @@ class _QuotesNetQuotableQuoteRemoteRetrofitDataSource
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
-    if (T != dynamic &&
-        !(requestOptions.responseType == ResponseType.bytes ||
-            requestOptions.responseType == ResponseType.stream)) {
+    if (T != dynamic && !(requestOptions.responseType == ResponseType.bytes || requestOptions.responseType == ResponseType.stream)) {
       if (T == String) {
         requestOptions.responseType = ResponseType.plain;
       } else {
