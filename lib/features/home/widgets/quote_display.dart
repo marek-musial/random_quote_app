@@ -17,12 +17,24 @@ class QuoteDisplay extends StatelessWidget {
 
   final QuoteModel? quoteModel;
 
+  List<BoxShadow> getShadow() {
+    final shadow = quoteModel != null
+        ? quoteModel!.textColor != null
+            ? quoteModel!.textColor!.isBright()
+                ? [shadows.black]
+                : [shadows.white]
+            : [shadows.white]
+        : [shadows.white];
+    return shadow;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         final FontWeight fontWeight = FontWeight.values[state.quoteModel?.fontWeightIndex ?? 1];
         final TextAlign textAlign = TextAlign.values[state.quoteModel?.textAlignmentIndex ?? 2];
+        final String quoteText = quoteModel?.quote ?? '...';
         return Center(
           child: Container(
             constraints: BoxConstraints(
@@ -41,24 +53,20 @@ class QuoteDisplay extends StatelessWidget {
                   duration: const Duration(milliseconds: 500),
                   child: Text(
                     key: textKey,
-                    quoteModel!.quote,
+                    quoteText,
                     style: TextStyle(
-                      fontSize: quoteModel!.quote.length < 300
-                          ? quoteModel!.quote.length < 160
-                              ? quoteModel!.quote.length <= 20
-                                  ? imageConstraints.maxHeight / 10
-                                  : imageConstraints.maxHeight / 14
-                              : imageConstraints.maxHeight / 20
-                          : imageConstraints.maxHeight / 24,
+                      fontSize: switch (quoteText.length) {
+                        <= 20 => imageConstraints.maxHeight / 10,
+                        <= 160 => imageConstraints.maxHeight / 14,
+                        <= 300 => imageConstraints.maxHeight / 20,
+                        <= 540 => imageConstraints.maxHeight / 24,
+                        <= 710 => imageConstraints.maxHeight / 28,
+                        <= 900 => imageConstraints.maxHeight / 32,
+                        _ => imageConstraints.maxHeight / 36,
+                      },
                       fontWeight: fontWeight,
-                      color: state.quoteModel?.textColor,
-                      shadows: state.quoteModel != null
-                          ? state.quoteModel!.textColor != null
-                              ? state.quoteModel!.textColor!.isBright()
-                                  ? [shadows.black]
-                                  : [shadows.white]
-                              : [shadows.white]
-                          : [shadows.white],
+                      color: quoteModel?.textColor,
+                      shadows: getShadow(),
                     ),
                     textAlign: textAlign,
                   ),
@@ -73,16 +81,16 @@ class QuoteDisplay extends StatelessWidget {
                         ? '~${quoteModel!.author}'
                         : '',
                     style: TextStyle(
-                      fontSize: imageConstraints.maxHeight / 24,
+                      fontSize: switch (quoteText.length) {
+                        <= 300 => imageConstraints.maxHeight / 24,
+                        <= 540 => imageConstraints.maxHeight / 26,
+                        <= 710 => imageConstraints.maxHeight / 30,
+                        <= 900 => imageConstraints.maxHeight / 34,
+                        _ => imageConstraints.maxHeight / 38,
+                      },
                       fontWeight: fontWeight,
-                      color: state.quoteModel?.textColor,
-                      shadows: state.quoteModel != null
-                          ? state.quoteModel!.textColor != null
-                              ? state.quoteModel!.textColor!.isBright()
-                                  ? [shadows.black]
-                                  : [shadows.white]
-                              : [shadows.white]
-                          : [shadows.white],
+                      color: quoteModel?.textColor,
+                      shadows: getShadow(),
                     ),
                     textAlign: textAlign,
                   ),
