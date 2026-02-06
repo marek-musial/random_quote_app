@@ -145,7 +145,7 @@ class ReviewService {
                     TextButton(
                       style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.primary.withOpacity(.2),
+                          Theme.of(context).colorScheme.primary.withValues(alpha: .2),
                         ),
                       ),
                       onPressed: () async {
@@ -168,7 +168,7 @@ class ReviewService {
                         'Remind Me Later',
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
-                          color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(.5),
+                          color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: .5),
                         ),
                       ),
                     ),

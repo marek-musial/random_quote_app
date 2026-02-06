@@ -19,7 +19,7 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
-    final Color tileColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
+    final Color tileColor = Theme.of(context).colorScheme.primaryContainer.withValues(alpha: .5);
     final double? headlineSize = Theme.of(context).textTheme.titleLarge!.fontSize;
     final double? bodySize = Theme.of(context).textTheme.bodyLarge!.fontSize;
     return Container(
@@ -280,7 +280,7 @@ class SocialMediaButton extends StatelessWidget {
                 },
                 icon: Icon(
                   iconData,
-                  color: url != null && Uri.parse(url!).isAbsolute ? textColor : textColor.withOpacity(.5),
+                  color: url != null && Uri.parse(url!).isAbsolute ? textColor : textColor.withValues(alpha: .5),
                 ),
                 padding: EdgeInsets.zero,
                 iconSize: iconSize ?? screenWidth / 7,
@@ -292,7 +292,7 @@ class SocialMediaButton extends StatelessWidget {
                 text ?? '',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: url != null && Uri.parse(url!).isAbsolute ? textColor : textColor.withOpacity(.5),
+                  color: url != null && Uri.parse(url!).isAbsolute ? textColor : textColor.withValues(alpha: .5),
                   fontSize: bodySize! * 4 / 5,
                 ),
               ),

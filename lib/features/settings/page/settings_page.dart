@@ -17,7 +17,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
-    final Color tileColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
+    final Color tileColor = Theme.of(context).colorScheme.primaryContainer.withValues(alpha: .5);
     final double fontSize = (screenWidth / 45).clamp(14, 18);
 
     return Container(
@@ -144,7 +144,7 @@ class SettingsPage extends StatelessWidget {
                                             padding: EdgeInsets.all(8),
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: Colors.white.withOpacity(.3),
+                                              color: Colors.white.withValues(alpha: .3),
                                             ),
                                             child: FittedBox(
                                               fit: BoxFit.contain,

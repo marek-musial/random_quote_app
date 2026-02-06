@@ -28,4 +28,4 @@ Color? _colorFromJson(int? colorValue) => colorValue != null //R
     ? Color(colorValue)
     : null;
 
-int? _colorToJson(Color? color) => color?.value;
+int? _colorToJson(Color? color) => color?.toARGB32();

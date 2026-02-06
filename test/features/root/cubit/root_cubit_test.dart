@@ -61,13 +61,13 @@ void main() async {
       'description',
       build: () => sut,
       seed: () => RootState(
-        themeColorValue: const Color.fromARGB(255, 100, 150, 150).value,
+        themeColorValue: const Color.fromARGB(255, 100, 150, 150).toARGB32(),
         isThemeBright: true,
       ),
       act: (cubit) => cubit.setThemeColor(themeColor),
       expect: () => [
         RootState(
-          themeColorValue: themeColor.value,
+          themeColorValue: themeColor.toARGB32(),
           isThemeBright: true,
         ),
       ],

@@ -186,7 +186,7 @@ class SourceListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
-    final Color containerColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
+    final Color containerColor = Theme.of(context).colorScheme.primaryContainer.withValues(alpha: .5);
     final double fontSize = (screenWidth / 45).clamp(14, 18);
 
     return Theme(

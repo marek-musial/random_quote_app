@@ -27,7 +27,7 @@ class BackgroundIcon extends StatelessWidget {
           size: MediaQuery.of(context).orientation == Orientation.portrait //R
               ? screenHeight / 1.6
               : screenHeight / 1.6,
-          color: Theme.of(context).colorScheme.primary.withOpacity(.3),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: .3),
         ),
       ),
     );

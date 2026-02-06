@@ -23,7 +23,7 @@ class RootCubit extends HydratedCubit<RootState> {
   void setThemeColor(Color? color) {
     emit(
       RootState(
-        themeColorValue: color?.value,
+        themeColorValue: color?.toARGB32(),
       ).copyWith(
         isThemeBright: state.isThemeBright,
       ),
