@@ -61,6 +61,7 @@ class SourcesPage extends StatelessWidget {
                     )
                   : null,
               drawer: const AppBarDrawer(index: 2),
+              drawerEnableOpenDragGesture: false,
               body: Row(
                 children: [
                   MediaQuery.of(context).orientation == Orientation.landscape //R
@@ -186,7 +187,7 @@ class SourceListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onPrimaryContainer;
-    final Color containerColor = Theme.of(context).colorScheme.primaryContainer.withOpacity(.5);
+    final Color containerColor = Theme.of(context).colorScheme.primaryContainer.withValues(alpha: .5);
     final double fontSize = (screenWidth / 45).clamp(14, 18);
 
     return Theme(

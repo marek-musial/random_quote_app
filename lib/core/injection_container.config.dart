@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -96,10 +97,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1048.KanyeQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.factory<_i152.QuoteslateQuoteRemoteRetrofitDataSource>(
         () => _i152.QuoteslateQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
-    gh.factory<_i517.QuotesNetQuotableQuoteRemoteRetrofitDataSource>(() =>
-        _i517.QuotesNetQuotableQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.factory<_i137.QuotesNetMittalQuoteRemoteRetrofitDataSource>(() =>
         _i137.QuotesNetMittalQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
+    gh.factory<_i517.QuotesNetQuotableQuoteRemoteRetrofitDataSource>(() =>
+        _i517.QuotesNetQuotableQuoteRemoteRetrofitDataSource(gh<_i361.Dio>()));
     gh.singleton<_i427.DioClient>(() => _i427.DioClient(gh<_i361.Dio>()));
     gh.lazySingleton<List<_i970.QuoteDataSource>>(
         () => registerModule.quoteDataSources(

@@ -89,6 +89,7 @@ class HomePage extends StatelessWidget {
                         )
                       : null,
                   drawer: const AppBarDrawer(index: 0),
+                  drawerEnableOpenDragGesture: false,
                   body: Row(
                     children: [
                       MediaQuery.of(context).orientation == Orientation.landscape //R
@@ -148,7 +149,7 @@ class HomePage extends StatelessWidget {
                                       'Hold image for more options',
                                       style: TextStyle(
                                         fontSize: screenWidth / 32,
-                                        color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(.5),
+                                        color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: .5),
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

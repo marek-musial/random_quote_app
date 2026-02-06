@@ -252,7 +252,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
         pendingState = pendingState.copyWith.quoteModel!(
           textColor: getInverseColor(
-            paletteColor.withOpacity(1),
+            paletteColor.withValues(alpha: 1),
           ),
         );
 
@@ -280,21 +280,21 @@ class HomeCubit extends HydratedCubit<HomeState> {
   }
 
   Color getInverseColor(Color color) {
-    if (color.red > 225 && //R
-        color.green > 225 &&
-        color.blue > 225) {
+    if (color.r > 0.882 && //R
+        color.g > 0.882 &&
+        color.b > 0.882) {
       return Colors.black;
     }
-    if (color.red < 60 && //R
-        color.green < 60 &&
-        color.blue < 60) {
+    if (color.r < 0.235 && //R
+        color.g < 0.235 &&
+        color.b < 0.235) {
       return Colors.white;
     } else {
-      final inverseColor = Color.fromRGBO(
-        255 - color.red,
-        255 - color.green,
-        255 - color.blue,
-        1,
+      final inverseColor = Color.from(
+        red: 1 - color.r,
+        green: 1 - color.g,
+        blue: 1 - color.b,
+        alpha: 1,
       );
       return inverseColor;
     }
@@ -330,14 +330,6 @@ class HomeCubit extends HydratedCubit<HomeState> {
           await loadImage();
           break;
         case Status.loading:
-          break;
-        default:
-          emit(
-            const HomeState(
-              status: Status.error,
-              errorMessage: 'Wrong status!',
-            ),
-          );
           break;
       }
     } else {
