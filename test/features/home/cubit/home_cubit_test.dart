@@ -689,11 +689,23 @@ void main() async {
     test(
       'inverts all rgb values of the passed color and returns color with max alpha value',
       () {
-        Color testColor = const ui.Color.fromARGB(200, 55, 100, 200);
+        Color testColor = const ui.Color.from(
+          alpha: .8,
+          red: .25,
+          green: .5,
+          blue: 1,
+        );
 
         Color inverseColor = sut.getInverseColor(testColor);
 
-        expect(inverseColor, const Color.fromARGB(255, 200, 155, 55));
+        expect(
+            inverseColor,
+            const Color.from(
+              alpha: 1,
+              red: .75,
+              green: .5,
+              blue: 0,
+            ));
       },
     );
 
@@ -1028,7 +1040,12 @@ void main() async {
           ),
         ).thenAnswer(
           (_) => Future.value(
-            const ui.Color.fromARGB(255, 0, 0, 0),
+            const ui.Color.from(
+              alpha: 1,
+              red: 0,
+              green: 0,
+              blue: 0,
+            ),
           ),
         );
 
@@ -1094,7 +1111,12 @@ void main() async {
               .having(
                 (state) => state.quoteModel!.textColor,
                 'textColor',
-                const ui.Color.fromARGB(255, 255, 255, 255),
+                const ui.Color.from(
+                  alpha: 1,
+                  red: 1,
+                  green: 1,
+                  blue: 1,
+                ),
               ),
         );
 
@@ -1103,7 +1125,7 @@ void main() async {
             () => globalLogger.log('scaleFactor: 0.5'),
             () => globalLogger.log('layout randomized'),
             () => globalLogger.log('New textPosition: Offset(10.0, 10.0), new textSize: Size(50.0, 50.0)'),
-            () => globalLogger.log('textColor = Color(0xffffffff)'),
+            () => globalLogger.log('textColor = Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB)'),
             () => globalLogger.log('palette generated!'),
             () => globalLogger.log('success'),
           ],
