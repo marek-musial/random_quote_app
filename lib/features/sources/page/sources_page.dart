@@ -61,6 +61,7 @@ class SourcesPage extends StatelessWidget {
                     )
                   : null,
               drawer: const AppBarDrawer(index: 2),
+              drawerEnableOpenDragGesture: false,
               body: Row(
                 children: [
                   MediaQuery.of(context).orientation == Orientation.landscape //R
