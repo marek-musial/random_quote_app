@@ -7,14 +7,11 @@ part of 'cataas_image_remote_data_source.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CataasResponseImpl _$$CataasResponseImplFromJson(Map<String, dynamic> json) =>
-    _$CataasResponseImpl(
+_$CataasResponseImpl _$$CataasResponseImplFromJson(Map<String, dynamic> json) => _$CataasResponseImpl(
       id: json['id'] as String,
     );
 
-Map<String, dynamic> _$$CataasResponseImplToJson(
-        _$CataasResponseImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$$CataasResponseImplToJson(_$CataasResponseImpl instance) => <String, dynamic>{
       'id': instance.id,
     };
 
@@ -22,10 +19,9 @@ Map<String, dynamic> _$$CataasResponseImplToJson(
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter
 
-class _CataasImageRemoteRetrofitDataSource
-    implements CataasImageRemoteRetrofitDataSource {
+class _CataasImageRemoteRetrofitDataSource implements CataasImageRemoteRetrofitDataSource {
   _CataasImageRemoteRetrofitDataSource(
     this._dio, {
     this.baseUrl,
@@ -46,22 +42,16 @@ class _CataasImageRemoteRetrofitDataSource
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CataasResponse>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/cat?json=true',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
+    final _options = _setStreamType<CataasResponse>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/cat?json=true',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late CataasResponse _value;
     try {
@@ -74,9 +64,7 @@ class _CataasImageRemoteRetrofitDataSource
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
-    if (T != dynamic &&
-        !(requestOptions.responseType == ResponseType.bytes ||
-            requestOptions.responseType == ResponseType.stream)) {
+    if (T != dynamic && !(requestOptions.responseType == ResponseType.bytes || requestOptions.responseType == ResponseType.stream)) {
       if (T == String) {
         requestOptions.responseType = ResponseType.plain;
       } else {
@@ -86,10 +74,7 @@ class _CataasImageRemoteRetrofitDataSource
     return requestOptions;
   }
 
-  String _combineBaseUrls(
-    String dioBaseUrl,
-    String? baseUrl,
-  ) {
+  String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
     if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }

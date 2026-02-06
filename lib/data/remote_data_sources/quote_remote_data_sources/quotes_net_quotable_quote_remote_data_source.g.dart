@@ -7,12 +7,16 @@ part of 'quotes_net_quotable_quote_remote_data_source.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$QuotesNetQuotableResponseImpl _$$QuotesNetQuotableResponseImplFromJson(Map<String, dynamic> json) => _$QuotesNetQuotableResponseImpl(
+_$QuotesNetQuotableResponseImpl _$$QuotesNetQuotableResponseImplFromJson(
+        Map<String, dynamic> json) =>
+    _$QuotesNetQuotableResponseImpl(
       quote: json['quoteText'] as String,
       author: json['author'] as String?,
     );
 
-Map<String, dynamic> _$$QuotesNetQuotableResponseImplToJson(_$QuotesNetQuotableResponseImpl instance) => <String, dynamic>{
+Map<String, dynamic> _$$QuotesNetQuotableResponseImplToJson(
+        _$QuotesNetQuotableResponseImpl instance) =>
+    <String, dynamic>{
       'quoteText': instance.quote,
       'author': instance.author,
     };
@@ -21,9 +25,10 @@ Map<String, dynamic> _$$QuotesNetQuotableResponseImplToJson(_$QuotesNetQuotableR
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter
 
-class _QuotesNetQuotableQuoteRemoteRetrofitDataSource implements QuotesNetQuotableQuoteRemoteRetrofitDataSource {
+class _QuotesNetQuotableQuoteRemoteRetrofitDataSource
+    implements QuotesNetQuotableQuoteRemoteRetrofitDataSource {
   _QuotesNetQuotableQuoteRemoteRetrofitDataSource(
     this._dio, {
     this.baseUrl,
@@ -52,26 +57,25 @@ class _QuotesNetQuotableQuoteRemoteRetrofitDataSource implements QuotesNetQuotab
     };
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<QuotesNetQuotableResponse>>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/quotes',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
+    final _options = _setStreamType<List<QuotesNetQuotableResponse>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/quotes',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
     final _result = await _dio.fetch<List<dynamic>>(_options);
     late List<QuotesNetQuotableResponse> _value;
     try {
-      _value = _result.data!.map((dynamic i) => QuotesNetQuotableResponse.fromJson(i as Map<String, dynamic>)).toList();
+      _value = _result.data!
+          .map(
+            (dynamic i) =>
+                QuotesNetQuotableResponse.fromJson(i as Map<String, dynamic>),
+          )
+          .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -80,7 +84,9 @@ class _QuotesNetQuotableQuoteRemoteRetrofitDataSource implements QuotesNetQuotab
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
-    if (T != dynamic && !(requestOptions.responseType == ResponseType.bytes || requestOptions.responseType == ResponseType.stream)) {
+    if (T != dynamic &&
+        !(requestOptions.responseType == ResponseType.bytes ||
+            requestOptions.responseType == ResponseType.stream)) {
       if (T == String) {
         requestOptions.responseType = ResponseType.plain;
       } else {
@@ -90,10 +96,7 @@ class _QuotesNetQuotableQuoteRemoteRetrofitDataSource implements QuotesNetQuotab
     return requestOptions;
   }
 
-  String _combineBaseUrls(
-    String dioBaseUrl,
-    String? baseUrl,
-  ) {
+  String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
     if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }
