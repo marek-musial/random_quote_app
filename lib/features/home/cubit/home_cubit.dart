@@ -280,14 +280,14 @@ class HomeCubit extends HydratedCubit<HomeState> {
   }
 
   Color getInverseColor(Color color) {
-    if (color.r > 0.8823529411764706 && //R
-        color.g > 0.8823529411764706 &&
-        color.b > 0.8823529411764706) {
+    if (color.r > 0.882 && //R
+        color.g > 0.882 &&
+        color.b > 0.882) {
       return Colors.black;
     }
-    if (color.r < 0.2352941176470588 && //R
-        color.g < 0.2352941176470588 &&
-        color.b < 0.2352941176470588) {
+    if (color.r < 0.235 && //R
+        color.g < 0.235 &&
+        color.b < 0.235) {
       return Colors.white;
     } else {
       final inverseColor = Color.from(
