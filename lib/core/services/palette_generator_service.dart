@@ -1,15 +1,17 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+
 import 'package:palette_generator/palette_generator.dart';
 
 class PaletteGeneratorWrapper {
-  Future<PaletteGenerator> fromImageProvider(
-    ImageProvider imageProvider, {
+  Future<PaletteGenerator> fromImage(
+    ui.Image image, {
     Size? size,
     Rect? region,
   }) {
-    return PaletteGenerator.fromImageProvider(
-      imageProvider,
-      size: size,
+    return PaletteGenerator.fromImage(
+      image,
       region: region,
     );
   }
@@ -23,12 +25,12 @@ class PaletteGeneratorService {
   }) : wrapper = wrapper ?? PaletteGeneratorWrapper();
 
   Future<Color> generateColors(
-    ImageProvider imageProvider,
+    ui.Image image,
     Size scaledImageSize,
     Rect region,
   ) async {
-    final paletteGenerator = await wrapper.fromImageProvider(
-      imageProvider,
+    final paletteGenerator = await wrapper.fromImage(
+      image,
       size: scaledImageSize,
       region: region,
     );
