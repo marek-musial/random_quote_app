@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter/material.dart';
@@ -13,17 +15,17 @@ class MockPaletteGenerator extends Mock implements PaletteGenerator {
   }
 }
 
-class MockImageProvider extends Mock implements ImageProvider {}
+class MockImage extends Mock implements ui.Image {}
 
 void main() {
   late PaletteGeneratorService paletteGeneratorService;
   late MockPaletteGeneratorWrapper mockWrapper;
-  late MockImageProvider mockImageProvider;
+  late MockImage mockImage;
 
   setUp(() {
     mockWrapper = MockPaletteGeneratorWrapper();
     paletteGeneratorService = PaletteGeneratorService(wrapper: mockWrapper);
-    mockImageProvider = MockImageProvider();
+    mockImage = MockImage();
   });
 
   test(
@@ -35,8 +37,8 @@ void main() {
       );
 
       when(
-        () => mockWrapper.fromImageProvider(
-          mockImageProvider,
+        () => mockWrapper.fromImage(
+          mockImage,
           size: any(named: 'size'),
           region: any(named: 'region'),
         ),
@@ -45,7 +47,7 @@ void main() {
       );
 
       final color = await paletteGeneratorService.generateColors(
-        mockImageProvider,
+        mockImage,
         const Size(100, 100),
         const Rect.fromLTWH(0, 0, 50, 50),
       );
@@ -65,8 +67,8 @@ void main() {
       );
 
       when(
-        () => mockWrapper.fromImageProvider(
-          mockImageProvider,
+        () => mockWrapper.fromImage(
+          mockImage,
           size: any(named: 'size'),
           region: any(named: 'region'),
         ),
@@ -75,7 +77,7 @@ void main() {
       );
 
       final color = await paletteGeneratorService.generateColors(
-        mockImageProvider,
+        mockImage,
         const Size(100, 100),
         const Rect.fromLTWH(0, 0, 50, 50),
       );
@@ -92,8 +94,8 @@ void main() {
       when(() => mockPaletteGenerator.vibrantColor).thenReturn(null);
 
       when(
-        () => mockWrapper.fromImageProvider(
-          mockImageProvider,
+        () => mockWrapper.fromImage(
+          mockImage,
           size: any(named: 'size'),
           region: any(named: 'region'),
         ),
@@ -102,7 +104,7 @@ void main() {
       );
 
       final color = await paletteGeneratorService.generateColors(
-        mockImageProvider,
+        mockImage,
         const Size(100, 100),
         const Rect.fromLTWH(0, 0, 50, 50),
       );
