@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/extensions.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
-import 'package:random_quote_app/core/theme/constraints.dart';
 import 'package:random_quote_app/core/theme/shadows.dart' as shadows;
-import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
-import 'package:random_quote_app/features/home/widgets/home_page_widgets_export.dart';
+import 'package:random_quote_app/features/home/models/composition_model.dart';
 
 class QuoteDisplay extends StatelessWidget {
-  const QuoteDisplay({
-    super.key,
-    required this.quoteModel,
-  });
+  const QuoteDisplay({super.key, required this.compositionModel});
 
-  final QuoteModel? quoteModel;
+  final CompositionModel? compositionModel;
 
   List<BoxShadow> getShadow() {
-    final shadow = quoteModel != null
-        ? quoteModel!.textColor != null
-            ? quoteModel!.textColor!.isBright()
+    final shadow = compositionModel != null
+        ? compositionModel!.textColor != null
+            ? compositionModel!.textColor!.isBright()
                 ? [shadows.black]
                 : [shadows.white]
             : [shadows.white]
@@ -32,8 +29,10 @@ class QuoteDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        final FontWeight fontWeight = FontWeight.values[state.quoteModel?.fontWeightIndex ?? 1];
-        final TextAlign textAlign = TextAlign.values[state.quoteModel?.textAlignmentIndex ?? 2];
+        final quoteModel = state.quoteModel;
+        final compositionModel = state.compositionModel;
+        final FontWeight fontWeight = FontWeight.values[compositionModel?.fontWeightIndex ?? 1];
+        final TextAlign textAlign = TextAlign.values[compositionModel?.textAlignmentIndex ?? 2];
         final String quoteText = quoteModel?.quote ?? '...';
         return Center(
           child: Container(
@@ -42,8 +41,8 @@ class QuoteDisplay extends StatelessWidget {
               maxWidth: (screenWidth * 6 / 8).roundToDouble(),
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.values[state.quoteModel?.mainAxisAlignmentIndex ?? 2],
-              crossAxisAlignment: CrossAxisAlignment.values[state.quoteModel?.crossAxisAlignmentIndex ?? 2],
+              mainAxisAlignment: MainAxisAlignment.values[compositionModel?.mainAxisAlignmentIndex ?? 2],
+              crossAxisAlignment: CrossAxisAlignment.values[compositionModel?.crossAxisAlignmentIndex ?? 2],
               mainAxisSize: MainAxisSize.max,
               children: [
                 AnimatedOpacity(
@@ -52,20 +51,12 @@ class QuoteDisplay extends StatelessWidget {
                       : 0.0,
                   duration: const Duration(milliseconds: 500),
                   child: Text(
-                    key: textKey,
+                    // key: textKey,
                     quoteText,
                     style: TextStyle(
-                      fontSize: switch (quoteText.length) {
-                        <= 20 => imageConstraints.maxHeight / 10,
-                        <= 160 => imageConstraints.maxHeight / 14,
-                        <= 300 => imageConstraints.maxHeight / 20,
-                        <= 540 => imageConstraints.maxHeight / 24,
-                        <= 710 => imageConstraints.maxHeight / 28,
-                        <= 900 => imageConstraints.maxHeight / 32,
-                        _ => imageConstraints.maxHeight / 36,
-                      },
+                      fontSize: compositionModel?.fontSize?.toDouble() ?? 16,
                       fontWeight: fontWeight,
-                      color: quoteModel?.textColor,
+                      color: compositionModel?.textColor,
                       shadows: getShadow(),
                     ),
                     textAlign: textAlign,
@@ -78,18 +69,12 @@ class QuoteDisplay extends StatelessWidget {
                   duration: const Duration(milliseconds: 500),
                   child: Text(
                     quoteModel!.author != null //R
-                        ? '~${quoteModel!.author}'
+                        ? '~${quoteModel.author}'
                         : '',
                     style: TextStyle(
-                      fontSize: switch (quoteText.length) {
-                        <= 300 => imageConstraints.maxHeight / 24,
-                        <= 540 => imageConstraints.maxHeight / 26,
-                        <= 710 => imageConstraints.maxHeight / 30,
-                        <= 900 => imageConstraints.maxHeight / 34,
-                        _ => imageConstraints.maxHeight / 38,
-                      },
+                      fontSize: compositionModel?.authorFontSize?.toDouble() ?? 8,
                       fontWeight: fontWeight,
-                      color: quoteModel?.textColor,
+                      color: compositionModel?.textColor,
                       shadows: getShadow(),
                     ),
                     textAlign: textAlign,

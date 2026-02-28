@@ -9,6 +9,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:random_quote_app/core/enums.dart';
+import 'package:random_quote_app/core/extensions.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/network_utils.dart';
 import 'package:random_quote_app/core/services/palette_generator_service.dart';
@@ -16,42 +17,11 @@ import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
+import 'package:random_quote_app/features/home/models/composition_model.dart';
 
 part 'home_state.dart';
 part 'home_cubit.freezed.dart';
 part 'home_cubit.g.dart';
-
-ImageProvider? imageProvider;
-
-class ImageLoader {
-  Future<ui.Image> loadImage(String url) async {
-    imageProvider = NetworkImage(url);
-    final completer = Completer<ImageInfo>();
-    final stream = imageProvider?.resolve(ImageConfiguration.empty);
-
-    final listener = ImageStreamListener(
-      (info, _) {
-        completer.complete(info);
-      },
-      onError: (dynamic error, StackTrace? stackTrace) {
-        completer.completeError(error, stackTrace);
-      },
-    );
-
-    stream?.addListener(listener);
-    final info = await completer.future;
-    stream?.removeListener(listener);
-
-    final byteData = await info.image.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-    final codec = await ui.instantiateImageCodec(
-      byteData!.buffer.asUint8List(),
-    );
-    final frame = await codec.getNextFrame();
-    return frame.image;
-  }
-}
 
 @injectable
 class HomeCubit extends HydratedCubit<HomeState> {
@@ -63,45 +33,87 @@ class HomeCubit extends HydratedCubit<HomeState> {
   Logger logger = globalLogger;
   final ImageRepository _imageRepository;
   final QuoteRepository _quoteRepository;
-  ImageLoader imageLoader = ImageLoader();
-  PaletteGeneratorService paletteGeneratorService = PaletteGeneratorService();
+  final PaletteGeneratorService _paletteGeneratorService = PaletteGeneratorService();
 
-  HomeState previousState = const HomeState(status: Status.initial);
-  HomeState pendingState = const HomeState(status: Status.initial);
+  Size? _widgetSize;
+  bool _initialized = false;
 
-  void emitPreviousState() {
-    if (state != previousState && //R
-        previousState.status == Status.success) {
-      emit(previousState);
-      logger.log('previous state emitted');
-    } else {
-      logger.log('previous state not emitted');
+  ui.Image? _rawImage;
+  ui.Image? _resizedImage;
+
+  double? _scaleFactor;
+
+  CompositionModel? compositionModel;
+
+  Future<void> ensureInitialized(Size size) async {
+    if (_initialized) return;
+
+    _initialized = true;
+    _widgetSize = size;
+    logger.log('Widget size: $_widgetSize');
+
+    if (state.status == Status.success && //R
+        state.imageModel != null &&
+        state.quoteModel != null &&
+        state.compositionModel != null) {
+      await _resumeFromHydratedState();
+      return;
     }
+    await _runLoadingCycle();
   }
 
-  void resetPendingState() {
-    pendingState = const HomeState(status: Status.initial);
-    logger.log('pendingState reset');
+  Future<void> reload() async {
+    if (_widgetSize == null) return;
+    await _runLoadingCycle();
   }
 
-  Future<void> getItemModels() async {
-    pendingState = pendingState.copyWith(status: Status.loading);
-    emit(
-      const HomeState(status: Status.loading),
-    );
-    try {
-      final imageModel = await _imageRepository.getImageModel();
-      final quoteModel = await _quoteRepository.getQuoteModel();
-      pendingState = pendingState.copyWith(
-        imageModel: imageModel,
-        quoteModel: quoteModel,
-      );
+  Future<void> _runLoadingCycle() async {
+    final bool isConnected = await NetworkUtils.checkConnectivity();
+
+    if (!isConnected) {
       emit(
-        state.copyWith(
-          imageModel: imageModel,
-          quoteModel: quoteModel,
+        const HomeState(
+          status: Status.error,
+          errorMessage: 'Check your network connection',
         ),
       );
+      return;
+    }
+
+    try {
+      emit(state.copyWith(status: Status.loading));
+
+      final imageModel = await _imageRepository.getImageModel();
+      final quoteModel = await _quoteRepository.getQuoteModel();
+      compositionModel ??= CompositionModel();
+
+      _rawImage = await _loadImage(imageModel!.imageUrl);
+
+      _resizedImage = await _resizeForSquareContain(
+        _rawImage!,
+        _widgetSize!.height,
+      );
+
+      _randomizeTextLayout();
+
+      final textColor = await _generateTextColor(
+        quoteModel: quoteModel!,
+        compositionModel: compositionModel!,
+      );
+
+      compositionModel?.textColor = textColor;
+      compositionModel?.rawImage = _rawImage;
+
+      emit(
+        HomeState(
+          status: Status.success,
+          imageModel: imageModel,
+          quoteModel: quoteModel,
+          compositionModel: compositionModel,
+        ),
+      );
+
+      logger.log('Home loaded successfully');
     } catch (error) {
       emit(
         HomeState(
@@ -110,260 +122,259 @@ class HomeCubit extends HydratedCubit<HomeState> {
         ),
       );
       logger.log('$error');
-      resetPendingState();
     }
   }
 
-  Future<void> loadImage() async {
-    if (pendingState.imageModel != null) {
-      try {
-        ui.Image? rawImage = await imageLoader.loadImage(
-          pendingState.imageModel!.imageUrl,
-        );
+  Future<ui.Image> _loadImage(String url) async {
+    final imageProvider = NetworkImage(url);
+    final completer = Completer<ImageInfo>();
+    final stream = imageProvider.resolve(ImageConfiguration.empty);
 
-        pendingState = pendingState.copyWith.imageModel!(
-          rawImage: rawImage,
-        );
-        emit(
-          state.copyWith.imageModel!(
-            rawImage: rawImage,
-          ),
-        );
-        logger.log('Width: ${rawImage.width}, height: ${rawImage.height}');
-      } catch (error) {
-        emit(
-          state.copyWith(
-            status: Status.error,
-            errorMessage: 'Failed to load image, check your network connection',
-          ),
-        );
-        logger.log('$error');
-        resetPendingState();
-      }
-    } else {
-      logger.log('An error occured while getting the image, imageModel is null');
-    }
+    final listener = ImageStreamListener(
+      (info, _) => completer.complete(info),
+      onError: (error, stackTrace) => completer.completeError(error, stackTrace),
+    );
+
+    stream.addListener(listener);
+    final info = await completer.future;
+    stream.removeListener(listener);
+
+    final byteData = await info.image.toByteData(format: ui.ImageByteFormat.png);
+
+    final codec = await ui.instantiateImageCodec(
+      byteData!.buffer.asUint8List(),
+    );
+
+    final frame = await codec.getNextFrame();
+    final image = frame.image;
+    logger.log('Raw Image - Width: ${image.width}, height: ${image.height}');
+    return image;
   }
 
-  void randomizeTextLayout() {
-    if (state.status != Status.decoding) {
-      int fontWeightIndex = Random().nextInt(6) + 3;
-      int textAlignmentIndex = Random().nextInt(3);
-      int mainAxisAlignmentIndex = Random().nextInt(
-        MainAxisAlignment.values.length - 3,
-      );
-      int crossAxisAlignmentIndex = Random().nextInt(
-        CrossAxisAlignment.values.length - 2,
-      );
+  Future<ui.Image> _resizeForSquareContain(
+    ui.Image rawImage,
+    double squareSize,
+  ) async {
+    final rawWidth = rawImage.width.toDouble();
+    final rawHeight = rawImage.height.toDouble();
 
-      pendingState = pendingState.copyWith.quoteModel!(
+    _scaleFactor = squareSize / (rawWidth < rawHeight ? rawWidth : rawHeight);
+    logger.log('Resized image by scale: $_scaleFactor');
+
+    final targetWidth = (rawWidth * _scaleFactor!).round();
+    final targetHeight = (rawHeight * _scaleFactor!).round();
+
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+
+    final paint = Paint()..filterQuality = FilterQuality.medium;
+
+    canvas.drawImageRect(
+      rawImage,
+      Rect.fromLTWH(0, 0, rawWidth, rawHeight),
+      Rect.fromLTWH(0, 0, targetWidth.toDouble(), targetHeight.toDouble()),
+      paint,
+    );
+
+    final picture = recorder.endRecording();
+    final image = await picture.toImage(targetWidth, targetHeight);
+    logger.log('Resized Image - Width: ${image.width}, height: ${image.height}');
+    return image;
+  }
+
+  void _randomizeTextLayout() {
+    int fontWeightIndex = Random().nextInt(6) + 3; //[w400, w500, w600, w700, w800, w900]
+    int textAlignmentIndex = Random().nextInt(3); //[left, right, center]
+    int mainAxisAlignmentIndex = Random().nextInt(3); //[start, end, center]
+    int crossAxisAlignmentIndex = Random().nextInt(3); //[start, end, center]
+
+    compositionModel = compositionModel?.copyWith(
         fontWeightIndex: fontWeightIndex,
         textAlignmentIndex: textAlignmentIndex,
         mainAxisAlignmentIndex: mainAxisAlignmentIndex,
-        crossAxisAlignmentIndex: crossAxisAlignmentIndex,
-      );
+        crossAxisAlignmentIndex: crossAxisAlignmentIndex);
 
-      logger.log('layout randomized');
-    } else {
-      logger.log('layout not randomized');
+    logger.log('Layout randomized');
+  }
+
+  void _calculateFontSize(
+    double containerHeight, {
+    required QuoteModel quoteModel,
+  }) {
+    final length = quoteModel.quote.length;
+    final author = quoteModel.author;
+
+    compositionModel!.fontSize = switch (length) {
+      <= 20 => containerHeight ~/ 10,
+      <= 160 => containerHeight ~/ 14,
+      <= 300 => containerHeight ~/ 20,
+      <= 540 => containerHeight ~/ 24,
+      <= 710 => containerHeight ~/ 28,
+      <= 900 => containerHeight ~/ 32,
+      _ => containerHeight ~/ 36,
+    };
+    logger.log('Quote font size: ${compositionModel!.fontSize}');
+
+    if (author != null) {
+      final length = quoteModel.quote.length;
+
+      compositionModel!.authorFontSize = switch (length) {
+        <= 300 => containerHeight ~/ 24,
+        <= 540 => containerHeight ~/ 26,
+        <= 710 => containerHeight ~/ 30,
+        <= 900 => containerHeight ~/ 34,
+        _ => containerHeight ~/ 38,
+      };
+      logger.log('Author font size: ${compositionModel!.authorFontSize}');
     }
   }
 
-  void getTextPositionAndSize(
-    Offset textPosition,
+  Offset _calculateTextPosition(
+    Size textPositionContainerSize,
     Size textSize,
+    int? mainAxisIndex,
+    int? crossAxisIndex,
   ) {
-    pendingState = pendingState.copyWith.quoteModel!(
-      textPosition: textPosition,
-      textSize: textSize,
-    );
-    logger.log('New textPosition: $textPosition, new textSize: $textSize');
-  }
+    double dx;
+    double dy;
 
-  void calculateScaleFactor(Size imageWidgetSize) {
-    final ui.Image? image = pendingState.imageModel?.rawImage;
-    if (image != null) {
-      double rawImageWidth = image.width.toDouble();
-      double rawImageHeight = image.height.toDouble();
-
-      double widgetImageWidth = imageWidgetSize.width;
-      double widgetImageHeight = imageWidgetSize.height;
-
-      double widthScaleFactor = widgetImageWidth / rawImageWidth;
-      double heightScaleFactor = widgetImageHeight / rawImageHeight;
-
-      pendingState = pendingState.copyWith.imageModel!(
-        scaleFactor: widthScaleFactor < heightScaleFactor //R
-            ? widthScaleFactor
-            : heightScaleFactor,
-      );
-      logger.log('scaleFactor: ${pendingState.imageModel?.scaleFactor}');
-    } else {
-      emit(
-        const HomeState(
-          status: Status.error,
-          errorMessage: 'Scale factor calculation error',
-        ),
-      );
-      resetPendingState();
+    switch (crossAxisIndex) {
+      case 0: // start
+        dx = 0;
+        break;
+      case 1: // end
+        dx = textPositionContainerSize.width - textSize.width;
+        break;
+      case 2: // center
+        dx = (textPositionContainerSize.width - textSize.width) / 2;
+        break;
+      default:
+        dx = 0;
     }
-  }
 
-  Future<void> generateColors() async {
-    final ImageModel? pendingImageModel = pendingState.imageModel;
-    final QuoteModel? pendingQuoteModel = pendingState.quoteModel;
-    final double? scaleFactor = pendingState.imageModel?.scaleFactor;
-
-    if (scaleFactor != null &&
-        imageProvider != null &&
-        pendingImageModel?.rawImage != null &&
-        pendingQuoteModel?.textPosition != null &&
-        pendingQuoteModel?.textSize != null) {
-      try {
-        final scaledImageSize = Size(
-          pendingImageModel!.rawImage!.width * scaleFactor,
-          pendingImageModel.rawImage!.height * scaleFactor,
-        );
-        final bottomRight = pendingQuoteModel!.textPosition! +
-            Offset(
-              pendingState.quoteModel!.textSize!.width,
-              pendingState.quoteModel!.textSize!.height,
-            );
-        final region = Rect.fromPoints(
-          pendingQuoteModel.textPosition!,
-          Offset(
-            bottomRight.dx.clamp(
-              1,
-              scaledImageSize.width - pendingQuoteModel.textPosition!.dx,
-            ),
-            bottomRight.dy.clamp(
-              1,
-              scaledImageSize.height - pendingQuoteModel.textPosition!.dy,
-            ),
-          ),
-        );
-
-        final paletteColor = await paletteGeneratorService.generateColors(
-          imageProvider ?? //R
-              const AssetImage('lib/core/assets/placeholder_cat.jpg'),
-          scaledImageSize,
-          region,
-        );
-
-        pendingState = pendingState.copyWith.quoteModel!(
-          textColor: getInverseColor(
-            paletteColor.withValues(alpha: 1),
-          ),
-        );
-
-        logger.log('textColor = ${pendingState.quoteModel?.textColor}');
-        logger.log('palette generated!');
-      } catch (error) {
-        emit(
-          HomeState(
-            status: Status.error,
-            errorMessage: error.toString(),
-          ),
-        );
-        logger.log('$error');
-        resetPendingState();
-      }
-    } else {
-      emit(
-        const HomeState(
-          status: Status.error,
-          errorMessage: 'Error while generating color',
-        ),
-      );
-      resetPendingState();
+    switch (mainAxisIndex) {
+      case 0: //start
+        dy = 0;
+        break;
+      case 1: //end
+        dy = textPositionContainerSize.height - textSize.height;
+        break;
+      case 2: //center
+        dy = (textPositionContainerSize.height - textSize.height) / 2;
+        break;
+      default:
+        dy = 0;
     }
+
+    final position = Offset(dx, dy);
+    logger.log('Text within text area position: $position');
+    return position;
   }
 
-  Color getInverseColor(Color color) {
-    if (color.r > 0.882 && //R
-        color.g > 0.882 &&
-        color.b > 0.882) {
-      return Colors.black;
-    }
-    if (color.r < 0.235 && //R
-        color.g < 0.235 &&
-        color.b < 0.235) {
-      return Colors.white;
-    } else {
-      final inverseColor = Color.from(
-        red: 1 - color.r,
-        green: 1 - color.g,
-        blue: 1 - color.b,
-        alpha: 1,
-      );
-      return inverseColor;
-    }
-  }
-
-  Future<void> emitSuccessIfRequired() async {
-    if ((state.status == Status.loading || //R
-        state.status == Status.decoding)) {
-      await emitSuccess();
-      previousState = state;
-    }
-  }
-
-  Future<void> emitSuccess() async {
-    emit(
-      pendingState.copyWith(status: Status.success),
-    );
-    logger.log('success');
-  }
-
-  Future<void> start() async {
-    final bool isConnected = await NetworkUtils.checkConnectivity();
-    if (isConnected) {
-      switch (state.status) {
-        case Status.initial || Status.success || Status.error:
-          resetPendingState();
-          await getItemModels();
-          await loadImage();
-          break;
-        case Status.decoding:
-          resetPendingState();
-          pendingState = state;
-          await loadImage();
-          break;
-        case Status.loading:
-          break;
-      }
-    } else {
-      emit(
-        const HomeState(
-          status: Status.error,
-          errorMessage: 'Check your network connection',
-        ),
-      );
-    }
-  }
-
-  Future<void> handleStateUpdate({
-    required Size imageWidgetSize,
-    required Offset textPosition,
-    required Size textSize,
+  Future<Color> _generateTextColor({
+    required QuoteModel quoteModel,
+    required CompositionModel compositionModel,
   }) async {
-    calculateScaleFactor(imageWidgetSize);
-    randomizeTextLayout();
-    getTextPositionAndSize(
-      textPosition,
-      textSize,
+    final quote = quoteModel.quote;
+
+    final imageDisplaySize = _widgetSize!; // 7/8 container
+
+    _calculateFontSize(
+      imageDisplaySize.height,
+      quoteModel: quoteModel,
     );
-    if (state.quoteModel?.textColor == null) {
-      await generateColors();
+
+    final fontSize = compositionModel.fontSize?.toDouble();
+
+    final textPainter = TextPainter(
+      textAlign: TextAlign.values[compositionModel.textAlignmentIndex ?? 2],
+      text: TextSpan(
+        text: quote,
+        style: TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.values[compositionModel.fontWeightIndex ?? 4],
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+
+    final textContainerSize = Size(
+      (imageDisplaySize.width * 6 / 7).roundToDouble(),
+      (imageDisplaySize.height * 6 / 7).roundToDouble(),
+    );
+    logger.log('New textContainerSize: $textContainerSize');
+
+    textPainter.layout(
+      maxWidth: textContainerSize.width,
+    );
+
+    final textSize = textPainter.size;
+    logger.log('New textSize: $textSize');
+
+    final textPositionInsideContainer = _calculateTextPosition(
+      textContainerSize,
+      textSize,
+      compositionModel.mainAxisAlignmentIndex,
+      compositionModel.crossAxisAlignmentIndex,
+    );
+
+    final textContainerOffset = Offset(
+      (imageDisplaySize.width - textContainerSize.width) / 2,
+      (imageDisplaySize.height - textContainerSize.height) / 2,
+    );
+
+    final finalWidgetTextPosition = textContainerOffset + textPositionInsideContainer;
+
+    final region = Rect.fromLTWH(
+      finalWidgetTextPosition.dx.clamp(0, _resizedImage!.width.toDouble()),
+      finalWidgetTextPosition.dy.clamp(0, _resizedImage!.height.toDouble()),
+      textSize.width.clamp(0, _resizedImage!.width.toDouble()),
+      textSize.height.clamp(0, _resizedImage!.height.toDouble()),
+    );
+    logger.log('Color sampling region: $region');
+
+    final paletteColor = await _paletteGeneratorService.generateColors(
+      _resizedImage!,
+      Size(
+        _resizedImage!.width.toDouble(),
+        _resizedImage!.height.toDouble(),
+      ),
+      region,
+    );
+
+    final color = paletteColor.withValues(alpha: 1).inverseColor();
+    logger.log('Generated TextColor = $color');
+    return color;
+  }
+
+  Future<void> _resumeFromHydratedState() async {
+    emit(state.copyWith(status: Status.loading));
+
+    try {
+      _rawImage = await _loadImage(state.imageModel!.imageUrl);
+      state.compositionModel!.rawImage = _rawImage;
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: Status.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
-    await emitSuccessIfRequired();
   }
 
   @override
   Map<String, dynamic>? toJson(HomeState state) {
     if (state.status == Status.success && //R
         state.imageModel != _fromJsonState.imageModel &&
-        state.quoteModel != _fromJsonState.quoteModel) {
+        state.quoteModel != _fromJsonState.quoteModel &&
+        state.compositionModel != _fromJsonState.compositionModel) {
       final Map<String, dynamic> map = state.toJson();
       return map;
     } else {
@@ -377,10 +388,10 @@ class HomeCubit extends HydratedCubit<HomeState> {
   HomeState? fromJson(Map<String, dynamic> json) {
     try {
       final jsonState = HomeState.fromJson(json);
-      _fromJsonState = jsonState.copyWith(status: Status.decoding);
-      return jsonState.copyWith(status: Status.decoding);
+      _fromJsonState = jsonState;
+      return jsonState;
     } catch (e) {
-      logger.log('Error on HomeState fromJson: $e');
+      logger.log('Error restoring HomeState: $e');
       return null;
     }
   }

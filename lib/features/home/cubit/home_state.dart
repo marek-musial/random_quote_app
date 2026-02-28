@@ -5,10 +5,11 @@ class HomeState with _$HomeState {
   const HomeState._();
 
   const factory HomeState({
-    @JsonKey(includeFromJson: false) @Default(Status.initial) Status status,
+    @Default(Status.initial) Status status,
     @JsonKey(includeFromJson: false, includeToJson: false) String? errorMessage,
     ImageModel? imageModel,
     QuoteModel? quoteModel,
+    CompositionModel? compositionModel,
   }) = _HomeState;
 
   factory HomeState.fromJson(

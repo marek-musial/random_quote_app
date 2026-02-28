@@ -28,14 +28,6 @@ mixin _$ImageModel {
   String? get author => throw _privateConstructorUsedError;
   @JsonKey(name: 'ImageModelAuthor')
   set author(String? value) => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Image? get rawImage => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  set rawImage(ui.Image? value) => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  double? get scaleFactor => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  set scaleFactor(double? value) => throw _privateConstructorUsedError;
 
   /// Serializes this ImageModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -55,10 +47,7 @@ abstract class $ImageModelCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'ImageModelUrl') String imageUrl,
-      @JsonKey(name: 'ImageModelAuthor') String? author,
-      @JsonKey(includeFromJson: false, includeToJson: false) ui.Image? rawImage,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      double? scaleFactor});
+      @JsonKey(name: 'ImageModelAuthor') String? author});
 }
 
 /// @nodoc
@@ -78,8 +67,6 @@ class _$ImageModelCopyWithImpl<$Res, $Val extends ImageModel>
   $Res call({
     Object? imageUrl = null,
     Object? author = freezed,
-    Object? rawImage = freezed,
-    Object? scaleFactor = freezed,
   }) {
     return _then(_value.copyWith(
       imageUrl: null == imageUrl
@@ -90,14 +77,6 @@ class _$ImageModelCopyWithImpl<$Res, $Val extends ImageModel>
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as String?,
-      rawImage: freezed == rawImage
-          ? _value.rawImage
-          : rawImage // ignore: cast_nullable_to_non_nullable
-              as ui.Image?,
-      scaleFactor: freezed == scaleFactor
-          ? _value.scaleFactor
-          : scaleFactor // ignore: cast_nullable_to_non_nullable
-              as double?,
     ) as $Val);
   }
 }
@@ -112,10 +91,7 @@ abstract class _$$ImageModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'ImageModelUrl') String imageUrl,
-      @JsonKey(name: 'ImageModelAuthor') String? author,
-      @JsonKey(includeFromJson: false, includeToJson: false) ui.Image? rawImage,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      double? scaleFactor});
+      @JsonKey(name: 'ImageModelAuthor') String? author});
 }
 
 /// @nodoc
@@ -133,8 +109,6 @@ class __$$ImageModelImplCopyWithImpl<$Res>
   $Res call({
     Object? imageUrl = null,
     Object? author = freezed,
-    Object? rawImage = freezed,
-    Object? scaleFactor = freezed,
   }) {
     return _then(_$ImageModelImpl(
       imageUrl: null == imageUrl
@@ -145,14 +119,6 @@ class __$$ImageModelImplCopyWithImpl<$Res>
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as String?,
-      rawImage: freezed == rawImage
-          ? _value.rawImage
-          : rawImage // ignore: cast_nullable_to_non_nullable
-              as ui.Image?,
-      scaleFactor: freezed == scaleFactor
-          ? _value.scaleFactor
-          : scaleFactor // ignore: cast_nullable_to_non_nullable
-              as double?,
     ));
   }
 }
@@ -162,9 +128,7 @@ class __$$ImageModelImplCopyWithImpl<$Res>
 class _$ImageModelImpl implements _ImageModel {
   _$ImageModelImpl(
       {@JsonKey(name: 'ImageModelUrl') required this.imageUrl,
-      @JsonKey(name: 'ImageModelAuthor') required this.author,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.rawImage,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.scaleFactor});
+      @JsonKey(name: 'ImageModelAuthor') required this.author});
 
   factory _$ImageModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ImageModelImplFromJson(json);
@@ -175,16 +139,10 @@ class _$ImageModelImpl implements _ImageModel {
   @override
   @JsonKey(name: 'ImageModelAuthor')
   String? author;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Image? rawImage;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  double? scaleFactor;
 
   @override
   String toString() {
-    return 'ImageModel(imageUrl: $imageUrl, author: $author, rawImage: $rawImage, scaleFactor: $scaleFactor)';
+    return 'ImageModel(imageUrl: $imageUrl, author: $author)';
   }
 
   /// Create a copy of ImageModel
@@ -205,11 +163,9 @@ class _$ImageModelImpl implements _ImageModel {
 
 abstract class _ImageModel implements ImageModel {
   factory _ImageModel(
-      {@JsonKey(name: 'ImageModelUrl') required String imageUrl,
-      @JsonKey(name: 'ImageModelAuthor') required String? author,
-      @JsonKey(includeFromJson: false, includeToJson: false) ui.Image? rawImage,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      double? scaleFactor}) = _$ImageModelImpl;
+          {@JsonKey(name: 'ImageModelUrl') required String imageUrl,
+          @JsonKey(name: 'ImageModelAuthor') required String? author}) =
+      _$ImageModelImpl;
 
   factory _ImageModel.fromJson(Map<String, dynamic> json) =
       _$ImageModelImpl.fromJson;
@@ -224,16 +180,6 @@ abstract class _ImageModel implements ImageModel {
   String? get author;
   @JsonKey(name: 'ImageModelAuthor')
   set author(String? value);
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  ui.Image? get rawImage;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  set rawImage(ui.Image? value);
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  double? get scaleFactor;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  set scaleFactor(double? value);
 
   /// Create a copy of ImageModel
   /// with the given fields replaced by the non-null parameter values.

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/extensions.dart';
 import 'package:random_quote_app/core/theme/constraints.dart';
@@ -19,7 +21,7 @@ class ImageAuthorDisplay extends StatelessWidget {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         final imageModel = state.imageModel;
-        final quoteModel = state.quoteModel;
+        final compositionModel = state.compositionModel;
         if (imageModel != null) {
           return Padding(
             padding: EdgeInsets.symmetric(
@@ -36,9 +38,9 @@ class ImageAuthorDisplay extends StatelessWidget {
                     : '',
                 style: TextStyle(
                   fontSize: imageConstraints.maxHeight / 45,
-                  color: quoteModel != null
-                      ? quoteModel.textColor != null
-                          ? quoteModel.textColor!.isBright()
+                  color: compositionModel != null
+                      ? compositionModel.textColor != null
+                          ? compositionModel.textColor!.isBright()
                               ? Colors.white
                               : Colors.black
                           : Colors.black

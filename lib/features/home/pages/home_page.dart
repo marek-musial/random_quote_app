@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/network_utils.dart';
 import 'package:random_quote_app/core/screen_sizes.dart';
@@ -19,194 +21,207 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime? currentBackPressTime;
     const Duration exitDuration = Duration(milliseconds: 600);
-    return BlocConsumer<HomeCubit, HomeState>(
-      listenWhen: (previous, current) {
-        return current.status == Status.error;
-      },
-      listener: (context, state) {
-        final errorMessage = state.errorMessage ?? 'Unknown error';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        constraints = imageConstraints;
+        final widgetSize = Size(
+          imageConstraints.maxWidth,
+          imageConstraints.maxHeight,
         );
-      },
-      builder: (context, state) {
-        final imageModel = state.imageModel;
-        final quoteModel = state.quoteModel;
-        return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Theme.of(context).colorScheme.inversePrimary,
-                Theme.of(context).colorScheme.primary,
-              ],
-              stops: const [.75, 1],
-            ),
-          ),
-          child: Stack(
-            children: [
-              const BackgroundIcon(),
-              PopScope(
-                canPop: false,
-                onPopInvokedWithResult: (didPop, result) {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  DateTime now = DateTime.now();
-                  if (currentBackPressTime == null || //R
-                          now.difference(currentBackPressTime!) > exitDuration //R
-                      ) {
-                    currentBackPressTime = now;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        duration: exitDuration,
-                        content: Text('Tap again to exit'),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        elevation: 0,
-                      ),
-                    );
-                  } else {
-                    SystemNavigator.pop();
-                  }
-                },
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  backgroundColor: Colors.transparent,
-                  appBar: MediaQuery.of(context).orientation == Orientation.portrait
-                      ? AppBar(
-                          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                          title: Text(
-                            title,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+        return BlocConsumer<HomeCubit, HomeState>(
+          listenWhen: (previous, current) {
+            return current.status == Status.error;
+          },
+          listener: (context, state) {
+            final errorMessage = state.errorMessage ?? 'Unknown error';
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(errorMessage),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+          },
+          builder: (context, state) {
+            context.read<HomeCubit>().ensureInitialized(widgetSize);
+            final compositionModel = state.compositionModel;
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).colorScheme.inversePrimary,
+                    Theme.of(context).colorScheme.primary,
+                  ],
+                  stops: const [.75, 1],
+                ),
+              ),
+              child: Stack(
+                children: [
+                  const BackgroundIcon(),
+                  PopScope(
+                    canPop: false,
+                    onPopInvokedWithResult: (didPop, result) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      DateTime now = DateTime.now();
+                      if (currentBackPressTime == null || //R
+                              now.difference(currentBackPressTime!) > exitDuration //R
+                          ) {
+                        currentBackPressTime = now;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: exitDuration,
+                            content: Text('Tap again to exit'),
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            elevation: 0,
+                          ),
+                        );
+                      } else {
+                        SystemNavigator.pop();
+                      }
+                    },
+                    child: Scaffold(
+                      resizeToAvoidBottomInset: false,
+                      backgroundColor: Colors.transparent,
+                      appBar: MediaQuery.of(context).orientation == Orientation.portrait
+                          ? AppBar(
+                              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                              title: Text(
+                                title,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                              iconTheme: IconThemeData(
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              ),
+                            )
+                          : null,
+                      drawer: const AppBarDrawer(index: 0),
+                      drawerEnableOpenDragGesture: false,
+                      body: Row(
+                        children: [
+                          MediaQuery.of(context).orientation == Orientation.landscape //R
+                              ? const AppBarDrawer(index: 0)
+                              : const SizedBox.shrink(),
+                          Flexible(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (state.status == Status.success)
+                                  Center(
+                                    child: Column(
+                                      children: [
+                                        ConstrainedBox(
+                                          constraints: imageConstraints,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(
+                                                  imageConstraints.maxWidth / 20,
+                                                ),
+                                              ),
+                                            ),
+                                            clipBehavior: Clip.hardEdge,
+                                            child: InkWell(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(
+                                                  imageConstraints.maxWidth / 20,
+                                                ),
+                                              ),
+                                              child: RepaintBoundary(
+                                                key: widgetToImageKey,
+                                                child: Stack(
+                                                  alignment: Alignment.center,
+                                                  children: [
+                                                    AnimatedOpacity(
+                                                      opacity: state.status == Status.success ? 1 : 0,
+                                                      duration: Duration(milliseconds: 500),
+                                                      child: ImageDisplay(),
+                                                    ),
+                                                    QuoteDisplay(compositionModel: compositionModel),
+                                                  ],
+                                                ),
+                                              ),
+                                              onLongPress: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return const ImageManagementDialog();
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox.square(
+                                          dimension: screenWidth / 96,
+                                        ),
+                                        Text(
+                                          'Hold image for more options',
+                                          style: TextStyle(
+                                            fontSize: screenWidth / 32,
+                                            color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: .5),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else
+                                  const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                              ],
                             ),
                           ),
-                          iconTheme: IconThemeData(
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
-                          ),
-                        )
-                      : null,
-                  drawer: const AppBarDrawer(index: 0),
-                  drawerEnableOpenDragGesture: false,
-                  body: Row(
-                    children: [
-                      MediaQuery.of(context).orientation == Orientation.landscape //R
-                          ? const AppBarDrawer(index: 0)
-                          : const SizedBox.shrink(),
-                      Flexible(
-                        flex: 1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (imageModel != null && quoteModel != null)
-                              Center(
-                                child: Column(
-                                  children: [
-                                    ConstrainedBox(
-                                      constraints: imageConstraints,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(
-                                              imageConstraints.maxWidth / 20,
-                                            ),
-                                          ),
-                                        ),
-                                        clipBehavior: Clip.hardEdge,
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(
-                                              imageConstraints.maxWidth / 20,
-                                            ),
-                                          ),
-                                          child: RepaintBoundary(
-                                            key: widgetToImageKey,
-                                            child: Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                ImageDisplay(imageModel: imageModel),
-                                                QuoteDisplay(quoteModel: quoteModel),
-                                              ],
-                                            ),
-                                          ),
-                                          onLongPress: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return const ImageManagementDialog();
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox.square(
-                                      dimension: screenWidth / 96,
-                                    ),
-                                    Text(
-                                      'Hold image for more options',
-                                      style: TextStyle(
-                                        fontSize: screenWidth / 32,
-                                        color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: .5),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            else
-                              const Center(
-                                child: CircularProgressIndicator(),
-                              )
-                          ],
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () async {
-                      final isConnected = await NetworkUtils.checkConnectivity();
-                      if (context.mounted) {
-                        if (!isConnected) {
-                          ScaffoldMessenger.of(context)
-                            ..removeCurrentSnackBar()
-                            ..showSnackBar(
-                              SnackBar(
-                                content: const Text('Check your network connection'),
-                                backgroundColor: Theme.of(context).colorScheme.primary,
-                              ),
-                            );
-                        } else {
-                          switch (state.status) {
-                            case Status.loading || Status.decoding:
+                      floatingActionButton: FloatingActionButton(
+                        onPressed: () async {
+                          final isConnected = await NetworkUtils.checkConnectivity();
+                          if (context.mounted) {
+                            if (!isConnected) {
                               ScaffoldMessenger.of(context)
                                 ..removeCurrentSnackBar()
                                 ..showSnackBar(
                                   SnackBar(
-                                    content: const Text('Another process in progress, please wait'),
+                                    content: const Text('Check your network connection'),
                                     backgroundColor: Theme.of(context).colorScheme.primary,
                                   ),
                                 );
-                              break;
-                            default:
-                              await context.read<HomeCubit>().start();
-                              if (context.mounted) {
-                                await globalReviewService.monitor(context);
+                            } else {
+                              switch (state.status) {
+                                case Status.loading:
+                                  ScaffoldMessenger.of(context)
+                                    ..removeCurrentSnackBar()
+                                    ..showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Another process in progress, please wait'),
+                                        backgroundColor: Theme.of(context).colorScheme.primary,
+                                      ),
+                                    );
+                                  break;
+                                default:
+                                  await context.read<HomeCubit>().reload();
+                                  if (context.mounted) {
+                                    await globalReviewService.monitor(context);
+                                  }
+                                  break;
                               }
-                              break;
+                            }
                           }
-                        }
-                      }
-                    },
-                    tooltip: 'Reroll',
-                    child: const Icon(Icons.refresh),
+                        },
+                        tooltip: 'Reroll',
+                        child: const Icon(Icons.refresh),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<HomeCubit>(
           create: (context) {
-            return getIt<HomeCubit>()..start();
+            return getIt<HomeCubit>();
           },
         ),
         BlocProvider<RootCubit>(
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
                 theme: ThemeData(
                   colorSchemeSeed: rootState.themeColorValue != null //R
                       ? Color(rootState.themeColorValue!)
-                      : homeState.quoteModel?.textColor ?? Colors.deepPurple,
+                      : homeState.compositionModel?.textColor ?? Colors.deepPurple,
                   brightness: rootState.isThemeBright //R
                       ? Brightness.light
                       : Brightness.dark,

@@ -20,12 +20,12 @@ HomeState _$HomeStateFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$HomeState {
-  @JsonKey(includeFromJson: false)
   Status get status => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   String? get errorMessage => throw _privateConstructorUsedError;
   ImageModel? get imageModel => throw _privateConstructorUsedError;
   QuoteModel? get quoteModel => throw _privateConstructorUsedError;
+  CompositionModel? get compositionModel => throw _privateConstructorUsedError;
 
   /// Serializes this HomeState to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -43,14 +43,16 @@ abstract class $HomeStateCopyWith<$Res> {
       _$HomeStateCopyWithImpl<$Res, HomeState>;
   @useResult
   $Res call(
-      {@JsonKey(includeFromJson: false) Status status,
+      {Status status,
       @JsonKey(includeFromJson: false, includeToJson: false)
       String? errorMessage,
       ImageModel? imageModel,
-      QuoteModel? quoteModel});
+      QuoteModel? quoteModel,
+      CompositionModel? compositionModel});
 
   $ImageModelCopyWith<$Res>? get imageModel;
   $QuoteModelCopyWith<$Res>? get quoteModel;
+  $CompositionModelCopyWith<$Res>? get compositionModel;
 }
 
 /// @nodoc
@@ -72,6 +74,7 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
     Object? errorMessage = freezed,
     Object? imageModel = freezed,
     Object? quoteModel = freezed,
+    Object? compositionModel = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -90,6 +93,10 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.quoteModel
           : quoteModel // ignore: cast_nullable_to_non_nullable
               as QuoteModel?,
+      compositionModel: freezed == compositionModel
+          ? _value.compositionModel
+          : compositionModel // ignore: cast_nullable_to_non_nullable
+              as CompositionModel?,
     ) as $Val);
   }
 
@@ -120,6 +127,20 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
       return _then(_value.copyWith(quoteModel: value) as $Val);
     });
   }
+
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CompositionModelCopyWith<$Res>? get compositionModel {
+    if (_value.compositionModel == null) {
+      return null;
+    }
+
+    return $CompositionModelCopyWith<$Res>(_value.compositionModel!, (value) {
+      return _then(_value.copyWith(compositionModel: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -131,16 +152,19 @@ abstract class _$$HomeStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(includeFromJson: false) Status status,
+      {Status status,
       @JsonKey(includeFromJson: false, includeToJson: false)
       String? errorMessage,
       ImageModel? imageModel,
-      QuoteModel? quoteModel});
+      QuoteModel? quoteModel,
+      CompositionModel? compositionModel});
 
   @override
   $ImageModelCopyWith<$Res>? get imageModel;
   @override
   $QuoteModelCopyWith<$Res>? get quoteModel;
+  @override
+  $CompositionModelCopyWith<$Res>? get compositionModel;
 }
 
 /// @nodoc
@@ -160,6 +184,7 @@ class __$$HomeStateImplCopyWithImpl<$Res>
     Object? errorMessage = freezed,
     Object? imageModel = freezed,
     Object? quoteModel = freezed,
+    Object? compositionModel = freezed,
   }) {
     return _then(_$HomeStateImpl(
       status: null == status
@@ -178,6 +203,10 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.quoteModel
           : quoteModel // ignore: cast_nullable_to_non_nullable
               as QuoteModel?,
+      compositionModel: freezed == compositionModel
+          ? _value.compositionModel
+          : compositionModel // ignore: cast_nullable_to_non_nullable
+              as CompositionModel?,
     ));
   }
 }
@@ -186,17 +215,18 @@ class __$$HomeStateImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$HomeStateImpl extends _HomeState {
   const _$HomeStateImpl(
-      {@JsonKey(includeFromJson: false) this.status = Status.initial,
+      {this.status = Status.initial,
       @JsonKey(includeFromJson: false, includeToJson: false) this.errorMessage,
       this.imageModel,
-      this.quoteModel})
+      this.quoteModel,
+      this.compositionModel})
       : super._();
 
   factory _$HomeStateImpl.fromJson(Map<String, dynamic> json) =>
       _$$HomeStateImplFromJson(json);
 
   @override
-  @JsonKey(includeFromJson: false)
+  @JsonKey()
   final Status status;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -205,10 +235,12 @@ class _$HomeStateImpl extends _HomeState {
   final ImageModel? imageModel;
   @override
   final QuoteModel? quoteModel;
+  @override
+  final CompositionModel? compositionModel;
 
   @override
   String toString() {
-    return 'HomeState(status: $status, errorMessage: $errorMessage, imageModel: $imageModel, quoteModel: $quoteModel)';
+    return 'HomeState(status: $status, errorMessage: $errorMessage, imageModel: $imageModel, quoteModel: $quoteModel, compositionModel: $compositionModel)';
   }
 
   @override
@@ -222,13 +254,15 @@ class _$HomeStateImpl extends _HomeState {
             (identical(other.imageModel, imageModel) ||
                 other.imageModel == imageModel) &&
             (identical(other.quoteModel, quoteModel) ||
-                other.quoteModel == quoteModel));
+                other.quoteModel == quoteModel) &&
+            (identical(other.compositionModel, compositionModel) ||
+                other.compositionModel == compositionModel));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, status, errorMessage, imageModel, quoteModel);
+  int get hashCode => Object.hash(runtimeType, status, errorMessage, imageModel,
+      quoteModel, compositionModel);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -248,18 +282,18 @@ class _$HomeStateImpl extends _HomeState {
 
 abstract class _HomeState extends HomeState {
   const factory _HomeState(
-      {@JsonKey(includeFromJson: false) final Status status,
+      {final Status status,
       @JsonKey(includeFromJson: false, includeToJson: false)
       final String? errorMessage,
       final ImageModel? imageModel,
-      final QuoteModel? quoteModel}) = _$HomeStateImpl;
+      final QuoteModel? quoteModel,
+      final CompositionModel? compositionModel}) = _$HomeStateImpl;
   const _HomeState._() : super._();
 
   factory _HomeState.fromJson(Map<String, dynamic> json) =
       _$HomeStateImpl.fromJson;
 
   @override
-  @JsonKey(includeFromJson: false)
   Status get status;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -268,6 +302,8 @@ abstract class _HomeState extends HomeState {
   ImageModel? get imageModel;
   @override
   QuoteModel? get quoteModel;
+  @override
+  CompositionModel? get compositionModel;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.

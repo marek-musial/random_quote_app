@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'quote_model.freezed.dart';
@@ -9,13 +8,6 @@ class QuoteModel with _$QuoteModel {
   factory QuoteModel({
     @JsonKey(name: 'QuoteModelUrl') required String quote,
     @JsonKey(name: 'QuoteModelAuthor') String? author,
-    int? fontWeightIndex,
-    int? textAlignmentIndex,
-    int? mainAxisAlignmentIndex,
-    int? crossAxisAlignmentIndex,
-    @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) Color? textColor,
-    @JsonKey(includeFromJson: false, includeToJson: false) Offset? textPosition,
-    @JsonKey(includeFromJson: false, includeToJson: false) Size? textSize,
   }) = _QuoteModel;
 
   factory QuoteModel.fromJson(
@@ -23,9 +15,3 @@ class QuoteModel with _$QuoteModel {
   ) =>
       _$QuoteModelFromJson(json);
 }
-
-Color? _colorFromJson(int? colorValue) => colorValue != null //R
-    ? Color(colorValue)
-    : null;
-
-int? _colorToJson(Color? color) => color?.toARGB32();

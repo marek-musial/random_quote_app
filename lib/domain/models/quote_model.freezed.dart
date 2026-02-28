@@ -28,26 +28,6 @@ mixin _$QuoteModel {
   String? get author => throw _privateConstructorUsedError;
   @JsonKey(name: 'QuoteModelAuthor')
   set author(String? value) => throw _privateConstructorUsedError;
-  int? get fontWeightIndex => throw _privateConstructorUsedError;
-  set fontWeightIndex(int? value) => throw _privateConstructorUsedError;
-  int? get textAlignmentIndex => throw _privateConstructorUsedError;
-  set textAlignmentIndex(int? value) => throw _privateConstructorUsedError;
-  int? get mainAxisAlignmentIndex => throw _privateConstructorUsedError;
-  set mainAxisAlignmentIndex(int? value) => throw _privateConstructorUsedError;
-  int? get crossAxisAlignmentIndex => throw _privateConstructorUsedError;
-  set crossAxisAlignmentIndex(int? value) => throw _privateConstructorUsedError;
-  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
-  Color? get textColor => throw _privateConstructorUsedError;
-  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
-  set textColor(Color? value) => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Offset? get textPosition => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  set textPosition(Offset? value) => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Size? get textSize => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  set textSize(Size? value) => throw _privateConstructorUsedError;
 
   /// Serializes this QuoteModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -67,15 +47,7 @@ abstract class $QuoteModelCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'QuoteModelUrl') String quote,
-      @JsonKey(name: 'QuoteModelAuthor') String? author,
-      int? fontWeightIndex,
-      int? textAlignmentIndex,
-      int? mainAxisAlignmentIndex,
-      int? crossAxisAlignmentIndex,
-      @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) Color? textColor,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      Offset? textPosition,
-      @JsonKey(includeFromJson: false, includeToJson: false) Size? textSize});
+      @JsonKey(name: 'QuoteModelAuthor') String? author});
 }
 
 /// @nodoc
@@ -95,13 +67,6 @@ class _$QuoteModelCopyWithImpl<$Res, $Val extends QuoteModel>
   $Res call({
     Object? quote = null,
     Object? author = freezed,
-    Object? fontWeightIndex = freezed,
-    Object? textAlignmentIndex = freezed,
-    Object? mainAxisAlignmentIndex = freezed,
-    Object? crossAxisAlignmentIndex = freezed,
-    Object? textColor = freezed,
-    Object? textPosition = freezed,
-    Object? textSize = freezed,
   }) {
     return _then(_value.copyWith(
       quote: null == quote
@@ -112,34 +77,6 @@ class _$QuoteModelCopyWithImpl<$Res, $Val extends QuoteModel>
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as String?,
-      fontWeightIndex: freezed == fontWeightIndex
-          ? _value.fontWeightIndex
-          : fontWeightIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      textAlignmentIndex: freezed == textAlignmentIndex
-          ? _value.textAlignmentIndex
-          : textAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      mainAxisAlignmentIndex: freezed == mainAxisAlignmentIndex
-          ? _value.mainAxisAlignmentIndex
-          : mainAxisAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      crossAxisAlignmentIndex: freezed == crossAxisAlignmentIndex
-          ? _value.crossAxisAlignmentIndex
-          : crossAxisAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      textColor: freezed == textColor
-          ? _value.textColor
-          : textColor // ignore: cast_nullable_to_non_nullable
-              as Color?,
-      textPosition: freezed == textPosition
-          ? _value.textPosition
-          : textPosition // ignore: cast_nullable_to_non_nullable
-              as Offset?,
-      textSize: freezed == textSize
-          ? _value.textSize
-          : textSize // ignore: cast_nullable_to_non_nullable
-              as Size?,
     ) as $Val);
   }
 }
@@ -154,15 +91,7 @@ abstract class _$$QuoteModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'QuoteModelUrl') String quote,
-      @JsonKey(name: 'QuoteModelAuthor') String? author,
-      int? fontWeightIndex,
-      int? textAlignmentIndex,
-      int? mainAxisAlignmentIndex,
-      int? crossAxisAlignmentIndex,
-      @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) Color? textColor,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      Offset? textPosition,
-      @JsonKey(includeFromJson: false, includeToJson: false) Size? textSize});
+      @JsonKey(name: 'QuoteModelAuthor') String? author});
 }
 
 /// @nodoc
@@ -180,13 +109,6 @@ class __$$QuoteModelImplCopyWithImpl<$Res>
   $Res call({
     Object? quote = null,
     Object? author = freezed,
-    Object? fontWeightIndex = freezed,
-    Object? textAlignmentIndex = freezed,
-    Object? mainAxisAlignmentIndex = freezed,
-    Object? crossAxisAlignmentIndex = freezed,
-    Object? textColor = freezed,
-    Object? textPosition = freezed,
-    Object? textSize = freezed,
   }) {
     return _then(_$QuoteModelImpl(
       quote: null == quote
@@ -197,34 +119,6 @@ class __$$QuoteModelImplCopyWithImpl<$Res>
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as String?,
-      fontWeightIndex: freezed == fontWeightIndex
-          ? _value.fontWeightIndex
-          : fontWeightIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      textAlignmentIndex: freezed == textAlignmentIndex
-          ? _value.textAlignmentIndex
-          : textAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      mainAxisAlignmentIndex: freezed == mainAxisAlignmentIndex
-          ? _value.mainAxisAlignmentIndex
-          : mainAxisAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      crossAxisAlignmentIndex: freezed == crossAxisAlignmentIndex
-          ? _value.crossAxisAlignmentIndex
-          : crossAxisAlignmentIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-      textColor: freezed == textColor
-          ? _value.textColor
-          : textColor // ignore: cast_nullable_to_non_nullable
-              as Color?,
-      textPosition: freezed == textPosition
-          ? _value.textPosition
-          : textPosition // ignore: cast_nullable_to_non_nullable
-              as Offset?,
-      textSize: freezed == textSize
-          ? _value.textSize
-          : textSize // ignore: cast_nullable_to_non_nullable
-              as Size?,
     ));
   }
 }
@@ -234,14 +128,7 @@ class __$$QuoteModelImplCopyWithImpl<$Res>
 class _$QuoteModelImpl implements _QuoteModel {
   _$QuoteModelImpl(
       {@JsonKey(name: 'QuoteModelUrl') required this.quote,
-      @JsonKey(name: 'QuoteModelAuthor') this.author,
-      this.fontWeightIndex,
-      this.textAlignmentIndex,
-      this.mainAxisAlignmentIndex,
-      this.crossAxisAlignmentIndex,
-      @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) this.textColor,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.textPosition,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.textSize});
+      @JsonKey(name: 'QuoteModelAuthor') this.author});
 
   factory _$QuoteModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$QuoteModelImplFromJson(json);
@@ -252,27 +139,10 @@ class _$QuoteModelImpl implements _QuoteModel {
   @override
   @JsonKey(name: 'QuoteModelAuthor')
   String? author;
-  @override
-  int? fontWeightIndex;
-  @override
-  int? textAlignmentIndex;
-  @override
-  int? mainAxisAlignmentIndex;
-  @override
-  int? crossAxisAlignmentIndex;
-  @override
-  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
-  Color? textColor;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Offset? textPosition;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Size? textSize;
 
   @override
   String toString() {
-    return 'QuoteModel(quote: $quote, author: $author, fontWeightIndex: $fontWeightIndex, textAlignmentIndex: $textAlignmentIndex, mainAxisAlignmentIndex: $mainAxisAlignmentIndex, crossAxisAlignmentIndex: $crossAxisAlignmentIndex, textColor: $textColor, textPosition: $textPosition, textSize: $textSize)';
+    return 'QuoteModel(quote: $quote, author: $author)';
   }
 
   /// Create a copy of QuoteModel
@@ -294,16 +164,7 @@ class _$QuoteModelImpl implements _QuoteModel {
 abstract class _QuoteModel implements QuoteModel {
   factory _QuoteModel(
       {@JsonKey(name: 'QuoteModelUrl') required String quote,
-      @JsonKey(name: 'QuoteModelAuthor') String? author,
-      int? fontWeightIndex,
-      int? textAlignmentIndex,
-      int? mainAxisAlignmentIndex,
-      int? crossAxisAlignmentIndex,
-      @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson) Color? textColor,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      Offset? textPosition,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      Size? textSize}) = _$QuoteModelImpl;
+      @JsonKey(name: 'QuoteModelAuthor') String? author}) = _$QuoteModelImpl;
 
   factory _QuoteModel.fromJson(Map<String, dynamic> json) =
       _$QuoteModelImpl.fromJson;
@@ -318,33 +179,6 @@ abstract class _QuoteModel implements QuoteModel {
   String? get author;
   @JsonKey(name: 'QuoteModelAuthor')
   set author(String? value);
-  @override
-  int? get fontWeightIndex;
-  set fontWeightIndex(int? value);
-  @override
-  int? get textAlignmentIndex;
-  set textAlignmentIndex(int? value);
-  @override
-  int? get mainAxisAlignmentIndex;
-  set mainAxisAlignmentIndex(int? value);
-  @override
-  int? get crossAxisAlignmentIndex;
-  set crossAxisAlignmentIndex(int? value);
-  @override
-  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
-  Color? get textColor;
-  @JsonKey(fromJson: _colorFromJson, toJson: _colorToJson)
-  set textColor(Color? value);
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Offset? get textPosition;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  set textPosition(Offset? value);
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Size? get textSize;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  set textSize(Size? value);
 
   /// Create a copy of QuoteModel
   /// with the given fields replaced by the non-null parameter values.

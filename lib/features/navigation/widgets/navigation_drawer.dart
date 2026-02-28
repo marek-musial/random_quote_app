@@ -57,7 +57,7 @@ class AppBarDrawer extends StatelessWidget {
                                   .read<NavigationDrawerCubit>() //R
                                   .changeNavigationIndex(index);
                               if (index == 0) {
-                                context.read<HomeCubit>().emitPreviousState();
+                                context.read<HomeCubit>();
                               }
                               Navigator.pushReplacementNamed(
                                 context,
