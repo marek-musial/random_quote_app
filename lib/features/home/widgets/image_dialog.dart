@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,11 +15,23 @@ class ImageManagementDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final RenderRepaintBoundary boundary = //R
-        widgetToImageKey.currentContext!.findRenderObject()! //R
-            as RenderRepaintBoundary;
     final textEditingController = TextEditingController();
     const double startValue = 1080;
+
+    Future<Uint8List?> captureBytes(double targetDimension) async {
+      final context = widgetToImageKey.currentContext;
+      if (context == null) return null;
+
+      final boundary = context.findRenderObject()! as RenderRepaintBoundary;
+
+      final scale = targetDimension / boundary.size.width;
+
+      final image = await boundary.toImage(pixelRatio: scale);
+
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+      return byteData?.buffer.asUint8List();
+    }
 
     return BlocProvider(
       create: (context) => ImageDialogCubit()
@@ -24,7 +39,6 @@ class ImageManagementDialog extends StatelessWidget {
           startValue,
         )
         ..updateFileSize(
-          boundary,
           startValue.toInt(),
         ),
       child: BlocBuilder<ImageDialogCubit, ImageDialogState>(
@@ -82,10 +96,14 @@ class ImageManagementDialog extends StatelessWidget {
                                 );
                           },
                           onChangeEnd: (double? newValue) async {
-                            await context.read<ImageDialogCubit>().updateFileSize(
-                                  boundary,
-                                  newValue?.round() ?? startValue.toInt(),
-                                );
+                            final cubit = context.read<ImageDialogCubit>();
+                            final dimension = newValue?.roundToDouble() ?? startValue;
+
+                            final bytes = await captureBytes(dimension);
+
+                            if (bytes != null) {
+                              cubit.updateFileSize(bytes.length);
+                            }
                           },
                           min: 300,
                           max: startValue,
@@ -110,13 +128,20 @@ class ImageManagementDialog extends StatelessWidget {
                         ),
                         icon: const Icon(Icons.save_alt),
                         label: const Text('Save'),
-                        onPressed: () {
-                          context.read<ImageDialogCubit>().capturePng(
-                                boundary,
-                                targetImageDimension: state.imageDimension,
-                                fileName: state.fileName,
-                              );
-                          Navigator.of(context).pop();
+                        onPressed: () async {
+                          final navigator = Navigator.of(context);
+                          final cubit = context.read<ImageDialogCubit>();
+                          final bytes = await captureBytes(state.imageDimension ?? startValue);
+
+                          if (bytes != null) {
+                            cubit.capturePng(
+                              bytes,
+                              targetImageDimension: state.imageDimension,
+                              fileName: state.fileName,
+                            );
+                          }
+
+                          navigator.pop();
                         },
                       ),
                       TextButton.icon(
@@ -125,13 +150,20 @@ class ImageManagementDialog extends StatelessWidget {
                         ),
                         icon: const Icon(Icons.share),
                         label: const Text('Share'),
-                        onPressed: () {
-                          context.read<ImageDialogCubit>().sharePng(
-                                boundary,
-                                targetImageDimension: state.imageDimension,
-                                fileName: state.fileName,
-                              );
-                          Navigator.of(context).pop();
+                        onPressed: () async {
+                          final navigator = Navigator.of(context);
+                          final cubit = context.read<ImageDialogCubit>();
+                          final bytes = await captureBytes(state.imageDimension ?? startValue);
+
+                          if (bytes != null) {
+                            cubit.sharePng(
+                              bytes,
+                              targetImageDimension: state.imageDimension,
+                              fileName: state.fileName,
+                            );
+                          }
+
+                          navigator.pop();
                         },
                       ),
                     ],

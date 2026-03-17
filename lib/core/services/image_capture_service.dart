@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui' as ui;
-import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 
 import 'package:gal/gal.dart';
@@ -13,11 +11,11 @@ import 'package:random_quote_app/core/logger.dart';
 
 class GalWrapper {
   Future<void> putImageBytes(
-    Uint8List pngBytes, {
+    Uint8List bytes, {
     required String name,
   }) {
     return Gal.putImageBytes(
-      pngBytes,
+      bytes,
       name: name,
     );
   }
@@ -46,70 +44,46 @@ class ImageCaptureService {
         sharePlusWrapper = sharePlusWrapper ?? SharePlusWrapper();
 
   Future<void> capturePng(
-    RenderRepaintBoundary boundary, {
+    Uint8List bytes, {
     String? fileName,
     double? targetImageDimension,
   }) async {
-    final boundaryHeight = boundary.size.height;
-    if (targetImageDimension != null) {
-      imageScale = targetImageDimension / boundaryHeight;
-    }
-    final ui.Image image = await boundary.toImage(
-      pixelRatio: imageScale,
-    );
-    final ByteData? byteData = await image.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-    final Uint8List pngBytes = byteData!.buffer.asUint8List();
     if (fileName == null || fileName.isEmpty) {
       timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
     }
     await galWrapper.putImageBytes(
-      pngBytes,
+      bytes,
       name: fileName ?? 'image_$timestamp',
     );
     globalLogger.log(
       'Saved image name: ${fileName ?? 'image_$timestamp'}',
     );
-    globalLogger.log(
-      'Saved image width: ${image.width}, saved image height: ${image.height}',
-    );
   }
 
   Future<void> sharePng(
-    RenderRepaintBoundary boundary, {
+    Uint8List bytes, {
     String? fileName,
     double? targetImageDimension,
   }) async {
-    final boundaryHeight = boundary.size.height;
-    if (targetImageDimension != null) {
-      imageScale = targetImageDimension / boundaryHeight;
-    }
-    final ui.Image image = await boundary.toImage(
-      pixelRatio: imageScale,
-    );
-    final ByteData? byteData = await image.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-    final Uint8List pngBytes = byteData!.buffer.asUint8List();
     if (fileName == null || fileName.isEmpty) {
       timestamp = DateFormat('yyyyMMdd_HHmmssSSS').format(DateTime.now());
     }
-    final String imageTempUri = '$tempDirectoryPath/${fileName ?? 'image_$timestamp'}.png';
+    fileName = fileName ?? 'image_$timestamp';
+    final String imageTempUri = '$tempDirectoryPath/$fileName.png';
     final File imageFile = await File(
       imageTempUri,
     ).create();
-    imageFile.writeAsBytesSync(pngBytes);
+    imageFile.writeAsBytesSync(bytes);
     final result = await sharePlusWrapper.shareXFiles(
       imageTempUri,
     );
     if (result.status == ShareResultStatus.success) {
       globalLogger.log(
-        'Shared image width: ${image.width}, saved image height: ${image.height}',
+        'Image $fileName shared successfully',
       );
     } else if (result.status == ShareResultStatus.dismissed) {
       globalLogger.log(
-        'Image sharing dismissed',
+        'Image $fileName sharing dismissed',
       );
     } else {
       globalLogger.log(

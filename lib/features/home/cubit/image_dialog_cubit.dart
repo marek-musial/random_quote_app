@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,41 +19,15 @@ class ImageDialogCubit extends Cubit<ImageDialogState> {
   Logger logger = globalLogger;
   ImageCaptureService imageCaptureService = ImageCaptureService();
 
-  Future<void> updateFileSize(
-    RenderRepaintBoundary boundary,
-    int targetDimension,
-  ) async {
-    final imageFileScaleFactor = targetDimension / boundary.size.width;
-    final ui.Image image = await boundary.toImage(
-      pixelRatio: imageFileScaleFactor,
+  void updateFileSize(int byteLength) {
+    final kb = byteLength / 1024;
+    final mb = byteLength / (1024 * 1024);
+
+    emit(
+      state.copyWith(
+        fileSize: mb < 1 ? '${kb.toStringAsFixed(2)} KB' : '${mb.toStringAsFixed(2)} MB',
+      ),
     );
-    final ByteData? byteData = await image.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-    if (byteData != null) {
-      final imageFileSize = byteData.lengthInBytes;
-      final imageFileSizeInKB = (imageFileSize / 1024);
-      final imageFileSizeInMB = (imageFileSize / (1024 * 1024));
-      if (imageFileSizeInMB < 1) {
-        emit(
-          state.copyWith(
-            fileSize: '${imageFileSizeInKB.toStringAsFixed(2)} KB',
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            fileSize: '${imageFileSizeInMB.toStringAsFixed(2)} MB',
-          ),
-        );
-      }
-    } else {
-      emit(
-        ImageDialogState(
-          fileSize: null,
-        ),
-      );
-    }
   }
 
   void updateImageDimension(double value) {
@@ -71,42 +43,34 @@ class ImageDialogCubit extends Cubit<ImageDialogState> {
   }
 
   Future<void> capturePng(
-    RenderRepaintBoundary boundary, {
+    Uint8List bytes, {
     double? targetImageDimension,
     String? fileName,
   }) async {
-    logger.log(
-      'Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}',
-    );
     try {
       await imageCaptureService.capturePng(
-        boundary,
+        bytes,
         targetImageDimension: targetImageDimension,
         fileName: fileName,
       );
-    } on Exception catch (e) {
-      String errorMessage = e.toString();
-      logger.log(errorMessage);
+    } catch (e) {
+      logger.log(e.toString());
     }
   }
 
   Future<void> sharePng(
-    RenderRepaintBoundary boundary, {
+    Uint8List bytes, {
     double? targetImageDimension,
     String? fileName,
   }) async {
-    logger.log(
-      'Boundary width: ${boundary.size.width}, boundary height: ${boundary.size.height}',
-    );
     try {
       await imageCaptureService.sharePng(
-        boundary,
+        bytes,
         targetImageDimension: targetImageDimension,
         fileName: fileName,
       );
-    } on Exception catch (e) {
-      String errorMessage = e.toString();
-      logger.log(errorMessage);
+    } catch (e) {
+      logger.log(e.toString());
     }
   }
 }
