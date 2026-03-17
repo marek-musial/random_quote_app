@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:ui' as ui;
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -12,15 +10,6 @@ import 'package:random_quote_app/core/services/image_capture_service.dart';
 
 import 'package:share_plus/share_plus.dart';
 
-class MockRenderRepaintBoundary extends Mock implements RenderRepaintBoundary {
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MockRepaintBoundary';
-  }
-}
-
-class MockImage extends Mock implements ui.Image {}
-
 class MockLogger extends Mock implements Logger {}
 
 class MockGalWrapper extends Mock implements GalWrapper {}
@@ -29,45 +18,16 @@ class MockSharePlusWrapper extends Mock implements SharePlusWrapper {}
 
 void main() {
   late ImageCaptureService imageCaptureService;
-  final mockRenderRepaintBoundary = MockRenderRepaintBoundary();
-  final mockImage = MockImage();
+  final Uint8List bytes = Uint8List(10);
   final mockLogger = MockLogger();
   globalLogger = mockLogger;
   late MockGalWrapper mockGalWrapper;
   late MockSharePlusWrapper mockSharePlusWrapper;
-  final byteData = ByteData(8)..setInt64(0, 12345);
-  final pngBytes = byteData.buffer.asUint8List();
 
   setUp(
     () async {
       registerFallbackValue(Uint8List(0));
       registerFallbackValue('');
-
-      when(
-        () => mockImage.width,
-      ).thenReturn(1920);
-      when(
-        () => mockImage.height,
-      ).thenReturn(1080);
-      when(
-        () => mockRenderRepaintBoundary.size,
-      ).thenReturn(
-        Size(320, 420),
-      );
-      when(
-        () => mockRenderRepaintBoundary.toImage(
-          pixelRatio: any(
-            named: 'pixelRatio',
-          ),
-        ),
-      ).thenAnswer(
-        (_) async => mockImage,
-      );
-      when(
-        () => mockImage.toByteData(format: ui.ImageByteFormat.png),
-      ).thenAnswer(
-        (_) async => byteData,
-      );
     },
   );
 
@@ -83,7 +43,7 @@ void main() {
         },
       );
 
-      test('runs the image saving logic on correct values, and logs the name and the size of the saved image', () async {
+      test('runs the image saving logic on correct values, and logs the name of the saved image', () async {
         when(
           () => mockGalWrapper.putImageBytes(
             any(),
@@ -94,14 +54,14 @@ void main() {
         );
 
         await imageCaptureService.capturePng(
-          mockRenderRepaintBoundary,
+          bytes,
           fileName: 'nameString',
           targetImageDimension: 100,
         );
 
         verify(
           () => mockGalWrapper.putImageBytes(
-            pngBytes,
+            bytes,
             name: 'nameString',
           ),
         ).called(1);
@@ -110,9 +70,33 @@ void main() {
             'Saved image name: nameString',
           ),
         ).called(1);
+      });
+
+      test('when file name is empty, uses timestamp', () async {
+        when(
+          () => mockGalWrapper.putImageBytes(
+            any(),
+            name: any(named: 'name'),
+          ),
+        ).thenAnswer(
+          (_) async {},
+        );
+
+        await imageCaptureService.capturePng(
+          bytes,
+          fileName: null,
+          targetImageDimension: 100,
+        );
+
         verify(
-          () => mockLogger.log(
-            'Saved image width: ${mockImage.width}, saved image height: ${mockImage.height}',
+          () => mockGalWrapper.putImageBytes(
+            bytes,
+            name: 'image_${imageCaptureService.timestamp}',
+          ),
+        ).called(1);
+        verify(
+          () => globalLogger.log(
+            'Saved image name: image_${imageCaptureService.timestamp}',
           ),
         ).called(1);
       });
@@ -143,7 +127,7 @@ void main() {
       );
 
       test(
-        'runs the image sharing logic with correct values, and on status = success logs the size of the shared image',
+        'runs the image sharing logic with correct values, and on status = success logs the success',
         () async {
           when(
             () => mockSharePlusWrapper.shareXFiles(any()),
@@ -155,7 +139,7 @@ void main() {
           );
 
           await imageCaptureService.sharePng(
-            mockRenderRepaintBoundary,
+            bytes,
             fileName: 'nameString',
             targetImageDimension: 100,
           );
@@ -167,7 +151,7 @@ void main() {
           ).called(1);
           verify(
             () => mockLogger.log(
-              'Shared image width: ${mockImage.width}, saved image height: ${mockImage.height}',
+              'Image nameString shared successfully',
             ),
           ).called(1);
         },
@@ -186,7 +170,7 @@ void main() {
           );
 
           await imageCaptureService.sharePng(
-            mockRenderRepaintBoundary,
+            bytes,
             fileName: 'nameString',
           );
 
@@ -197,7 +181,7 @@ void main() {
           ).called(1);
           verify(
             () => mockLogger.log(
-              'Image sharing dismissed',
+              'Image nameString sharing dismissed',
             ),
           ).called(1);
         },
@@ -217,7 +201,7 @@ void main() {
           );
 
           await imageCaptureService.sharePng(
-            mockRenderRepaintBoundary,
+            bytes,
             fileName: 'nameString',
           );
 
@@ -233,6 +217,34 @@ void main() {
           ).called(1);
         },
       );
+
+      test('when file name is empty, uses timestamp', () async {
+        when(
+          () => mockSharePlusWrapper.shareXFiles(any()),
+        ).thenAnswer(
+          (_) async => const ShareResult(
+            'raw',
+            ShareResultStatus.success,
+          ),
+        );
+
+        await imageCaptureService.sharePng(
+          bytes,
+          fileName: null,
+          targetImageDimension: 100,
+        );
+
+        verify(
+          () => mockSharePlusWrapper.shareXFiles(
+            '$tempDirectoryPath/image_${imageCaptureService.timestamp}.png',
+          ),
+        ).called(1);
+        verify(
+          () => globalLogger.log(
+            'Image image_${imageCaptureService.timestamp} shared successfully',
+          ),
+        ).called(1);
+      });
     },
   );
 }

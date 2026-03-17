@@ -1,8 +1,6 @@
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:random_quote_app/core/logger.dart';
@@ -11,24 +9,13 @@ import 'package:random_quote_app/features/home/cubit/image_dialog_cubit.dart';
 
 class MockImageCaptureService extends Mock implements ImageCaptureService {}
 
-class MockRenderRepaintBoundary extends Mock implements RenderRepaintBoundary {
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MockRepaintBoundary';
-  }
-}
-
-class MockImage extends Mock implements ui.Image {}
-
 class MockLogger extends Mock implements Logger {}
 
 void main() {
   late ImageDialogCubit sut;
-  late MockRenderRepaintBoundary mockRenderRepaintBoundary;
-  late MockImage mockImage;
-  late ByteData? byteData;
+  late Uint8List bytes;
   late MockImageCaptureService mockImageCaptureService;
-  registerFallbackValue(RenderRepaintBoundary());
+  registerFallbackValue(Uint8List(0));
   globalLogger = MockLogger();
 
   setUp(
@@ -41,28 +28,7 @@ void main() {
     setUp(
       () {
         mockImageCaptureService = MockImageCaptureService();
-        mockRenderRepaintBoundary = MockRenderRepaintBoundary();
-        mockImage = MockImage();
         sut.imageCaptureService = mockImageCaptureService;
-        when(
-          () => mockRenderRepaintBoundary.size,
-        ).thenReturn(
-          const Size(100, 200),
-        );
-        when(
-          () => mockRenderRepaintBoundary.toImage(
-            pixelRatio: any(
-              named: 'pixelRatio',
-            ),
-          ),
-        ).thenAnswer(
-          (_) async => mockImage,
-        );
-        when(
-          () => mockImage.toByteData(format: ui.ImageByteFormat.png),
-        ).thenAnswer(
-          (_) async => byteData,
-        );
       },
     );
 
@@ -70,11 +36,7 @@ void main() {
       'emits the state with calculated file size in KB if the size is < 1 MB',
       build: () => sut,
       act: (cubit) => [
-        byteData = ByteData(1000000)..setInt64(0, 1),
-        sut.updateFileSize(
-          mockRenderRepaintBoundary,
-          100,
-        ),
+        sut.updateFileSize(1000000),
       ],
       expect: () => [
         ImageDialogState(fileSize: '976.56 KB'),
@@ -85,29 +47,10 @@ void main() {
       'emits the state with calculated file size in KB if the size is >= 1 MB',
       build: () => sut,
       act: (cubit) => [
-        byteData = ByteData(1200000)..setInt64(0, 1),
-        sut.updateFileSize(
-          mockRenderRepaintBoundary,
-          100,
-        ),
+        sut.updateFileSize(1200000),
       ],
       expect: () => [
         ImageDialogState(fileSize: '1.14 MB'),
-      ],
-    );
-
-    blocTest(
-      'emits the state with null file size if the byteData = null',
-      build: () => sut,
-      act: (cubit) => [
-        byteData = null,
-        sut.updateFileSize(
-          mockRenderRepaintBoundary,
-          100,
-        ),
-      ],
-      expect: () => [
-        ImageDialogState(fileSize: null),
       ],
     );
   });
@@ -168,18 +111,13 @@ void main() {
     setUp(
       () {
         mockImageCaptureService = MockImageCaptureService();
-        mockRenderRepaintBoundary = MockRenderRepaintBoundary();
         sut.imageCaptureService = mockImageCaptureService;
-        when(
-          () => mockRenderRepaintBoundary.size,
-        ).thenReturn(
-          const Size(100, 200),
-        );
+        bytes = Uint8List(1000000);
       },
     );
 
     test(
-      'succesfully runs imageCaptureService.capturePng, logs boundary size',
+      'succesfully runs imageCaptureService.capturePng',
       () async {
         when(
           () => sut.imageCaptureService.capturePng(
@@ -192,21 +130,16 @@ void main() {
         );
 
         await sut.capturePng(
-          mockRenderRepaintBoundary,
+          bytes,
           fileName: 'fileName',
           targetImageDimension: 100,
         );
 
         verify(
           () => sut.imageCaptureService.capturePng(
-            mockRenderRepaintBoundary,
+            bytes,
             fileName: 'fileName',
             targetImageDimension: 100,
-          ),
-        );
-        verify(
-          () => globalLogger.log(
-            'Boundary width: ${mockRenderRepaintBoundary.size.width}, boundary height: ${mockRenderRepaintBoundary.size.height}',
           ),
         );
       },
@@ -222,7 +155,7 @@ void main() {
           Exception('Error on capturing image'),
         );
 
-        await cubit.capturePng(mockRenderRepaintBoundary);
+        await cubit.capturePng(bytes);
       },
       verify: (cubit) => globalLogger.log('Error on capturing image'),
     );
@@ -232,18 +165,13 @@ void main() {
     setUp(
       () {
         mockImageCaptureService = MockImageCaptureService();
-        mockRenderRepaintBoundary = MockRenderRepaintBoundary();
         sut.imageCaptureService = mockImageCaptureService;
-        when(
-          () => mockRenderRepaintBoundary.size,
-        ).thenReturn(
-          const Size(100, 200),
-        );
+        bytes = Uint8List(1000000);
       },
     );
 
     test(
-      'succesfully runs imageCaptureService.sharePng, logs boundary size',
+      'succesfully runs imageCaptureService.sharePng',
       () async {
         when(
           () => sut.imageCaptureService.sharePng(any()),
@@ -251,15 +179,10 @@ void main() {
           (_) async {},
         );
 
-        await sut.sharePng(mockRenderRepaintBoundary);
+        await sut.sharePng(bytes);
 
         verify(
           () => sut.imageCaptureService.sharePng(any()),
-        );
-        verify(
-          () => globalLogger.log(
-            'Boundary width: ${mockRenderRepaintBoundary.size.width}, boundary height: ${mockRenderRepaintBoundary.size.height}',
-          ),
         );
       },
     );
@@ -274,7 +197,7 @@ void main() {
           Exception('Error on sharing image'),
         );
 
-        await cubit.sharePng(mockRenderRepaintBoundary);
+        await cubit.sharePng(bytes);
       },
       verify: (cubit) => globalLogger.log('Error on sharing image'),
     );
