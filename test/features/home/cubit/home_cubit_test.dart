@@ -1,22 +1,24 @@
 import 'dart:ui' as ui;
 
-import 'package:bloc_test/bloc_test.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/logger.dart';
 import 'package:random_quote_app/core/network_utils.dart';
-import 'package:random_quote_app/core/services/image_capture_service.dart';
-import 'package:random_quote_app/core/services/palette_generator_service.dart';
 import 'package:random_quote_app/domain/models/image_model.dart';
 import 'package:random_quote_app/domain/models/quote_model.dart';
 import 'package:random_quote_app/domain/repositories/image_repository.dart';
 import 'package:random_quote_app/domain/repositories/quote_repository.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
+import 'package:random_quote_app/features/home/models/composition_model.dart';
 
 class MockImageRepository extends Mock implements ImageRepository {}
 
@@ -24,44 +26,49 @@ class MockQuoteRepository extends Mock implements QuoteRepository {}
 
 class MockStorage extends Mock implements Storage {}
 
-class MockImage extends Mock implements ui.Image {}
-
-class MockImageLoader extends Mock implements ImageLoader {}
-
-class MockImageProvider extends Mock implements ImageProvider {}
-
-class MockPaletteGeneratorService extends Mock implements PaletteGeneratorService {}
-
-class FakeSize extends Fake implements Size {}
-
-class FakeRect extends Fake implements Rect {}
-
-class MockImageCaptureService extends Mock implements ImageCaptureService {}
-
-class MockRenderRepaintBoundary extends Mock implements RenderRepaintBoundary {
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MockRepaintBoundary';
-  }
-}
-
 class MockLogger extends Mock implements Logger {}
 
 class MockConnectivity extends Mock implements Connectivity {}
+
+class TestImageProvider extends ImageProvider<TestImageProvider> {
+  final ui.Image image;
+  final String url;
+
+  TestImageProvider({required this.image, required this.url});
+
+  @override
+  Future<TestImageProvider> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<TestImageProvider>(this);
+  }
+
+  @override
+  String toString() => 'TestImageProvider($url)';
+}
 
 void main() async {
   late Storage storage;
   late HomeCubit sut;
   late MockImageRepository imageRepository;
   late MockQuoteRepository quoteRepository;
-  late MockImage mockImage;
-  late MockImageLoader mockImageLoader;
-  late MockImageProvider mockImageProvider;
-  late MockPaletteGeneratorService mockPaletteGeneratorService;
-  globalLogger = MockLogger();
-  late MockConnectivity mockConnectivity;
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  Future<ui.Image> createTestImage({
+    int width = 100,
+    int height = 100,
+  }) async {
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    final paint = Paint()..color = Colors.blue;
+
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, width.toDouble(), height.toDouble()),
+      paint,
+    );
+
+    final picture = recorder.endRecording();
+    return picture.toImage(width, height);
+  }
 
   void initHydratedStorage() {
     storage = MockStorage();
@@ -74,115 +81,78 @@ void main() async {
   setUp(
     () {
       initHydratedStorage();
+      globalLogger = MockLogger();
       imageRepository = MockImageRepository();
       quoteRepository = MockQuoteRepository();
       sut = HomeCubit(imageRepository, quoteRepository);
+
+      imageCache.clear();
+      imageCache.clearLiveImages();
     },
   );
 
-  group('emitPreviousState', () {
-    setUp(
-      () {
-        sut.previousState = HomeState(
-          status: Status.success,
-          imageModel: ImageModel(
-            imageUrl: 'previousImageUrl',
-            author: '',
-            rawImage: mockImage,
-            scaleFactor: .5,
-          ),
-          quoteModel: QuoteModel(
-            quote: 'previousQuote',
+  Future<void> cacheTestImageForUrl(String url) async {
+    final testImage = await createTestImage(width: 100, height: 100);
+    imageCache.putIfAbsent(
+      NetworkImage(url),
+      () => OneFrameImageStreamCompleter(
+        Future.value(ImageInfo(image: testImage)),
+      ),
+    );
+  }
+
+  group('ensureInitialized', () {
+    group('on status success with hydrated state', () {
+      setUp(() {
+        sut.emit(
+          HomeState(
+            status: Status.success,
+            imageModel: ImageModel(
+              imageUrl: 'https://example.com/image.jpg',
+              author: 'hydratedAuthor',
+            ),
+            quoteModel: QuoteModel(
+              quote: 'hydratedQuote',
+            ),
+            compositionModel: CompositionModel(),
           ),
         );
-      },
-    );
+      });
 
-    blocTest(
-      'on previousState != state, updates previousState with successful state and logs success messages',
-      build: () => sut,
-      act: (cubit) => [
-        sut.emit(
-          const HomeState(
-            status: Status.error,
-            errorMessage: 'errorMessage',
-          ),
-        ),
-        sut.emitPreviousState(),
-      ],
-      expect: () => [
-        const HomeState(
-          status: Status.error,
-          errorMessage: 'errorMessage',
-        ),
-        sut.previousState,
-      ],
-      verify: (cubit) => [
-        verify(
-          () => globalLogger.log('previous state emitted'),
-        ).called(1),
-        expect(sut.previousState == sut.state, true),
-      ],
-    );
+      blocTest<HomeCubit, HomeState>(
+        'attempts to resume from hydrated state by reloading image',
+        build: () => sut,
+        act: (cubit) async {
+          await cacheTestImageForUrl('https://example.com/image.jpg');
 
-    blocTest(
-      'on previousState == state, does not update previousState with the new state and logs the apropriate message',
-      build: () => sut,
-      act: (cubit) => [
-        sut.emit(
-          sut.previousState,
-        ),
-        sut.emitPreviousState(),
-      ],
-      expect: () => [
-        sut.previousState,
-      ],
-      verify: (cubit) => [
-        verify(
-          () => globalLogger.log(
-            'previous state not emitted',
+          when(() => imageRepository.getImageModel()).thenThrow(
+            Exception('Should not be called'),
+          );
+          await cubit.ensureInitialized(const Size(100, 100));
+        },
+        expect: () => [
+          isA<HomeState>().having(
+            (state) => state.status,
+            'status',
+            Status.loading,
           ),
-        ).called(1),
-        expect(sut.previousState == sut.state, true),
-      ],
-    );
+          isA<HomeState>().having(
+            (state) => state.status,
+            'status',
+            Status.success,
+          ),
+        ],
+        verify: (cubit) {
+          verifyNever(() => imageRepository.getImageModel());
+        },
+      );
+    });
 
-    blocTest(
-      'on previousState != state, but previousState status != Status.success, does not update previousState with the new state and logs the apropriate message',
-      build: () => sut,
-      act: (cubit) => [
-        sut.emit(
-          sut.previousState.copyWith(
-            status: Status.loading,
-          ),
-        ),
-        sut.previousState = sut.previousState.copyWith(
-          status: Status.error,
-        ),
-        sut.emitPreviousState(),
-      ],
-      expect: () => [
-        sut.previousState.copyWith(
-          status: Status.loading,
-        ),
-      ],
-      verify: (cubit) => [
-        verify(
-          () => globalLogger.log(
-            'previous state not emitted',
-          ),
-        ).called(1),
-        expect(sut.previousState != sut.state, true),
-      ],
-    );
-  });
-
-  group('getItemModels', () {
-    setUp(
-      () {
+    group('on status initial', () {
+      setUp(() {
         when(() => imageRepository.getImageModel()).thenAnswer(
           (_) async => ImageModel(
-            imageUrl: 'imageUrl',
+            imageUrl: 'https://example.com/image.jpg',
             author: 'imageAuthor',
           ),
         );
@@ -192,712 +162,62 @@ void main() async {
             author: 'quoteAuthor',
           ),
         );
-      },
-    );
+      });
 
-    blocTest<HomeCubit, HomeState>(
-      'emits Status.loading then Status.loading with results',
-      build: () => sut,
-      act: (cubit) => cubit.getItemModels(),
-      expect: () => [
-        isA<HomeState>().having(
-          (state) => state.status,
-          'status',
-          Status.loading,
-        ),
-        isA<HomeState>()
-            .having(
-              (state) => state.status,
-              'status',
-              Status.loading,
-            )
-            .having(
-              (state) => state.imageModel!.imageUrl,
-              'imageUrl',
-              'imageUrl',
-            )
-            .having(
-              (state) => state.quoteModel!.quote,
-              'quote',
-              'quote',
-            ),
-      ],
-    );
+      blocTest<HomeCubit, HomeState>(
+        'emits loading then success on successful data fetch',
+        build: () => sut,
+        act: (cubit) async {
+          await cacheTestImageForUrl('https://example.com/image.jpg');
 
-    group('failure on getting image model', () {
-      setUp(
-        () {
-          when(() => imageRepository.getImageModel()).thenThrow(
-            Exception('Error fetching image'),
+          final mockConnectivity = MockConnectivity();
+          when(() => mockConnectivity.checkConnectivity()).thenAnswer(
+            (_) async => [ConnectivityResult.wifi],
           );
+          NetworkUtils.connectivity = mockConnectivity;
+
+          await cubit.ensureInitialized(const Size(300, 500));
         },
+        expect: () => [
+          isA<HomeState>().having(
+            (state) => state.status,
+            'status',
+            Status.loading,
+          ),
+          isA<HomeState>()
+              .having(
+                (state) => state.status,
+                'status',
+                Status.success,
+              )
+              .having(
+                (state) => state.imageModel?.imageUrl,
+                'imageUrl',
+                'https://example.com/image.jpg',
+              )
+              .having(
+                (state) => state.quoteModel?.quote,
+                'quote',
+                'quote',
+              ),
+        ],
       );
 
       blocTest<HomeCubit, HomeState>(
-        'emits Status.loading then Status.error with error message and logs the error',
+        'emits error on no network connection',
         build: () => sut,
-        act: (cubit) => cubit.getItemModels(),
-        expect: () => [
-          const HomeState(status: Status.loading),
-          const HomeState(
-            status: Status.error,
-            errorMessage: 'Exception: Error fetching image',
-          ),
-        ],
-        verify: (cubit) => globalLogger.log,
-      );
-    });
+        act: (cubit) async {
+          await cacheTestImageForUrl('https://example.com/image.jpg');
 
-    group(
-      'failure on getting quote model',
-      () {
-        setUp(() {
-          when(
-            () => quoteRepository.getQuoteModel(),
-          ).thenThrow(
-            Exception(
-              'Error fetching quote',
-            ),
+          final mockConnectivity = MockConnectivity();
+          when(() => mockConnectivity.checkConnectivity()).thenAnswer(
+            (_) async => [ConnectivityResult.none],
           );
-        });
+          NetworkUtils.connectivity = mockConnectivity;
 
-        blocTest<HomeCubit, HomeState>(
-          'emits Status.loading then Status.errorwith error message and logs the error',
-          build: () => sut,
-          act: (cubit) => cubit.getItemModels(),
-          expect: () => [
-            const HomeState(status: Status.loading),
-            const HomeState(
-              status: Status.error,
-              errorMessage: 'Exception: Error fetching quote',
-            ),
-          ],
-          verify: (cubit) => globalLogger.log,
-        );
-      },
-    );
-  });
-
-  group('loadImage', () {
-    setUp(
-      () {
-        mockImageLoader = MockImageLoader();
-        mockImage = MockImage();
-
-        sut.emit(
-          HomeState(
-            status: Status.loading,
-            imageModel: ImageModel(
-              imageUrl: 'imageUrl',
-              author: 'author',
-            ),
-            quoteModel: QuoteModel(
-              quote: 'quote',
-            ),
-          ),
-        );
-        sut.pendingState = sut.state;
-      },
-    );
-
-    blocTest<HomeCubit, HomeState>(
-      'emits state with imageModel.rawImage when image loads successfully, logs image size',
-      build: () => sut,
-      act: (cubit) async {
-        when(
-          () => mockImageLoader.loadImage(any()),
-        ).thenAnswer((_) async {
-          return mockImage;
-        });
-        when(() => mockImage.width).thenReturn(100);
-        when(() => mockImage.height).thenReturn(200);
-        cubit.imageLoader = mockImageLoader;
-
-        await cubit.loadImage();
-      },
-      expect: () => [
-        isA<HomeState>()
-            .having(
-              (state) => state.imageModel!.rawImage,
-              'rawImage',
-              isNotNull,
-            )
-            .having(
-              (state) => state.status,
-              'status',
-              Status.loading,
-            ),
-      ],
-      verify: (cubit) => globalLogger.log(
-        'Width: ${mockImage.width}, height: ${mockImage.height}',
-      ),
-    );
-
-    blocTest<HomeCubit, HomeState>(
-      'emits error state when image loading fails and logs the error',
-      build: () => sut,
-      act: (cubit) async {
-        when(
-          () => mockImageLoader.loadImage(any()),
-        ).thenThrow(
-          Exception('Error loading image'),
-        );
-        cubit.imageLoader = mockImageLoader;
-        await cubit.loadImage();
-      },
-      expect: () => [
-        isA<HomeState>()
-            .having(
-              (state) => state.status,
-              'status',
-              Status.error,
-            )
-            .having(
-              (state) => state.errorMessage,
-              'errorMessage',
-              'Failed to load image, check your network connection',
-            ),
-      ],
-      verify: (cubit) => globalLogger.log,
-    );
-    blocTest<HomeCubit, HomeState>(
-      'logs error when imageModel is null',
-      build: () => sut,
-      seed: () {
-        sut.pendingState = const HomeState(
-          status: Status.loading,
-          imageModel: null,
-        );
-        return const HomeState(
-          status: Status.loading,
-          imageModel: null,
-        );
-      },
-      act: (cubit) async {
-        await cubit.loadImage();
-      },
-      verify: (cubit) => globalLogger.log,
-    );
-  });
-
-  group('randomizeTextLayout', () {
-    test(
-      'layout is randomized within range, logs success message',
-      () {
-        sut.emit(const HomeState(status: Status.loading));
-        sut.pendingState = HomeState(
-          status: Status.loading,
-          quoteModel: QuoteModel(
-            quote: 'quote',
-            fontWeightIndex: 1,
-            textAlignmentIndex: 4,
-            mainAxisAlignmentIndex: 4,
-            crossAxisAlignmentIndex: 4,
-          ),
-        );
-
-        sut.randomizeTextLayout();
-        QuoteModel? quoteModel = sut.pendingState.quoteModel;
-
-        expect(
-          quoteModel?.fontWeightIndex,
-          inInclusiveRange(3, 8),
-        );
-        expect(
-          quoteModel?.textAlignmentIndex,
-          inInclusiveRange(0, 2),
-        );
-        expect(
-          quoteModel?.mainAxisAlignmentIndex,
-          inInclusiveRange(0, 2),
-        );
-        expect(
-          quoteModel?.crossAxisAlignmentIndex,
-          inInclusiveRange(0, 2),
-        );
-        verify(
-          () => globalLogger.log(
-            'layout randomized',
-          ),
-        );
-      },
-    );
-
-    test(
-      'layout is not randomized due to decoding status, logs a message',
-      () {
-        sut.emit(const HomeState(status: Status.decoding));
-        sut.pendingState = HomeState(
-          status: Status.decoding,
-          quoteModel: QuoteModel(
-            quote: 'quote',
-            fontWeightIndex: 1,
-            textAlignmentIndex: 1,
-            mainAxisAlignmentIndex: 1,
-            crossAxisAlignmentIndex: 1,
-          ),
-        );
-        sut.randomizeTextLayout();
-        QuoteModel? quoteModel = sut.pendingState.quoteModel;
-        expect(quoteModel?.fontWeightIndex, 1);
-        expect(quoteModel?.textAlignmentIndex, 1);
-        expect(quoteModel?.mainAxisAlignmentIndex, 1);
-        expect(quoteModel?.crossAxisAlignmentIndex, 1);
-        verify(
-          () => globalLogger.log(
-            'layout not randomized',
-          ),
-        );
-      },
-    );
-  });
-
-  group('getTextPositionAndSize', () {
-    setUp(
-      () {
-        sut.pendingState = HomeState(
-          status: Status.loading,
-          quoteModel: QuoteModel(
-            quote: 'quote',
-          ),
-        );
-      },
-    );
-
-    test(
-      'gets passed pendingState textPosition and textSize and logs the values',
-      () {
-        sut.getTextPositionAndSize(
-          const Offset(1, 1),
-          const Size(1, 1),
-        );
-        QuoteModel? quoteModel = sut.pendingState.quoteModel;
-        expect(
-          quoteModel?.textPosition,
-          const Offset(1, 1),
-        );
-        expect(
-          quoteModel?.textSize,
-          const Size(1, 1),
-        );
-        verify(
-          () => globalLogger.log(
-            'New textPosition: Offset(1.0, 1.0), new textSize: Size(1.0, 1.0)',
-          ),
-        ).called(1);
-      },
-    );
-  });
-
-  group('calculateScaleFactor', () {
-    setUp(() {
-      mockImage = MockImage();
-    });
-
-    test(
-      'calculates scaleFactor correctly, logs the scaleFactor',
-      () {
-        sut.pendingState = HomeState(
-          status: Status.loading,
-          imageModel: ImageModel(
-            imageUrl: 'imageUrl',
-            author: '',
-            rawImage: mockImage,
-          ),
-        );
-        sut.emit(
-          sut.pendingState,
-        );
-        when(
-          () => mockImage.width,
-        ).thenReturn(100);
-        when(() => mockImage.height).thenReturn(200);
-
-        sut.calculateScaleFactor(const Size(200, 100));
-
-        expect(sut.pendingState.imageModel?.scaleFactor, .5);
-        verify(
-          () => globalLogger.log(
-            'scaleFactor: ${sut.pendingState.imageModel?.scaleFactor}',
-          ),
-        );
-      },
-    );
-
-    blocTest(
-      'emits an error state when the image passed for calculation is null and logs the error',
-      build: () => sut,
-      seed: () => HomeState(
-        status: Status.loading,
-        imageModel: ImageModel(
-          imageUrl: 'imageUrl',
-          author: '',
-          rawImage: null,
-        ),
-      ),
-      act: (cubit) => cubit.calculateScaleFactor(const Size(200, 100)),
-      expect: () => [
-        isA<HomeState>()
-            .having(
-              (state) => state.status,
-              'status',
-              Status.error,
-            )
-            .having(
-              (state) => state.errorMessage,
-              'errorMessage',
-              'Scale factor calculation error',
-            ),
-      ],
-      verify: (cubit) => globalLogger.log,
-    );
-  });
-
-  group('generateColors', () {
-    mockImage = MockImage();
-    mockImageLoader = MockImageLoader();
-    mockPaletteGeneratorService = MockPaletteGeneratorService();
-    mockImageProvider = MockImageProvider();
-
-    registerFallbackValue(FakeSize());
-    registerFallbackValue(FakeRect());
-
-    setUp(
-      () {
-        sut.pendingState = HomeState(
-          status: Status.loading,
-          imageModel: ImageModel(
-            imageUrl: 'imageUrl',
-            author: '',
-            rawImage: mockImage,
-            scaleFactor: .8,
-          ),
-          quoteModel: QuoteModel(
-            quote: 'quote',
-            textPosition: const Offset(10, 10),
-            textSize: const Size(50, 20),
-          ),
-        );
-        sut.paletteGeneratorService = mockPaletteGeneratorService;
-      },
-    );
-
-    test(
-      'generates color correctly, logs the color value and success message',
-      () async {
-        imageProvider = mockImageProvider;
-
-        when(
-          () => mockPaletteGeneratorService.generateColors(
-            mockImageProvider,
-            any(),
-            any(),
-          ),
-        ).thenAnswer(
-          (_) => Future.value(
-            const ui.Color.fromARGB(255, 0, 0, 0),
-          ),
-        );
-        when(() => mockImage.width).thenReturn(400);
-        when(() => mockImage.height).thenReturn(600);
-
-        await sut.generateColors();
-
-        expect(
-          sut.pendingState.quoteModel?.textColor,
-          const ui.Color.fromARGB(255, 255, 255, 255),
-        );
-        verifyInOrder(
-          [
-            () => globalLogger.log(
-                  'textColor = ${sut.pendingState.quoteModel?.textColor}',
-                ),
-            () => globalLogger.log(
-                  'palette generated!',
-                ),
-          ],
-        );
-      },
-    );
-
-    blocTest(
-      'emits an error state when color generator service fails and logs the error',
-      build: () => sut,
-      seed: () {
-        imageProvider = mockImageProvider;
-        return sut.pendingState;
-      },
-      act: (cubit) async {
-        when(
-          () => mockPaletteGeneratorService.generateColors(
-            mockImageProvider,
-            any(),
-            any(),
-          ),
-        ).thenThrow(
-          Exception('Error generating colors'),
-        );
-        when(() => mockImage.width).thenReturn(400);
-        when(() => mockImage.height).thenReturn(600);
-
-        await cubit.generateColors();
-      },
-      expect: () => [
-        isA<HomeState>()
-            .having(
-              (state) => state.status,
-              'status',
-              Status.error,
-            )
-            .having(
-              (state) => state.errorMessage,
-              'errorMessage',
-              'Exception: Error generating colors',
-            ),
-      ],
-      verify: (cubit) => globalLogger.log,
-    );
-
-    blocTest(
-      'emits an error state when an argument passed to color generator is null and logs the error',
-      build: () => sut,
-      seed: () {
-        imageProvider = null;
-        return sut.pendingState;
-      },
-      act: (cubit) async {
-        await cubit.generateColors();
-      },
-      expect: () => [
-        isA<HomeState>()
-            .having(
-              (state) => state.status,
-              'status',
-              Status.error,
-            )
-            .having(
-              (state) => state.errorMessage,
-              'errorMessage',
-              'Error while generating color',
-            ),
-      ],
-      verify: (cubit) => globalLogger.log,
-    );
-  });
-
-  group('getInverseColor', () {
-    test(
-      'inverts all rgb values of the passed color and returns color with max alpha value',
-      () {
-        Color testColor = const ui.Color.from(
-          alpha: .8,
-          red: .25,
-          green: .5,
-          blue: 1,
-        );
-
-        Color inverseColor = sut.getInverseColor(testColor);
-
-        expect(
-            inverseColor,
-            const Color.from(
-              alpha: 1,
-              red: .75,
-              green: .5,
-              blue: 0,
-            ));
-      },
-    );
-
-    test(
-      'on high rgb values (color is nearly white) of the passed color, returns black color with max alpha value',
-      () {
-        Color testColor = const ui.Color.fromARGB(255, 230, 230, 230);
-
-        Color inverseColor = sut.getInverseColor(testColor);
-
-        expect(inverseColor, Colors.black);
-      },
-    );
-
-    test(
-      'on low rgb values (color is nearly black) of the passed color, returns white color with max alpha value',
-      () {
-        Color testColor = const ui.Color.fromARGB(255, 55, 55, 55);
-
-        Color inverseColor = sut.getInverseColor(testColor);
-
-        expect(inverseColor, Colors.white);
-      },
-    );
-  });
-
-  group('emitSuccessIfRequired', () {
-    setUp(
-      () {
-        sut.pendingState = HomeState(
-          status: Status.loading,
-          imageModel: ImageModel(
-            imageUrl: 'imageUrl',
-            author: '',
-            rawImage: mockImage,
-            scaleFactor: .8,
-          ),
-          quoteModel: QuoteModel(
-            quote: 'quote',
-          ),
-        );
-        sut.previousState = HomeState(
-          status: Status.success,
-          imageModel: ImageModel(
-            imageUrl: 'previousImageUrl',
-            author: '',
-            rawImage: mockImage,
-            scaleFactor: .5,
-          ),
-          quoteModel: QuoteModel(
-            quote: 'previousQuote',
-          ),
-        );
-      },
-    );
-
-    blocTest(
-      'on state status == loading, emits the pending state with success status, logs success message, and updates previousState to the successful one',
-      build: () => sut,
-      act: (cubit) async => [
-        sut.emit(
-          const HomeState(status: Status.loading),
-        ),
-        await sut.emitSuccessIfRequired(),
-      ],
-      expect: () => [
-        const HomeState(status: Status.loading),
-        sut.pendingState.copyWith(status: Status.success),
-      ],
-      verify: (cubit) => [
-        verify(
-          () => globalLogger.log(
-            'success',
-          ),
-        ).called(1),
-        expect(sut.previousState == sut.state, true),
-      ],
-    );
-
-    blocTest(
-      'on state status == decoding, emits the pending state with success status, logs success message, and updates previousState to the successful one',
-      build: () => sut,
-      act: (cubit) async => [
-        sut.emit(
-          const HomeState(status: Status.decoding),
-        ),
-        await sut.emitSuccessIfRequired(),
-      ],
-      expect: () => [
-        const HomeState(status: Status.decoding),
-        sut.pendingState.copyWith(status: Status.success),
-      ],
-      verify: (cubit) => [
-        verify(
-          () => globalLogger.log(
-            'success',
-          ),
-        ).called(1),
-        expect(sut.previousState == sut.state, true),
-      ],
-    );
-
-    blocTest(
-      'on state status != loading && status != decoding, does not emit the pending state with success status, does not log success message, and does not update previousState to the new one',
-      build: () => sut,
-      act: (cubit) async => [
-        sut.emit(
-          const HomeState(status: Status.error),
-        ),
-        await sut.emitSuccessIfRequired(),
-      ],
-      expect: () => [
-        const HomeState(status: Status.error),
-      ],
-      verify: (cubit) => [
-        verifyNever(
-          () => globalLogger.log(
-            'success',
-          ),
-        ),
-        expect(sut.previousState != sut.state, true),
-      ],
-    );
-  });
-
-  group('emitSuccess', () {
-    setUp(
-      () {
-        sut.pendingState = HomeState(
-          status: Status.loading,
-          imageModel: ImageModel(
-            imageUrl: 'imageUrl',
-            author: '',
-            rawImage: mockImage,
-            scaleFactor: .8,
-          ),
-          quoteModel: QuoteModel(
-            quote: 'quote',
-          ),
-        );
-      },
-    );
-
-    blocTest(
-      'emits the pending state with success status, logs a success message',
-      build: () => sut,
-      act: (cubit) async => await sut.emitSuccess(),
-      expect: () => [
-        sut.pendingState.copyWith(status: Status.success),
-      ],
-      verify: (cubit) => globalLogger.log(
-        'success',
-      ),
-    );
-  });
-
-  group('start', () {
-    setUp(
-      () {
-        mockConnectivity = MockConnectivity();
-        NetworkUtils.connectivity = mockConnectivity;
-        mockImageLoader = MockImageLoader();
-        mockImage = MockImage();
-        when(
-          () => mockImageLoader.loadImage(any()),
-        ).thenAnswer((_) async {
-          return mockImage;
-        });
-        when(() => mockImage.width).thenReturn(100);
-        when(() => mockImage.height).thenReturn(200);
-
-        sut.imageLoader = mockImageLoader;
-      },
-    );
-
-    test(
-      'on no network connection, no further interactions',
-      () async {
-        when(
-          () => mockConnectivity.checkConnectivity(),
-        ).thenAnswer(
-          (_) async => [ConnectivityResult.none],
-        );
-
-        sut.emit(
-          const HomeState(status: Status.initial),
-        );
-
-        await sut.start();
-
-        expect(
-          sut.state,
+          await cubit.ensureInitialized(const Size(300, 500));
+        },
+        expect: () => [
           isA<HomeState>()
               .having(
                 (state) => state.status,
@@ -907,236 +227,130 @@ void main() async {
               .having(
                 (state) => state.errorMessage,
                 'errorMessage',
-                'Check your network connection',
+                contains('Check your network connection'),
               ),
-        );
-      },
-    );
+        ],
+      );
 
-    test(
-      'on Status.initial reset old pendingStatus, then run getItemModels and loadImage regardless of results',
-      () async {
-        when(
-          () => mockConnectivity.checkConnectivity(),
-        ).thenAnswer(
-          (_) async => [ConnectivityResult.wifi],
-        );
-        when(
-          () => imageRepository.getImageModel(),
-        ).thenAnswer(
-          (_) async => ImageModel(
-            imageUrl: 'imageUrl',
-            author: 'author',
+      blocTest<HomeCubit, HomeState>(
+        'emits error state on image repository error',
+        build: () => sut,
+        act: (cubit) async {
+          final mockConnectivity = MockConnectivity();
+          when(() => mockConnectivity.checkConnectivity()).thenAnswer(
+            (_) async => [ConnectivityResult.wifi],
+          );
+          NetworkUtils.connectivity = mockConnectivity;
+
+          when(() => imageRepository.getImageModel()).thenThrow(
+            Exception('Error fetching image'),
+          );
+          await cubit.ensureInitialized(const Size(300, 500));
+        },
+        expect: () => [
+          isA<HomeState>().having(
+            (state) => state.status,
+            'status',
+            Status.loading,
           ),
-        );
-        when(
-          () => quoteRepository.getQuoteModel(),
-        ).thenAnswer(
-          (_) async => QuoteModel(quote: 'quote'),
-        );
-
-        sut.emit(
-          const HomeState(status: Status.initial),
-        );
-
-        await sut.start();
-
-        verifyInOrder(
-          [
-            () => mockConnectivity.checkConnectivity(),
-            () => globalLogger.log('Connection status: true'),
-            () => globalLogger.log('pendingState reset'),
-            () => imageRepository.getImageModel(),
-            () => quoteRepository.getQuoteModel(),
-            () => mockImageLoader.loadImage('imageUrl'),
-            () => globalLogger.log('Width: 100, height: 200'),
-          ],
-        );
-      },
-    );
-
-    test(
-      'on Status.decoding reset pendingStatus, copy state to pendingState and loadImage',
-      () async {
-        when(
-          () => mockConnectivity.checkConnectivity(),
-        ).thenAnswer(
-          (_) async => [ConnectivityResult.wifi],
-        );
-        sut.emit(
-          HomeState(
-            status: Status.decoding,
-            imageModel: ImageModel(
-              imageUrl: 'imageUrl',
-              author: 'author',
-            ),
-            quoteModel: QuoteModel(
-              quote: 'quote',
-            ),
-          ),
-        );
-
-        await sut.start();
-
-        verifyInOrder(
-          [
-            () => mockConnectivity.checkConnectivity(),
-            () => globalLogger.log('pendingState reset'),
-            () => sut.pendingState = sut.state,
-            () => mockImageLoader.loadImage('imageUrl'),
-            () => globalLogger.log('Width: 100, height: 200'),
-          ],
-        );
-      },
-    );
-
-    HomeState stateA = const HomeState();
-    HomeState stateB = const HomeState();
-
-    blocTest(
-      'on Status.loading, no further interaction',
-      build: () => sut,
-      seed: () => const HomeState(status: Status.loading),
-      act: (cubit) async {
-        when(
-          () => mockConnectivity.checkConnectivity(),
-        ).thenAnswer(
-          (_) async => [ConnectivityResult.wifi],
-        );
-        stateA = cubit.state;
-        await cubit.start();
-        stateB = cubit.state;
-      },
-      verify: (cubit) {
-        expect(stateA == stateB, true);
-      },
-    );
-  });
-
-  group('handleStateUpdate', () {
-    setUp(
-      () {
-        mockImage = MockImage();
-        mockImageProvider = MockImageProvider();
-        imageProvider = mockImageProvider;
-        mockPaletteGeneratorService = MockPaletteGeneratorService();
-
-        when(
-          () => mockImage.width,
-        ).thenReturn(100);
-        when(() => mockImage.height).thenReturn(200);
-      },
-    );
-
-    test(
-      'executes the correct logic in the correct order and updates the state with the correct values and success status',
-      () async {
-        sut.paletteGeneratorService = mockPaletteGeneratorService;
-        when(
-          () => mockPaletteGeneratorService.generateColors(
-            mockImageProvider,
-            any(),
-            any(),
-          ),
-        ).thenAnswer(
-          (_) => Future.value(
-            const ui.Color.from(
-              alpha: 1,
-              red: 0,
-              green: 0,
-              blue: 0,
-            ),
-          ),
-        );
-
-        sut.emit(
-          HomeState(
-            status: Status.loading,
-            imageModel: ImageModel(
-              imageUrl: 'imageUrl',
-              author: '',
-              rawImage: mockImage,
-            ),
-            quoteModel: QuoteModel(
-              quote: 'quote',
-            ),
-          ),
-        );
-        sut.pendingState = sut.state;
-
-        await sut.handleStateUpdate(
-          imageWidgetSize: const Size(100, 100),
-          textPosition: const Offset(10, 10),
-          textSize: const Size(50, 50),
-        );
-
-        expect(
-          sut.state,
           isA<HomeState>()
               .having(
                 (state) => state.status,
                 'status',
-                Status.success,
+                Status.error,
               )
               .having(
-                (state) => state.imageModel!.imageUrl,
-                'imageUrl',
-                'imageUrl',
-              )
-              .having(
-                (state) => state.imageModel!.rawImage,
-                'rawImage',
-                mockImage,
-              )
-              .having(
-                (state) => state.imageModel!.scaleFactor,
-                'scaleFactor',
-                .5,
-              )
-              .having(
-                (state) => state.quoteModel!.quote,
-                'quote',
-                'quote',
-              )
-              .having(
-                (state) => state.quoteModel!.textPosition,
-                'textPosition',
-                const Offset(10.0, 10.0),
-              )
-              .having(
-                (state) => state.quoteModel!.textSize,
-                'textSize',
-                const Size(50.0, 50.0),
-              )
-              .having(
-                (state) => state.quoteModel!.textColor,
-                'textColor',
-                const ui.Color.from(
-                  alpha: 1,
-                  red: 1,
-                  green: 1,
-                  blue: 1,
-                ),
+                (state) => state.errorMessage,
+                'errorMessage',
+                contains('Error fetching image'),
               ),
-        );
+        ],
+      );
 
-        verifyInOrder(
-          [
-            () => globalLogger.log('scaleFactor: 0.5'),
-            () => globalLogger.log('layout randomized'),
-            () => globalLogger.log('New textPosition: Offset(10.0, 10.0), new textSize: Size(50.0, 50.0)'),
-            () => globalLogger.log('textColor = Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB)'),
-            () => globalLogger.log('palette generated!'),
-            () => globalLogger.log('success'),
-          ],
+      blocTest<HomeCubit, HomeState>(
+        'emits error state on quote repository error',
+        build: () => sut,
+        act: (cubit) async {
+          await cacheTestImageForUrl('https://example.com/image.jpg');
+
+          final mockConnectivity = MockConnectivity();
+          when(() => mockConnectivity.checkConnectivity()).thenAnswer(
+            (_) async => [ConnectivityResult.wifi],
+          );
+          NetworkUtils.connectivity = mockConnectivity;
+
+          when(() => quoteRepository.getQuoteModel()).thenThrow(
+            Exception('Error fetching quote'),
+          );
+          await cubit.ensureInitialized(const Size(300, 500));
+        },
+        expect: () => [
+          isA<HomeState>().having(
+            (state) => state.status,
+            'status',
+            Status.loading,
+          ),
+          isA<HomeState>()
+              .having(
+                (state) => state.status,
+                'status',
+                Status.error,
+              )
+              .having(
+                (state) => state.errorMessage,
+                'errorMessage',
+                contains('Error fetching quote'),
+              ),
+        ],
+      );
+    });
+
+    blocTest<HomeCubit, HomeState>(
+      'returns early if already initialized on second call',
+      build: () => sut,
+      seed: () => const HomeState(status: Status.initial),
+      act: (cubit) async {
+        final mockConnectivity = MockConnectivity();
+        when(() => mockConnectivity.checkConnectivity()).thenAnswer(
+          (_) async => [ConnectivityResult.wifi],
         );
+        NetworkUtils.connectivity = mockConnectivity;
+
+        when(() => imageRepository.getImageModel()).thenAnswer(
+          (_) async => ImageModel(
+            imageUrl: 'https://example.com/image.jpg',
+            author: 'author',
+          ),
+        );
+        when(() => quoteRepository.getQuoteModel()).thenAnswer(
+          (_) async => QuoteModel(quote: 'quote'),
+        );
+        // First initialization fails due to image loading, but sets _initialized to true
+        await cubit.ensureInitialized(const Size(100, 100));
+        // Second call should return early without calling repositories again
+        await cubit.ensureInitialized(const Size(200, 200));
+      },
+      expect: () => [
+        isA<HomeState>().having(
+          (state) => state.status,
+          'status',
+          Status.loading,
+        ),
+        isA<HomeState>().having(
+          (state) => state.status,
+          'status',
+          Status.error,
+        ),
+      ],
+      verify: (cubit) {
+        verify(() => imageRepository.getImageModel()).called(1);
       },
     );
   });
 
-  group('fromJson', () {
+  group('serialization', () {
     test(
-      'succesfully deserializes a json',
+      'successfully deserializes valid json to HomeState',
       () {
         final imageModelMap = {
           'ImageModelUrl': 'imageUrl',
@@ -1152,10 +366,7 @@ void main() async {
 
         final HomeState? stateFromJson = sut.fromJson(json);
 
-        expect(
-          stateFromJson?.status,
-          Status.decoding,
-        );
+        expect(stateFromJson, isNotNull);
         expect(
           stateFromJson?.imageModel,
           isA<ImageModel>()
@@ -1182,7 +393,7 @@ void main() async {
     );
 
     test(
-      'on error logs the error and returns null',
+      'logs error and returns null on deserializing invalid json',
       () {
         final json = {
           'imageModel': 'wrongData',
@@ -1191,20 +402,633 @@ void main() async {
 
         final HomeState? stateFromJson = sut.fromJson(json);
 
-        expect(
-          stateFromJson,
-          null,
-        );
+        expect(stateFromJson, null);
         verify(
           () => globalLogger.log(
             any(
-              that: contains(
-                'Error on HomeState fromJson:',
-              ),
+              that: contains('Error restoring HomeState:'),
             ),
           ),
         );
       },
     );
+
+    blocTest<HomeCubit, HomeState>(
+      'serializes state to json and skips serialization if state unchanged',
+      build: () => sut,
+      act: (cubit) async {
+        cubit.emit(
+          HomeState(
+            status: Status.success,
+            imageModel: ImageModel(
+              imageUrl: 'imageUrl',
+              author: 'author',
+            ),
+            quoteModel: QuoteModel(
+              quote: 'quote',
+            ),
+            compositionModel: CompositionModel(),
+          ),
+        );
+      },
+      expect: () => [
+        isA<HomeState>()
+            .having(
+              (state) => state.status,
+              'status',
+              Status.success,
+            )
+            .having(
+              (state) => state.imageModel?.imageUrl,
+              'imageUrl',
+              'imageUrl',
+            ),
+      ],
+    );
+  });
+
+  group('calculateFontSize', () {
+    setUp(() {
+      sut.compositionModel = CompositionModel();
+    });
+
+    test('calculates font size for quotes <=20 chars', () {
+      final quoteModel = QuoteModel(quote: 'Short');
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 10);
+    });
+
+    test('calculates font size for quotes <=160 chars', () {
+      final quoteModel = QuoteModel(quote: 'a' * 100);
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 14);
+    });
+
+    test('calculates font size for quotes <=300 chars', () {
+      final quoteModel = QuoteModel(quote: 'a' * 250);
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 20);
+    });
+
+    test('calculates font size for quotes <=540 chars', () {
+      final quoteModel = QuoteModel(quote: 'a' * 400);
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 24);
+    });
+
+    test('calculates font size for quotes <=710 chars', () {
+      final quoteModel = QuoteModel(quote: 'a' * 600);
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 28);
+    });
+
+    test('calculates font size for quotes <=900 chars', () {
+      final quoteModel = QuoteModel(quote: 'a' * 800);
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 32);
+    });
+
+    test('calculates font size for quotes > 900 chars', () {
+      final quoteModel = QuoteModel(quote: 'a' * 1000);
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 36);
+    });
+
+    test('calculates author font size for quote <=300 chars', () {
+      final quoteModel = QuoteModel(
+        quote: 'a' * 100,
+        author: 'Some Author',
+      );
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.authorFontSize, containerHeight ~/ 24);
+    });
+
+    test('calculates author font size for quote <=540 chars', () {
+      final quoteModel = QuoteModel(
+        quote: 'a' * 400,
+        author: 'Some Author',
+      );
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.authorFontSize, containerHeight ~/ 26);
+    });
+
+    test('calculates author font size for quote <=710 chars', () {
+      final quoteModel = QuoteModel(
+        quote: 'a' * 600,
+        author: 'Some Author',
+      );
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.authorFontSize, containerHeight ~/ 30);
+    });
+
+    test('calculates author font size for quote <=900 chars', () {
+      final quoteModel = QuoteModel(
+        quote: 'a' * 800,
+        author: 'Some Author',
+      );
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.authorFontSize, containerHeight ~/ 34);
+    });
+
+    test('calculates author font size for quote > 900 chars', () {
+      final quoteModel = QuoteModel(
+        quote: 'a' * 1000,
+        author: 'Some Author',
+      );
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.authorFontSize, containerHeight ~/ 38);
+    });
+
+    test('does not calculate author font size when author is null', () {
+      final quoteModel = QuoteModel(
+        quote: 'a' * 100,
+        author: null,
+      );
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.authorFontSize, isNull);
+    });
+
+    test('scales font sizes properly with different container heights', () {
+      final quoteModel = QuoteModel(quote: 'Short');
+      const smallContainer = 200.0;
+      const largeContainer = 600.0;
+
+      sut.calculateFontSize(smallContainer, quoteModel: quoteModel);
+      final smallFontSize = sut.compositionModel?.fontSize;
+
+      sut.calculateFontSize(largeContainer, quoteModel: quoteModel);
+      final largeFontSize = sut.compositionModel?.fontSize;
+
+      expect(largeFontSize, greaterThan(smallFontSize!));
+      expect(largeFontSize, largeContainer ~/ 10);
+    });
+
+    test('handles zero quote length', () {
+      final quoteModel = QuoteModel(quote: '');
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 10);
+    });
+
+    test('handles quote length exactly at boundary (20)', () {
+      final quoteModel = QuoteModel(quote: 'a' * 20);
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 10);
+    });
+
+    test('handles quote length just over boundary (21)', () {
+      final quoteModel = QuoteModel(quote: 'a' * 21);
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 14);
+    });
+
+    test('handles author length boundary 300', () {
+      final quoteModel = QuoteModel(
+        quote: 'a' * 300,
+        author: 'Author',
+      );
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.authorFontSize, containerHeight ~/ 24);
+    });
+
+    test('handles author length boundary 301', () {
+      final quoteModel = QuoteModel(
+        quote: 'a' * 301,
+        author: 'Author',
+      );
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.authorFontSize, containerHeight ~/ 26);
+    });
+
+    test('handles empty author string', () {
+      final quoteModel = QuoteModel(
+        quote: 'a' * 100,
+        author: '',
+      );
+      const containerHeight = 400.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.authorFontSize, isNotNull);
+    });
+
+    test('handles very small container height', () {
+      final quoteModel = QuoteModel(quote: 'Short');
+      const containerHeight = 10.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 10);
+      expect(sut.compositionModel?.fontSize, 1);
+    });
+
+    test('handles very large container height', () {
+      final quoteModel = QuoteModel(quote: 'Short');
+      const containerHeight = 10000.0;
+
+      sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+      expect(sut.compositionModel?.fontSize, containerHeight ~/ 10);
+      expect(sut.compositionModel?.fontSize, 1000);
+    });
+  });
+
+  group('calculateTextPosition', () {
+    test('calculates proper text position for all alignment combinations', () {
+      const containerSize = Size(300.0, 500.0);
+      const textSize = Size(100.0, 50.0);
+
+      final expectedResults = {
+        (0, 0): Offset(0, 0), // start, start
+        (0, 1): Offset(containerSize.width - textSize.width, 0), // start, end
+        (0, 2): Offset((containerSize.width - textSize.width) / 2, 0), // start, center
+        (1, 0): Offset(0, containerSize.height - textSize.height), // end, start
+        (1, 1): Offset(
+          containerSize.width - textSize.width,
+          containerSize.height - textSize.height,
+        ), // end, end
+        (1, 2): Offset(
+          (containerSize.width - textSize.width) / 2,
+          containerSize.height - textSize.height,
+        ), // end, center
+        (2, 0): Offset(
+          0,
+          (containerSize.height - textSize.height) / 2,
+        ), // center, start
+        (2, 1): Offset(
+          containerSize.width - textSize.width,
+          (containerSize.height - textSize.height) / 2,
+        ), // center, end
+        (2, 2): Offset(
+          (containerSize.width - textSize.width) / 2,
+          (containerSize.height - textSize.height) / 2,
+        ), // center, center
+      };
+
+      for (int mainAxis = 0; mainAxis < 3; mainAxis++) {
+        for (int crossAxis = 0; crossAxis < 3; crossAxis++) {
+          final position = sut.calculateTextPosition(
+            containerSize,
+            textSize,
+            mainAxis,
+            crossAxis,
+          );
+
+          final expected = expectedResults[(mainAxis, crossAxis)]!;
+          expect(position.dx, closeTo(expected.dx, 0.001));
+          expect(position.dy, closeTo(expected.dy, 0.001));
+        }
+      }
+    });
+
+    test('handles null main- and crossAxisIndex and by defaulting to start-start alignment', () {
+      const containerSize = Size(300.0, 500.0);
+      const textSize = Size(100.0, 50.0);
+
+      final position = sut.calculateTextPosition(
+        containerSize,
+        textSize,
+        null, //should default to start
+        null, //should default to start
+      );
+
+      expect(position, Offset(0, 0));
+    });
+
+    test('handles text larger than container gracefully', () {
+      const containerSize = Size(100.0, 100.0);
+      const textSize = Size(150.0, 150.0);
+
+      final position = sut.calculateTextPosition(
+        containerSize,
+        textSize,
+        1, //end
+        1, //end
+      );
+
+      expect(position.dx, isNotNull);
+      expect(position.dy, isNotNull);
+    });
+
+    test('handles zero-sized text', () {
+      const containerSize = Size(300.0, 500.0);
+      const textSize = Size(0.0, 0.0);
+
+      final position = sut.calculateTextPosition(
+        containerSize,
+        textSize,
+        1, //end
+        1, //end
+      );
+
+      expect(position, Offset(containerSize.width, containerSize.height));
+    });
+
+    // Edge cases
+    test('handles zero-sized container', () {
+      const containerSize = Size(0.0, 0.0);
+      const textSize = Size(100.0, 50.0);
+
+      final position = sut.calculateTextPosition(
+        containerSize,
+        textSize,
+        0, //start
+        0, //start
+      );
+
+      expect(position, const Offset(0, 0));
+    });
+
+    test('handles large dimensions correctly', () {
+      const containerSize = Size(2000.0, 3000.0);
+      const textSize = Size(500.0, 400.0);
+
+      final position = sut.calculateTextPosition(
+        containerSize,
+        textSize,
+        2, //center
+        2, //center
+      );
+
+      final expectedDx = (containerSize.width - textSize.width) / 2;
+      final expectedDy = (containerSize.height - textSize.height) / 2;
+      expect(position, Offset(expectedDx, expectedDy));
+    });
+
+    test('handles negative indices by defaulting to start', () {
+      const containerSize = Size(300.0, 500.0);
+      const textSize = Size(100.0, 50.0);
+
+      final position = sut.calculateTextPosition(
+        containerSize,
+        textSize,
+        -1, // Invalid index
+        -1, // Invalid index
+      );
+
+      expect(position, const Offset(0, 0));
+    });
+
+    test('handles out-of-range indices by defaulting to start', () {
+      const containerSize = Size(300.0, 500.0);
+      const textSize = Size(100.0, 50.0);
+
+      final position = sut.calculateTextPosition(
+        containerSize,
+        textSize,
+        5, // Out of range
+        5, // Out of range
+      );
+
+      expect(position, const Offset(0, 0));
+    });
+
+    test('handles fractional container dimensions', () {
+      const containerSize = Size(333.33, 555.55);
+      const textSize = Size(100.0, 50.0);
+
+      final position = sut.calculateTextPosition(
+        containerSize,
+        textSize,
+        2, // center
+        2, // center
+      );
+
+      final expectedDx = (containerSize.width - textSize.width) / 2;
+      final expectedDy = (containerSize.height - textSize.height) / 2;
+      expect(position.dx, closeTo(expectedDx, 0.01));
+      expect(position.dy, closeTo(expectedDy, 0.01));
+    });
+
+    test('handles fractional text dimensions', () {
+      const containerSize = Size(300.0, 500.0);
+      const textSize = Size(99.99, 49.99);
+
+      final position = sut.calculateTextPosition(
+        containerSize,
+        textSize,
+        1, // end
+        1, // end
+      );
+
+      final expectedDx = containerSize.width - textSize.width;
+      final expectedDy = containerSize.height - textSize.height;
+      expect(position.dx, closeTo(expectedDx, 0.01));
+      expect(position.dy, closeTo(expectedDy, 0.01));
+    });
+
+    test('provides expected container height divisor value for quote font size per quote length', () {
+      const containerHeight = 400.0;
+
+      //(quoteLength, expectedDivisor)
+      final testCases = [
+        (0, 10),
+        (1, 10),
+        (20, 10),
+        (21, 14),
+        (100, 14),
+        (160, 14),
+        (161, 20),
+        (250, 20),
+        (300, 20),
+        (301, 24),
+        (400, 24),
+        (540, 24),
+        (541, 28),
+        (600, 28),
+        (710, 28),
+        (711, 32),
+        (800, 32),
+        (900, 32),
+        (901, 36),
+        (1000, 36),
+      ];
+
+      for (final (length, divisor) in testCases) {
+        sut.compositionModel = CompositionModel();
+        final quoteModel = QuoteModel(quote: 'a' * length);
+
+        sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+        expect(
+          sut.compositionModel?.fontSize,
+          containerHeight ~/ divisor,
+          reason: 'Quote length $length should use divisor $divisor for quote font size',
+        );
+      }
+    });
+
+    test('provides expected container height divisor value for author font size per quote length', () {
+      const containerHeight = 400.0;
+
+      //(quoteLength, expectedDivisor)
+      final testCases = [
+        (0, 24),
+        (200, 24),
+        (300, 24),
+        (301, 26),
+        (400, 26),
+        (540, 26),
+        (541, 30),
+        (600, 30),
+        (710, 30),
+        (711, 34),
+        (800, 34),
+        (900, 34),
+        (901, 38),
+        (1000, 38),
+      ];
+
+      for (final (length, divisor) in testCases) {
+        sut.compositionModel = CompositionModel();
+        final quoteModel = QuoteModel(
+          quote: 'a' * length,
+          author: 'Author',
+        );
+
+        sut.calculateFontSize(containerHeight, quoteModel: quoteModel);
+
+        expect(
+          sut.compositionModel?.authorFontSize,
+          containerHeight ~/ divisor,
+          reason: 'Quote length $length should use author divisor $divisor for author font size',
+        );
+      }
+    });
+  });
+
+  group('generateTextColor', () {
+    setUp(() {
+      sut.compositionModel = CompositionModel();
+    });
+
+    test('generates text color successfully from image palette', () async {
+      final testImage = await createTestImage(width: 200, height: 200);
+
+      sut.compositionModel?.rawImage = testImage;
+      sut.compositionModel?.fontSize = 20;
+
+      final quoteModel = QuoteModel(
+        quote: 'This is a test quote',
+        author: 'Test Author',
+      );
+
+      final mockConnectivity = MockConnectivity();
+      when(() => mockConnectivity.checkConnectivity()).thenAnswer(
+        (_) async => [ConnectivityResult.wifi],
+      );
+      NetworkUtils.connectivity = mockConnectivity;
+
+      await cacheTestImageForUrl('https://example.com/image.jpg');
+      when(() => imageRepository.getImageModel()).thenAnswer(
+        (_) async => ImageModel(
+          imageUrl: 'https://example.com/image.jpg',
+          author: 'author',
+        ),
+      );
+      when(() => quoteRepository.getQuoteModel()).thenAnswer(
+        (_) async => QuoteModel(quote: 'test'),
+      );
+
+      await sut.ensureInitialized(const Size(300, 500));
+
+      final color = await sut.generateTextColor(
+        quoteModel: quoteModel,
+        compositionModel: sut.compositionModel!,
+      );
+
+      expect(color, isA<Color>());
+      expect(color.a, 1);
+    });
+
+    test('handles quote for color generation', () async {
+      final testImage = await createTestImage();
+      sut.compositionModel?.rawImage = testImage;
+      sut.compositionModel?.fontSize = 24;
+
+      final quoteModel = QuoteModel(
+        quote: 'a' * 500,
+        author: 'Quote Author',
+      );
+
+      final mockConnectivity = MockConnectivity();
+      when(() => mockConnectivity.checkConnectivity()).thenAnswer(
+        (_) async => [ConnectivityResult.wifi],
+      );
+      NetworkUtils.connectivity = mockConnectivity;
+
+      await cacheTestImageForUrl('https://example.com/image.jpg');
+      when(() => imageRepository.getImageModel()).thenAnswer(
+        (_) async => ImageModel(
+          imageUrl: 'https://example.com/image.jpg',
+          author: 'author',
+        ),
+      );
+      when(() => quoteRepository.getQuoteModel()).thenAnswer(
+        (_) async => QuoteModel(quote: 'test'),
+      );
+
+      await sut.ensureInitialized(const Size(300, 400));
+
+      final color = await sut.generateTextColor(
+        quoteModel: quoteModel,
+        compositionModel: sut.compositionModel!,
+      );
+
+      expect(color, isA<Color>());
+    });
   });
 }
