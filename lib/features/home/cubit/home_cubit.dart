@@ -342,7 +342,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
       region,
     );
 
-    final color = paletteColor.withValues(alpha: 1).inverseColor();
+    final color = paletteColor.inverseColor();
     logger.log('Generated TextColor = $color');
     return color;
   }
