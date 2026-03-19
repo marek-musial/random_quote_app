@@ -325,11 +325,23 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
     final finalWidgetTextPosition = textContainerOffset + textPositionInsideContainer;
 
-    final region = Rect.fromLTWH(
-      finalWidgetTextPosition.dx.clamp(0, _resizedImage!.width.toDouble()),
-      finalWidgetTextPosition.dy.clamp(0, _resizedImage!.height.toDouble()),
-      textSize.width.clamp(0, _resizedImage!.width.toDouble()),
-      textSize.height.clamp(0, _resizedImage!.height.toDouble()),
+    final region = Rect.fromLTRB(
+      finalWidgetTextPosition.dx.clamp(
+        textContainerOffset.dx,
+        _resizedImage!.width.toDouble() - textContainerOffset.dx,
+      ),
+      finalWidgetTextPosition.dy.clamp(
+        textContainerOffset.dy,
+        _resizedImage!.height.toDouble() - textContainerOffset.dy,
+      ),
+      (finalWidgetTextPosition.dx + textSize.width).clamp(
+        textContainerOffset.dx,
+        _resizedImage!.width.toDouble() - textContainerOffset.dx,
+      ),
+      (finalWidgetTextPosition.dy + textSize.height).clamp(
+        textContainerOffset.dy,
+        _resizedImage!.height.toDouble() - textContainerOffset.dy,
+      ),
     );
     logger.log('Color sampling region: $region');
 
