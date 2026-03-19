@@ -96,7 +96,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
       _randomizeTextLayout();
 
-      final textColor = await _generateTextColor(
+      final textColor = await generateTextColor(
         quoteModel: quoteModel!,
         compositionModel: compositionModel!,
       );
@@ -197,7 +197,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     logger.log('Layout randomized');
   }
 
-  void _calculateFontSize(
+  void calculateFontSize(
     double containerHeight, {
     required QuoteModel quoteModel,
   }) {
@@ -229,7 +229,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     }
   }
 
-  Offset _calculateTextPosition(
+  Offset calculateTextPosition(
     Size textPositionContainerSize,
     Size textSize,
     int? mainAxisIndex,
@@ -271,7 +271,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     return position;
   }
 
-  Future<Color> _generateTextColor({
+  Future<Color> generateTextColor({
     required QuoteModel quoteModel,
     required CompositionModel compositionModel,
   }) async {
@@ -279,7 +279,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
     final imageDisplaySize = _widgetSize!; // 7/8 container
 
-    _calculateFontSize(
+    calculateFontSize(
       imageDisplaySize.height,
       quoteModel: quoteModel,
     );
@@ -311,7 +311,7 @@ class HomeCubit extends HydratedCubit<HomeState> {
     final textSize = textPainter.size;
     logger.log('New textSize: $textSize');
 
-    final textPositionInsideContainer = _calculateTextPosition(
+    final textPositionInsideContainer = calculateTextPosition(
       textContainerSize,
       textSize,
       compositionModel.mainAxisAlignmentIndex,
