@@ -5,9 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:random_quote_app/core/enums.dart';
 import 'package:random_quote_app/core/network_utils.dart';
-import 'package:random_quote_app/core/screen_sizes.dart';
 import 'package:random_quote_app/core/services/app_rating_service.dart';
-import 'package:random_quote_app/core/theme/constraints.dart';
 import 'package:random_quote_app/core/theme/widgets/background_icon_widget.dart';
 import 'package:random_quote_app/features/home/cubit/home_cubit.dart';
 import 'package:random_quote_app/features/home/widgets/home_page_widgets_export.dart';
@@ -23,10 +21,18 @@ class HomePage extends StatelessWidget {
     const Duration exitDuration = Duration(milliseconds: 600);
     return LayoutBuilder(
       builder: (context, constraints) {
-        constraints = imageConstraints;
+        constraints = MediaQuery.of(context).orientation == Orientation.portrait
+            ? BoxConstraints(
+                maxWidth: constraints.maxWidth * 6 / 7,
+                maxHeight: constraints.maxWidth * 6 / 7,
+              )
+            : BoxConstraints(
+                maxWidth: constraints.maxHeight * 6 / 7,
+                maxHeight: constraints.maxHeight * 6 / 7,
+              );
         final widgetSize = Size(
-          imageConstraints.maxWidth,
-          imageConstraints.maxHeight,
+          constraints.maxWidth,
+          constraints.maxHeight,
         );
         return BlocConsumer<HomeCubit, HomeState>(
           listenWhen: (previous, current) {
@@ -114,12 +120,12 @@ class HomePage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         ConstrainedBox(
-                                          constraints: imageConstraints,
+                                          constraints: constraints,
                                           child: Container(
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(
-                                                  imageConstraints.maxWidth / 20,
+                                                  constraints.maxWidth / 20,
                                                 ),
                                               ),
                                             ),
@@ -127,7 +133,7 @@ class HomePage extends StatelessWidget {
                                             child: InkWell(
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(
-                                                  imageConstraints.maxWidth / 20,
+                                                  constraints.maxWidth / 20,
                                                 ),
                                               ),
                                               child: RepaintBoundary(
@@ -156,12 +162,12 @@ class HomePage extends StatelessWidget {
                                           ),
                                         ),
                                         SizedBox.square(
-                                          dimension: screenWidth / 96,
+                                          dimension: constraints.maxWidth / 98,
                                         ),
                                         Text(
                                           'Hold image for more options',
                                           style: TextStyle(
-                                            fontSize: screenWidth / 32,
+                                            fontSize: constraints.maxWidth / 28,
                                             color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: .5),
                                             fontWeight: FontWeight.bold,
                                           ),
