@@ -39,7 +39,7 @@ class ImageManagementDialog extends StatelessWidget {
           startValue,
         )
         ..updateFileSize(
-          startValue.toInt(),
+          (startValue * startValue).toInt(),
         ),
       child: BlocBuilder<ImageDialogCubit, ImageDialogState>(
         builder: (context, state) {
@@ -102,7 +102,7 @@ class ImageManagementDialog extends StatelessWidget {
                             final bytes = await captureBytes(dimension);
 
                             if (bytes != null) {
-                              cubit.updateFileSize(bytes.length);
+                              cubit.updateFileSize(bytes.lengthInBytes);
                             }
                           },
                           min: 300,

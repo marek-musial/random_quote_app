@@ -36,7 +36,7 @@ void main() {
       'emits the state with calculated file size in KB if the size is < 1 MB',
       build: () => sut,
       act: (cubit) => [
-        sut.updateFileSize(1000000),
+        sut.updateFileSize(976560),
       ],
       expect: () => [
         ImageDialogState(fileSize: '976.56 KB'),
@@ -50,7 +50,7 @@ void main() {
         sut.updateFileSize(1200000),
       ],
       expect: () => [
-        ImageDialogState(fileSize: '1.14 MB'),
+        ImageDialogState(fileSize: '1.20 MB'),
       ],
     );
   });
