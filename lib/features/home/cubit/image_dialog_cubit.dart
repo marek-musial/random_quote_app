@@ -20,8 +20,8 @@ class ImageDialogCubit extends Cubit<ImageDialogState> {
   ImageCaptureService imageCaptureService = ImageCaptureService();
 
   void updateFileSize(int byteLength) {
-    final kb = byteLength / 1024;
-    final mb = byteLength / (1024 * 1024);
+    final kb = byteLength / 1000;
+    final mb = byteLength / (1000 * 1000);
 
     emit(
       state.copyWith(
