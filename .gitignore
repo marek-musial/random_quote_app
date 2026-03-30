@@ -11,6 +11,7 @@
 migrate_working_dir/
 todo.todo
 /coverage
+devtools_options.yaml
 
 # IntelliJ related
 *.iml
