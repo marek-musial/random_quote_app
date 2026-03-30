@@ -58,7 +58,7 @@ class QuoteslateQuoteRemoteDataSource extends QuoteDataSource {
       return quoteModel;
     } on DioException catch (error) {
       throw Exception(error.response?.data ?? //R
-          'Quoteble api unknown error');
+          'Quoteslate api unknown error');
     }
   }
 }
